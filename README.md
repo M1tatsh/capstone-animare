@@ -1,12 +1,12 @@
 # ANIMARE CAPSTONE PROJECT
 
-### What is Animare?
+## What is Animare?
 
 Welcome to the Junior Reaper's capstone project, Animare! Animare is a game about a shapeshifting Reaper who must climb the Tower of Memories to save the corrupt souls of the afterlife. Use your shapeshifting powers and puzzle solving skills to reach the top!
 
 This is a repository for the game assets, build versions, and various documentation on the project.
 
-### Team Members READ HERE
+## Team Members READ HERE
 
 For any artist creating assets, please push your assets to capstone-animare\Assets\ AFTER pulling
 
