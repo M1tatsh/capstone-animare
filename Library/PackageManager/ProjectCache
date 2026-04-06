@@ -1,25 +1,25 @@
 m_ProjectFiles:
   m_ManifestFileStatus:
-    m_FilePath: C:/Users/jdjos/Documents/Unity/Animare Game/Packages/manifest.json
+    m_FilePath: C:/Users/jdjos/Documents/GitHub/capstone-animare/Packages/manifest.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 639102517888386777
-    m_Hash: 3332759985
+      ticks: 639111138187273754
+    m_Hash: 2063167643
   m_LockFileStatus:
-    m_FilePath: C:/Users/jdjos/Documents/Unity/Animare Game/Packages/packages-lock.json
+    m_FilePath: C:/Users/jdjos/Documents/GitHub/capstone-animare/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 639102517888447835
-    m_Hash: 1963487017
+      ticks: 639111138187311291
+    m_Hash: 3850813046
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
-m_ProjectPath: C:/Users/jdjos/Documents/Unity/Animare Game/Packages
+m_ProjectPath: C:/Users/jdjos/Documents/GitHub/capstone-animare/Packages
 m_EditorVersion: 6000.4.0f1 (8cf496087c8f)
 m_ResolvedPackages:
 - packageId: com.unity.2d.sprite@1.0.0
@@ -27,7 +27,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.2d.sprite@929df5adbb1f
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.2d.sprite@929df5adbb1f
   assetPath: Packages/com.unity.2d.sprite
   name: com.unity.2d.sprite
   displayName: 2D Sprite
@@ -118,7 +118,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.11
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.ai.navigation@78534c21b27d
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.ai.navigation@78534c21b27d
   assetPath: Packages/com.unity.ai.navigation
   name: com.unity.ai.navigation
   displayName: AI Navigation
@@ -256,7 +256,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.11.4
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.collab-proxy@a5329f833fa8
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.collab-proxy@a5329f833fa8
   assetPath: Packages/com.unity.collab-proxy
   name: com.unity.collab-proxy
   displayName: Unity Version Control
@@ -450,7 +450,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 3.0.39
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.ide.rider@4504839d03f7
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.ide.rider@4504839d03f7
   assetPath: Packages/com.unity.ide.rider
   name: com.unity.ide.rider
   displayName: JetBrains Rider Editor
@@ -593,7 +593,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.27
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.ide.visualstudio@dc1ddd4f09b6
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.ide.visualstudio@dc1ddd4f09b6
   assetPath: Packages/com.unity.ide.visualstudio
   name: com.unity.ide.visualstudio
   displayName: Visual Studio Editor
@@ -723,7 +723,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.1
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.multiplayer.center@f01f4ba8d00a
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.multiplayer.center@f01f4ba8d00a
   assetPath: Packages/com.unity.multiplayer.center
   name: com.unity.multiplayer.center
   displayName: Multiplayer Center
@@ -825,12 +825,230 @@ m_ResolvedPackages:
       scopePatternExpression: 
       message: 
       readMoreLink: 
+- packageId: com.unity.probuilder@6.0.9
+  testable: 0
+  isDirectDependency: 1
+  version: 6.0.9
+  source: 1
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.probuilder@1f279ab829b7
+  assetPath: Packages/com.unity.probuilder
+  name: com.unity.probuilder
+  displayName: ProBuilder
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: 
+  description: 'Build, edit, and texture custom geometry in Unity. Use ProBuilder
+    for in-scene level design, prototyping, collision meshes, all with on-the-fly
+    play-testing.
+
+
+    Advanced features include UV editing, vertex colors, parametric
+    shapes, and texture blending. With ProBuilder''s model export feature it''s easy
+    to tweak your levels in any external 3D modelling suite.'
+  errors: []
+  versions:
+    all:
+    - 3.0.0
+    - 3.0.1
+    - 3.0.2
+    - 3.0.3
+    - 3.0.6
+    - 3.0.8
+    - 3.0.9
+    - 3.10.1
+    - 4.0.2
+    - 4.0.3
+    - 4.0.4
+    - 4.0.5
+    - 4.1.0
+    - 4.1.2
+    - 4.2.1
+    - 4.2.2-preview.1
+    - 4.2.2-preview.2
+    - 4.2.3
+    - 4.2.4-preview.0
+    - 4.3.0-preview.0
+    - 4.3.0-preview.1
+    - 4.3.0-preview.2
+    - 4.3.0-preview.4
+    - 4.3.0-preview.6
+    - 4.3.0-preview.7
+    - 4.3.0-preview.8
+    - 4.3.0-preview.9
+    - 4.3.1
+    - 4.4.0-preview.1
+    - 4.4.0
+    - 4.5.0
+    - 4.5.2
+    - 5.0.0-pre.7
+    - 5.0.0-pre.10
+    - 5.0.1
+    - 5.0.3
+    - 5.0.4
+    - 5.0.6
+    - 5.0.7
+    - 5.1.0
+    - 5.1.1
+    - 5.2.0
+    - 5.2.2
+    - 5.2.3
+    - 5.2.4
+    - 6.0.1-pre.1
+    - 6.0.1-pre.2
+    - 6.0.1
+    - 6.0.2
+    - 6.0.3
+    - 6.0.4
+    - 6.0.5
+    - 6.0.6
+    - 6.0.7
+    - 6.0.8
+    - 6.0.9
+    compatible:
+    - 6.0.9
+    recommended: 6.0.9
+    deprecated: []
+  dependencies:
+  - name: com.unity.shadergraph
+    version: 17.0.3
+  - name: com.unity.modules.imgui
+    version: 1.0.0
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  - name: com.unity.settings-manager
+    version: 1.0.3
+  resolvedDependencies:
+  - name: com.unity.shadergraph
+    version: 17.4.0
+  - name: com.unity.render-pipelines.core
+    version: 17.4.0
+  - name: com.unity.burst
+    version: 1.8.28
+  - name: com.unity.mathematics
+    version: 1.3.3
+  - name: com.unity.modules.jsonserialize
+    version: 1.0.0
+  - name: com.unity.ugui
+    version: 2.0.0
+  - name: com.unity.modules.ui
+    version: 1.0.0
+  - name: com.unity.modules.imgui
+    version: 1.0.0
+  - name: com.unity.collections
+    version: 6.4.0
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.6
+  - name: com.unity.test-framework
+    version: 1.6.0
+  - name: com.unity.ext.nunit
+    version: 2.0.5
+  - name: com.unity.test-framework.performance
+    version: 3.2.0
+  - name: com.unity.modules.terrain
+    version: 1.0.0
+  - name: com.unity.searcher
+    version: 4.9.4
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  - name: com.unity.settings-manager
+    version: 2.1.1
+  keywords:
+  - 3d
+  - model
+  - mesh
+  - modeling
+  - geometry
+  - shape
+  - cube
+  - blender
+  - max
+  - maya
+  - fbx
+  - obj
+  - level
+  - design
+  - block
+  - greybox
+  - graybox
+  - whitebox
+  - prototype
+  - probuilder
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+    compliance:
+      status: 0
+      violations: []
+  hideInEditor: 1
+  entitlements:
+    licensingModel: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 639065257651390000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.probuilder@6.0/manual/index.html
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.com/Unity-Technologies/com.unity.probuilder.git
+    revision: 2c6613294b715cbc153e6bf7cafd5f98d08344a9
+    path: 
+  unityLifecycle:
+    version: 6.0.9
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+    isDiscoverable: 1
+  isDeprecated: 0
+  deprecationMessage: 
+  git:
+    hash: 
+    revision: 
+  upmReserved: '{"changelog":"### Fixed\n\n- [PBLD-276] Fixed a bug where dragging
+    a single face from a connected texture group in the UV Editor caused a visual
+    distortion during the drag operation.\n- [PBLD-279] Fixed an issue where serialization
+    warning would appear upon creating a ProBuilder Shape.\n- [PBLD-284] Fixed InstanceID
+    obsolescence warning appearing on 6000.4 and newer versions.\n- Fixed an issue
+    where a proper unique name wasn''t set on duplicated ProBuilder meshes.\n- [UUM-133756]
+    Fixed the help icon for ProBuilder components pointing to the wrong documentation
+    link. It now points to https://docs.unity3d.com/Packages/com.unity.probuilder@latest."}'
+  signature:
+    status: 1
+    reason: Signature is ok
+    attestation:
+      format: archive
+      publishingChannel: unity
+      entitlementKeys: []
+      ownerOrgName: 
+      ownerOrgId: 
+      publisherName: 
+    errorCode: 
+  assetStore:
+    productId: 
+  fingerprint: 1f279ab829b7ed3bbe362a4beda666724eacffbf
+  editorCompatibility:
+    compatibilityLevel: 0
+    minimumPackageVersion: 6.0.9
+    minimumUnityVersion: 6000.0
+  compliance:
+    status: 0
+    violation:
+      scopePatternExpression: 
+      message: 
+      readMoreLink: 
 - packageId: com.unity.render-pipelines.universal@17.4.0
   testable: 0
   isDirectDependency: 1
   version: 17.4.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.render-pipelines.universal@0c5162adfb45
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.render-pipelines.universal@0c5162adfb45
   assetPath: Packages/com.unity.render-pipelines.universal
   name: com.unity.render-pipelines.universal
   displayName: Universal Render Pipeline
@@ -964,7 +1182,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.6.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.test-framework@629486125cfc
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.test-framework@629486125cfc
   assetPath: Packages/com.unity.test-framework
   name: com.unity.test-framework
   displayName: Test Framework
@@ -1065,7 +1283,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.8.11
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.timeline@bfd27f8016ff
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.timeline@bfd27f8016ff
   assetPath: Packages/com.unity.timeline
   name: com.unity.timeline
   displayName: Timeline
@@ -1268,7 +1486,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.ugui@3dd2fbd8c1f1
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.ugui@3dd2fbd8c1f1
   assetPath: Packages/com.unity.ugui
   name: com.unity.ugui
   displayName: uGUI
@@ -1375,7 +1593,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.9.10
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.visualscripting@eb6004dcc707
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.visualscripting@eb6004dcc707
   assetPath: Packages/com.unity.visualscripting
   name: com.unity.visualscripting
   displayName: Visual Scripting
@@ -1518,7 +1736,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.accessibility
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.accessibility
   assetPath: Packages/com.unity.modules.accessibility
   name: com.unity.modules.accessibility
   displayName: Accessibility
@@ -1606,7 +1824,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.adaptiveperformance
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.adaptiveperformance
   assetPath: Packages/com.unity.modules.adaptiveperformance
   name: com.unity.modules.adaptiveperformance
   displayName: Adaptive Performance
@@ -1700,7 +1918,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.ai
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.ai
   assetPath: Packages/com.unity.modules.ai
   name: com.unity.modules.ai
   displayName: AI
@@ -1788,7 +2006,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.androidjni
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.androidjni
   assetPath: Packages/com.unity.modules.androidjni
   name: com.unity.modules.androidjni
   displayName: Android JNI
@@ -1875,7 +2093,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.animation
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.animation
   assetPath: Packages/com.unity.modules.animation
   name: com.unity.modules.animation
   displayName: Animation
@@ -1963,7 +2181,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.assetbundle
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.assetbundle
   assetPath: Packages/com.unity.modules.assetbundle
   name: com.unity.modules.assetbundle
   displayName: Asset Bundle
@@ -2051,7 +2269,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.audio
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.audio
   assetPath: Packages/com.unity.modules.audio
   name: com.unity.modules.audio
   displayName: Audio
@@ -2139,7 +2357,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.cloth
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.cloth
   assetPath: Packages/com.unity.modules.cloth
   name: com.unity.modules.cloth
   displayName: Cloth
@@ -2231,7 +2449,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.director
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.director
   assetPath: Packages/com.unity.modules.director
   name: com.unity.modules.director
   displayName: Director
@@ -2327,7 +2545,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.imageconversion
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.imageconversion
   assetPath: Packages/com.unity.modules.imageconversion
   name: com.unity.modules.imageconversion
   displayName: Image Conversion
@@ -2415,7 +2633,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.imgui
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.imgui
   assetPath: Packages/com.unity.modules.imgui
   name: com.unity.modules.imgui
   displayName: IMGUI
@@ -2503,7 +2721,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.jsonserialize
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.jsonserialize
   assetPath: Packages/com.unity.modules.jsonserialize
   name: com.unity.modules.jsonserialize
   displayName: JSONSerialize
@@ -2591,7 +2809,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.particlesystem
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.particlesystem
   assetPath: Packages/com.unity.modules.particlesystem
   name: com.unity.modules.particlesystem
   displayName: Particle System
@@ -2679,7 +2897,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.physics
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.physics
   assetPath: Packages/com.unity.modules.physics
   name: com.unity.modules.physics
   displayName: Physics
@@ -2767,7 +2985,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.physics2d
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.physics2d
   assetPath: Packages/com.unity.modules.physics2d
   name: com.unity.modules.physics2d
   displayName: Physics 2D
@@ -2855,7 +3073,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.screencapture
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.screencapture
   assetPath: Packages/com.unity.modules.screencapture
   name: com.unity.modules.screencapture
   displayName: Screen Capture
@@ -2947,7 +3165,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.terrain
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.terrain
   assetPath: Packages/com.unity.modules.terrain
   name: com.unity.modules.terrain
   displayName: Terrain
@@ -3035,7 +3253,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.terrainphysics
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.terrainphysics
   assetPath: Packages/com.unity.modules.terrainphysics
   name: com.unity.modules.terrainphysics
   displayName: Terrain Physics
@@ -3131,7 +3349,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.tilemap
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.tilemap
   assetPath: Packages/com.unity.modules.tilemap
   name: com.unity.modules.tilemap
   displayName: Tilemap
@@ -3222,7 +3440,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.ui
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.ui
   assetPath: Packages/com.unity.modules.ui
   name: com.unity.modules.ui
   displayName: UI
@@ -3310,7 +3528,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.uielements
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.uielements
   assetPath: Packages/com.unity.modules.uielements
   name: com.unity.modules.uielements
   displayName: UIElements
@@ -3418,7 +3636,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.umbra
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.umbra
   assetPath: Packages/com.unity.modules.umbra
   name: com.unity.modules.umbra
   displayName: Umbra
@@ -3506,7 +3724,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unityanalytics
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unityanalytics
   assetPath: Packages/com.unity.modules.unityanalytics
   name: com.unity.modules.unityanalytics
   displayName: Unity Analytics
@@ -3601,7 +3819,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unitywebrequest
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unitywebrequest
   assetPath: Packages/com.unity.modules.unitywebrequest
   name: com.unity.modules.unitywebrequest
   displayName: Unity Web Request
@@ -3689,7 +3907,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle
   assetPath: Packages/com.unity.modules.unitywebrequestassetbundle
   name: com.unity.modules.unitywebrequestassetbundle
   displayName: Unity Web Request Asset Bundle
@@ -3785,7 +4003,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unitywebrequestaudio
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unitywebrequestaudio
   assetPath: Packages/com.unity.modules.unitywebrequestaudio
   name: com.unity.modules.unitywebrequestaudio
   displayName: Unity Web Request Audio
@@ -3881,7 +4099,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unitywebrequesttexture
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unitywebrequesttexture
   assetPath: Packages/com.unity.modules.unitywebrequesttexture
   name: com.unity.modules.unitywebrequesttexture
   displayName: Unity Web Request Texture
@@ -3977,7 +4195,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.unitywebrequestwww
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.unitywebrequestwww
   assetPath: Packages/com.unity.modules.unitywebrequestwww
   name: com.unity.modules.unitywebrequestwww
   displayName: Unity Web Request WWW
@@ -4089,7 +4307,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.vectorgraphics
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.vectorgraphics
   assetPath: Packages/com.unity.modules.vectorgraphics
   name: com.unity.modules.vectorgraphics
   displayName: Vector Graphics
@@ -4196,7 +4414,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.vehicles
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.vehicles
   assetPath: Packages/com.unity.modules.vehicles
   name: com.unity.modules.vehicles
   displayName: Vehicles
@@ -4288,7 +4506,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.video
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.video
   assetPath: Packages/com.unity.modules.video
   name: com.unity.modules.video
   displayName: Video
@@ -4388,7 +4606,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.vr
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.vr
   assetPath: Packages/com.unity.modules.vr
   name: com.unity.modules.vr
   displayName: VR
@@ -4491,7 +4709,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.wind
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.wind
   assetPath: Packages/com.unity.modules.wind
   name: com.unity.modules.wind
   displayName: Wind
@@ -4579,7 +4797,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.xr
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.xr
   assetPath: Packages/com.unity.modules.xr
   name: com.unity.modules.xr
   displayName: XR
@@ -4679,7 +4897,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.subsystems
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.subsystems
   assetPath: Packages/com.unity.modules.subsystems
   name: com.unity.modules.subsystems
   displayName: Subsystems
@@ -4771,7 +4989,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.modules.hierarchycore
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.modules.hierarchycore
   assetPath: Packages/com.unity.modules.hierarchycore
   name: com.unity.modules.hierarchycore
   displayName: Hierarchy Core
@@ -4859,7 +5077,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.0.5
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.ext.nunit@d8c07649098d
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.ext.nunit@d8c07649098d
   assetPath: Packages/com.unity.ext.nunit
   name: com.unity.ext.nunit
   displayName: Custom NUnit
@@ -4950,7 +5168,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.4.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.render-pipelines.core@6a60abc179f8
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.render-pipelines.core@6a60abc179f8
   assetPath: Packages/com.unity.render-pipelines.core
   name: com.unity.render-pipelines.core
   displayName: Scriptable Render Pipeline Core
@@ -5079,7 +5297,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.4.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.shadergraph@c6e5f4d3afa5
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.shadergraph@c6e5f4d3afa5
   assetPath: Packages/com.unity.shadergraph
   name: com.unity.shadergraph
   displayName: Shader Graph
@@ -5202,7 +5420,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.4.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.render-pipelines.universal-config@0db4263b9e6b
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.render-pipelines.universal-config@0db4263b9e6b
   assetPath: Packages/com.unity.render-pipelines.universal-config
   name: com.unity.render-pipelines.universal-config
   displayName: Universal Render Pipeline Config
@@ -5312,12 +5530,111 @@ m_ResolvedPackages:
       scopePatternExpression: 
       message: 
       readMoreLink: 
+- packageId: com.unity.settings-manager@2.1.1
+  testable: 0
+  isDirectDependency: 0
+  version: 2.1.1
+  source: 1
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.settings-manager@0b8638c5ce86
+  assetPath: Packages/com.unity.settings-manager
+  name: com.unity.settings-manager
+  displayName: Settings Manager
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: 
+  description: A framework for making any serializable field a setting, complete
+    with a pre-built settings interface.
+  errors: []
+  versions:
+    all:
+    - 0.1.0-preview.4
+    - 0.1.0-preview.8
+    - 1.0.0
+    - 1.0.1
+    - 1.0.2
+    - 1.0.3
+    - 2.0.0
+    - 2.0.1
+    - 2.1.0
+    - 2.1.1
+    compatible:
+    - 2.1.1
+    recommended: 2.1.1
+    deprecated: []
+  dependencies: []
+  resolvedDependencies: []
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+    compliance:
+      status: 0
+      violations: []
+  hideInEditor: 1
+  entitlements:
+    licensingModel: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 638956174685890000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.settings-manager@2.1/manual/index.html
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.com/Unity-Technologies/com.unity.settings-manager.git
+    revision: 6eb5ed85eaf3276cc09f0cc4fc3311c72f0fc196
+    path: 
+  unityLifecycle:
+    version: 2.1.1
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+    isDiscoverable: 0
+  isDeprecated: 0
+  deprecationMessage: 
+  git:
+    hash: 
+    revision: 
+  upmReserved: '{"changelog":"### Changes\n\n- Enable Auto Reference on main assembly.\n\n###
+    Bug Fixes\n\n- [case: PBLD-56] Added tooltip to \"Options\" gear icon to specify
+    that context menu items are relevant only to the selected category."}'
+  signature:
+    status: 1
+    reason: Signature is ok
+    attestation:
+      format: archive
+      publishingChannel: unity
+      entitlementKeys: []
+      ownerOrgName: 
+      ownerOrgId: 
+      publisherName: 
+    errorCode: 
+  assetStore:
+    productId: 
+  fingerprint: 0b8638c5ce86009d785da17b17aaf629047f64ce
+  editorCompatibility:
+    compatibilityLevel: 0
+    minimumPackageVersion: 2.1.1
+    minimumUnityVersion: 2022.3
+  compliance:
+    status: 0
+    violation:
+      scopePatternExpression: 
+      message: 
+      readMoreLink: 
 - packageId: com.unity.searcher@4.9.4
   testable: 0
   isDirectDependency: 0
   version: 4.9.4
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.searcher@d45a78918735
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.searcher@d45a78918735
   assetPath: Packages/com.unity.searcher
   name: com.unity.searcher
   displayName: Searcher
@@ -5425,7 +5742,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.8.28
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.burst@07790c2d06d9
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.burst@07790c2d06d9
   assetPath: Packages/com.unity.burst
   name: com.unity.burst
   displayName: Burst
@@ -5583,9 +5900,11 @@ m_ResolvedPackages:
     - 1.8.26
     - 1.8.27
     - 1.8.28
+    - 1.8.29
     compatible:
     - 1.8.28
-    recommended: 1.8.28
+    - 1.8.29
+    recommended: 1.8.29
     deprecated: []
   dependencies:
   - name: com.unity.mathematics
@@ -5671,7 +5990,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.3.3
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.mathematics@19a9377c4ffa
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.mathematics@19a9377c4ffa
   assetPath: Packages/com.unity.mathematics
   name: com.unity.mathematics
   displayName: Mathematics
@@ -5782,7 +6101,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 6.4.0
   source: 2
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.collections@538ace9075bc
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.collections@538ace9075bc
   assetPath: Packages/com.unity.collections
   name: com.unity.collections
   displayName: Collections
@@ -5899,7 +6218,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.11.6
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff
   assetPath: Packages/com.unity.nuget.mono-cecil
   name: com.unity.nuget.mono-cecil
   displayName: Mono Cecil
@@ -6004,7 +6323,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 3.2.0
   source: 1
-  resolvedPath: C:\Users\jdjos\Documents\Unity\Animare Game\Library\PackageCache\com.unity.test-framework.performance@0840f58e4562
+  resolvedPath: C:\Users\jdjos\Documents\GitHub\capstone-animare\Library\PackageCache\com.unity.test-framework.performance@0840f58e4562
   assetPath: Packages/com.unity.test-framework.performance
   name: com.unity.test-framework.performance
   displayName: Performance testing API

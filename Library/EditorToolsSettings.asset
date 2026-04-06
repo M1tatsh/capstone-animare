@@ -76,7 +76,19 @@ MonoBehaviour:
   - groupType: UnityEngine.TrailRenderer, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     collapsed: 0
+  - groupType: UnityEditor.EditorTools.NullTargetKey, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    collapsed: 0
+  - groupType: UnityEngine.ProBuilder.Shapes.ProBuilderShape, Unity.ProBuilder, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    collapsed: 0
+  - groupType: UnityEngine.ProBuilder.ProBuilderMesh, Unity.ProBuilder, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    collapsed: 0
+  - groupType: UnityEngine.ProBuilder.PolyShape, Unity.ProBuilder, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    collapsed: 0
   m_LastPivotModeTypeString: UnityEditor.CenterPivotMode, UnityEditor.CoreModule,
     Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_LastPivotRotationTypeString: UnityEditor.LocalPivotRotation, UnityEditor.CoreModule,
+  m_LastPivotRotationTypeString: UnityEditor.GridPivotRotation, UnityEditor.CoreModule,
     Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
