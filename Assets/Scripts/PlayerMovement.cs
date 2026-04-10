@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
         None,
         Idle,
         Jumping,
+        ShortHop,
         Falling,
         Running,
         Dashing
@@ -16,16 +17,18 @@ public class PlayerMovement : MonoBehaviour
 
     PlayerState currPlayerState = PlayerState.Idle;
 
-    Rigidbody rb;
     public float maxRunSpeed = 10.0f;
     public float runForce = 50.0f;
     public float runDragStrength = 0.5f;
     public float jumpForce = 500.0f;
-    public float onGroundHeight = 1.0f;
+    public float onGroundHeight = 0.5f;
     public float dashForce = 250.0f;
 
     float distanceToGround = 0.0f;
 
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
     public SpriteRenderer sprite;
     bool flipVisual = false;
 
@@ -45,9 +48,8 @@ public class PlayerMovement : MonoBehaviour
         //calculate distance to ground
         {
             RaycastHit hit;
-            Physics.Raycast(transform.position, -Vector3.up, out hit);
+            Physics.Raycast(groundCheck.position, -Vector3.up, out hit);
             distanceToGround = hit.distance;
-            print(distanceToGround);
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");
@@ -104,13 +106,36 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.Jumping:
+                if (Input.GetButtonUp("Jump"))
+                    SetPlayerState(PlayerState.ShortHop);
+
                 if (IsFalling())
                     SetPlayerState(PlayerState.Falling);
+
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                    SetPlayerState(PlayerState.Dashing);
+
+                if (IsOnGround())
+                    SetPlayerState(PlayerState.Idle);
+
+                break;
+            case PlayerState.ShortHop:
+                if (IsFalling())
+                    SetPlayerState(PlayerState.Falling);
+
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                    SetPlayerState(PlayerState.Dashing);
+
+                if (IsOnGround())
+                    SetPlayerState(PlayerState.Idle);
 
                 break;
             case PlayerState.Falling:
                 if (IsOnGround())
                     SetPlayerState(PlayerState.Idle);
+
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                    SetPlayerState(PlayerState.Dashing);
 
                 break;
             case PlayerState.Running:
@@ -119,6 +144,9 @@ public class PlayerMovement : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                     SetPlayerState(PlayerState.Dashing);
+
+                if (IsOnGround())
+                    SetPlayerState(PlayerState.Idle);
 
                 break;
             case PlayerState.Dashing:
@@ -130,6 +158,9 @@ public class PlayerMovement : MonoBehaviour
 
                 if (IsFalling())
                     SetPlayerState(PlayerState.Falling);
+
+                if (IsOnGround())
+                    SetPlayerState(PlayerState.Idle);
 
                 break;
         }
@@ -148,6 +179,8 @@ public class PlayerMovement : MonoBehaviour
             sprite.flipX = !sprite.flipX;
             flipVisual = false;
         }
+
+        print(currPlayerState);
 
     }
 
@@ -169,6 +202,14 @@ public class PlayerMovement : MonoBehaviour
                         );
                     rb.AddForce(Vector3.up * jumpForce);
                     break;
+                case PlayerState.ShortHop:
+                rb.linearVelocity = new Vector3
+                    (
+                        rb.linearVelocity.x,
+                        rb.linearVelocity.y * 0.5f,
+                        rb.linearVelocity.z
+                    );
+                break;
                 case PlayerState.Falling:
                     break;
                 case PlayerState.Running:

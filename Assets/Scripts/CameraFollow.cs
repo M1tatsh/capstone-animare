@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     public float followSpeed;
     public float followHeight = 2.0f;
 
-    void Update()
+    void FixedUpdate()
     {
         float targX = FollowTarget.transform.position.x;
         float targY = FollowTarget.transform.position.y;
