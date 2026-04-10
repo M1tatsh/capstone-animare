@@ -100,6 +100,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2809170138757162071}
+  - component: {fileID: 6249572981729596116}
+  - component: {fileID: 557392270753472719}
   m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
@@ -122,6 +124,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1785650840749759296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6249572981729596116
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981807021448000980}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &557392270753472719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981807021448000980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e959f87a11705043bafbe759bdab810, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  col: {fileID: 0}
 --- !u!1 &7527523768161664772
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,11 +212,11 @@ MonoBehaviour:
   jumpForce: 2000
   onGroundHeight: 1
   dashForce: 250
-  rb: {fileID: 0}
-  groundCheck: {fileID: 0}
+  rb: {fileID: 1477577897756171876}
+  groundCheck: {fileID: 2809170138757162071}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   sprite: {fileID: 9098320469717907763}
 --- !u!54 &1477577897756171876
 Rigidbody:

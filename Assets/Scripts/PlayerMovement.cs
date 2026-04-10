@@ -49,7 +49,10 @@ public class PlayerMovement : MonoBehaviour
         {
             RaycastHit hit;
             Physics.Raycast(groundCheck.position, -Vector3.up, out hit);
-            distanceToGround = hit.distance;
+            if (hit.collider.gameObject.layer == 6) //6 is ground layer
+            {
+                distanceToGround = hit.distance;
+            }
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");
@@ -101,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                     SetPlayerState(PlayerState.Dashing);
 
-                if (IsFalling())
+                if (IsFalling() && IsOnGround() == false)
                     SetPlayerState(PlayerState.Falling);
 
                 break;
@@ -114,9 +117,6 @@ public class PlayerMovement : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                     SetPlayerState(PlayerState.Dashing);
-
-                if (IsOnGround())
-                    SetPlayerState(PlayerState.Idle);
 
                 break;
             case PlayerState.ShortHop:
@@ -178,10 +178,8 @@ public class PlayerMovement : MonoBehaviour
         {
             sprite.flipX = !sprite.flipX;
             flipVisual = false;
+            dashForce *= -1;
         }
-
-        print(currPlayerState);
-
     }
 
 
@@ -217,7 +215,7 @@ public class PlayerMovement : MonoBehaviour
                 case PlayerState.Dashing:
                     rb.linearVelocity = new Vector3
                         (
-                            rb.linearVelocity.x * dashForce,
+                            dashForce,
                             rb.linearVelocity.y,
                             rb.linearVelocity.z
                         );
@@ -228,7 +226,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool IsOnGround()
     {
-        return distanceToGround <= onGroundHeight;
+       return distanceToGround <= onGroundHeight;
     }
     bool IsFalling()
     {
