@@ -1,243 +1,252 @@
-using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    enum PlayerState
+    private enum PlayerState
     {
-        None,
-        Idle,
+        Grounded,
         Jumping,
-        ShortHop,
-        Falling,
-        Running,
-        Dashing
+        Airborn,
+        Wall,
+        Dashing,
     }
 
-    PlayerState currPlayerState = PlayerState.Idle;
 
-    public float maxRunSpeed = 100.0f;
-    public float runForce = 50.0f;
-    public float runDragStrength = 0.5f;
-    public float jumpForce = 800.0f;
-    public float onGroundHeight = 0.2f;
-    public float dashForce = 200.0f;
+    [SerializeField] PlayerState currPS = PlayerState.Airborn;
+    private Rigidbody rb;
+    private PlayerCollision collision;
 
-    float distanceToGround = 0.0f;
+    [Header("Stats")]
+    public float moveSpeed = 5f;
+    public float normalJumpForce = 5f;
+    public float wallJumpForce = 10f;
+    public float slideForce = 2.5f;
+    public float dashSpeed = 5.0f;
+    public float dashTime = 0.2f;
 
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    public SpriteRenderer sprite;
-    bool flipVisual = false;
+    [Header("Toggles")]
+    private bool canMove = true;
+    private bool isDashing = false;
+    public bool hasWallJumped = false;
+    public bool disableStateMachine = false;
+    public int wallSide = 0;
 
-    float secondsSinceOnGround = 0.0f;
-    float timeVar = 0.0f;
-    bool wasPressed = false;
-
-    Vector3 startingPosition;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        startingPosition = transform.position;
+        collision = GetComponent<PlayerCollision>();
     }
 
     void FixedUpdate()
     {
-        //calculate distance to ground
+        float moveX = Input.GetAxis("Horizontal");
+        float speedX = Mathf.Abs(rb.linearVelocity.x);
+
+        Walk(moveX);
+    }
+
+    private void Update()
+    {
+        PlayerStateMachine();
+    }
+
+    private void PlayerStateMachine()
+    {
+        if (!disableStateMachine)
         {
-            RaycastHit hit;
-            Physics.Raycast(groundCheck.position, -Vector3.up, out hit);
-            if (hit.collider.gameObject.layer == 6) //6 is ground layer
+            switch (currPS)
             {
-                distanceToGround = hit.distance;
+                case PlayerState.Grounded:
+
+                    if (Input.GetButtonDown("Jump"))
+                        SetPlayerState(PlayerState.Jumping);
+
+                    if (Input.GetButtonDown("Fire3"))
+                        SetPlayerState(PlayerState.Dashing);
+
+                    if (!OnGround() && !OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        SetPlayerState(PlayerState.Airborn);
+
+                    break;
+
+                case PlayerState.Jumping:
+                    if (OnGround())
+                        SetPlayerState(PlayerState.Grounded);
+
+                    if (!OnGround() && !OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        SetPlayerState(PlayerState.Airborn);
+
+                    if (Input.GetButtonDown("Fire3"))
+                        SetPlayerState(PlayerState.Dashing);
+
+                    break;
+
+                case PlayerState.Airborn:
+                    if (OnGround())
+                        SetPlayerState(PlayerState.Grounded);
+
+                    if (OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        SetPlayerState(PlayerState.Wall);
+
+                    if (Input.GetButtonDown("Fire3"))
+                        SetPlayerState(PlayerState.Dashing);
+
+                    break;
+
+                case PlayerState.Wall:
+                    WallSlide();
+
+                    if (OnGround())
+                        SetPlayerState(PlayerState.Grounded);
+
+                    if (Input.GetButtonDown("Jump") && OnWallGeneric(OnWallLeft(), OnWallRight()))
+                    {
+                        SetPlayerState(PlayerState.Jumping);
+                    }
+
+                    if (!OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        SetPlayerState(PlayerState.Airborn);
+
+                    break;
+
+                case PlayerState.Dashing:
+
+                    if (!isDashing)
+                    {
+                        if (OnWallGeneric(OnWallLeft(), OnWallRight()))
+                            SetPlayerState(PlayerState.Wall);
+                        else if (OnGround())
+                            SetPlayerState(PlayerState.Grounded);
+                        else
+                            SetPlayerState(PlayerState.Airborn);
+                    }
+
+                    break;
             }
         }
+    }
 
-        float horizontalAxis = Input.GetAxis("Horizontal");
-        float horizontalSpeed = Mathf.Abs(rb.linearVelocity.x);
-
-        //character movement formula
-        if(horizontalSpeed < maxRunSpeed)
+    private void SetPlayerState(PlayerState ps)
+    {
+        if (ps != currPS)
         {
-            rb.AddForce(Vector3.right * horizontalAxis * runForce);
+            currPS = ps;
+
+            switch (currPS)
+            {
+                case PlayerState.Grounded:
+                    break;
+                case PlayerState.Jumping:
+                    if (OnWallGeneric(OnWallLeft(), OnWallRight()))
+                    {
+                        WallJump();
+                    }
+                    else
+                    {
+                        Jump(Vector3.up, normalJumpForce);
+                    }
+                    break;
+                case PlayerState.Airborn:
+                    break;
+                case PlayerState.Dashing:
+                    float x = Input.GetAxisRaw("Horizontal");
+                    float y = Input.GetAxisRaw("Vertical");
+
+                    if (x != 0 || y != 0)
+                    {
+                        Dash(x, y);
+                    }
+                    break;
+            }
         }
+    }
 
-        float clampedVelocityX = Mathf.Clamp
-            (
-                rb.linearVelocity.x * (1.0f - runDragStrength), 
-                -maxRunSpeed, 
-                maxRunSpeed
-            );
-
-        //add velocity to rigidbody
-        rb.linearVelocity = new Vector3
-        (
-            clampedVelocityX,
-            rb.linearVelocity.y,
-            rb.linearVelocity.z
-        );
-
-        if (clampedVelocityX < -0.1f && !sprite.flipX)
+    private void Walk(float x)
+    {
+        if (!hasWallJumped)
         {
-            flipVisual = true;
-        }
-        else if (clampedVelocityX > 0.1f && sprite.flipX)
-        {
-            flipVisual = true;
+            rb.linearVelocity = (new Vector3(x * moveSpeed, rb.linearVelocity.y, 0));
+            print(rb.linearVelocity);
         }
         else
         {
-            flipVisual = false;
-        }
-    }
-
-    void PlayerStateMachine()
-    {
-        switch(currPlayerState)
-        {
-            case PlayerState.Idle:
-                if (Input.GetButtonDown("Jump"))
-                    SetPlayerState(PlayerState.Jumping);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Dashing);
-
-                if (IsFalling() && IsOnGround() == false)
-                    SetPlayerState(PlayerState.Falling);
-
-                break;
-            case PlayerState.Jumping:
-                if (Input.GetButtonUp("Jump"))
-                    SetPlayerState(PlayerState.ShortHop);
-
-                if (IsFalling())
-                    SetPlayerState(PlayerState.Falling);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Dashing);
-
-                break;
-            case PlayerState.ShortHop:
-                if (IsFalling())
-                    SetPlayerState(PlayerState.Falling);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Dashing);
-
-                if (IsOnGround())
-                    SetPlayerState(PlayerState.Idle);
-
-                break;
-            case PlayerState.Falling:
-                if (IsOnGround())
-                    SetPlayerState(PlayerState.Idle);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Dashing);
-
-                break;
-            case PlayerState.Running:
-                if (Input.GetButtonDown("Jump"))
-                    SetPlayerState(PlayerState.Jumping);
-
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Dashing);
-
-                if (IsOnGround())
-                    SetPlayerState(PlayerState.Idle);
-
-                break;
-            case PlayerState.Dashing:
-                if (Input.GetButtonDown("Jump"))
-                    SetPlayerState(PlayerState.Jumping);
-
-                if (Input.GetKeyUp(KeyCode.LeftShift))
-                    SetPlayerState(PlayerState.Running);
-
-                if (IsFalling())
-                    SetPlayerState(PlayerState.Falling);
-
-                if (IsOnGround())
-                    SetPlayerState(PlayerState.Idle);
-
-                break;
-        }
-    }
-    void Update()
-    {
-        PlayerStateMachine();
-
-        if (wasPressed)
-        {
-            timeVar += Time.deltaTime;
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, (new Vector3(x * moveSpeed, rb.linearVelocity.y, 0)), .5f * Time.deltaTime);
         }
 
-        if (flipVisual)
-        {
-            sprite.flipX = !sprite.flipX;
-            flipVisual = false;
-            dashForce *= -1;
-        }
     }
 
-
-    void SetPlayerState(PlayerState ps)
+    private void Jump(Vector3 dir, float jumpForce)
     {
-        if (ps != currPlayerState)
-            currPlayerState = ps;
-            switch (ps)
-            {
-                case PlayerState.Idle:
-                    break;
-                case PlayerState.Jumping:
-                    rb.linearVelocity = new Vector3
-                        (
-                            rb.linearVelocity.x,
-                            0.0f,
-                            rb.linearVelocity.z
-                        );
-                    rb.AddForce(Vector3.up * jumpForce);
-                    break;
-                case PlayerState.ShortHop:
-                rb.linearVelocity = new Vector3
-                    (
-                        rb.linearVelocity.x,
-                        rb.linearVelocity.y * 0.5f,
-                        rb.linearVelocity.z
-                    );
-                break;
-                case PlayerState.Falling:
-                    break;
-                case PlayerState.Running:
-                    break;
-                case PlayerState.Dashing:
-                    rb.linearVelocity = new Vector3
-                        (
-                            dashForce,
-                            rb.linearVelocity.y,
-                            rb.linearVelocity.z
-                        );
-                    rb.AddForce(Vector3.right * dashForce);
-                    break;
-            }
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, 0);
+        rb.linearVelocity += dir * jumpForce;
     }
 
-    bool IsOnGround()
+    private void Dash(float x, float y)
     {
-       return distanceToGround <= onGroundHeight;
-    }
-    bool IsFalling()
-    {
-        return rb.linearVelocity.y < 0.0f;
+        StopCoroutine(DisableMovement(0));
+        StartCoroutine(DisableMovement(dashTime));
+
+        rb.linearVelocity = Vector3.zero;
+        Vector3 dir = new Vector3(x, y, 0);
+
+        rb.linearVelocity += dir.normalized * dashSpeed;
     }
 
-    float TimeSinceLastButtonPress()
+    IEnumerator DisableMovement(float time)
     {
-        timeVar += Time.fixedDeltaTime;
-        print(timeVar);
-        return timeVar;
+        hasWallJumped = true;
+        disableStateMachine = true;
+        isDashing = true;
+        yield return new WaitForSeconds(time);
+        hasWallJumped = false;
+        disableStateMachine = false;
+        isDashing = false;
     }
 
+    private bool PlayerIsIdle()
+    {
+        if (rb.linearVelocity == Vector3.zero)
+            return true;
+
+        return false;
+    }
+
+    private bool OnGround()
+    {
+        return collision.onGround;
+    }
+    private bool OnWallRight()
+    {
+        return collision.onWallRight;
+    }
+    private bool OnWallLeft()
+    {
+        return collision.onWallLeft;
+    }
+
+    private bool OnWallGeneric(bool f, bool b)
+    {
+        if (f || b)
+            return true;
+
+        return false;
+    }
+
+    private void WallSlide()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, -slideForce, rb.linearVelocity.z);
+    }
+
+    private void WallJump()
+    {
+        StopCoroutine(DisableMovement(0));
+        StartCoroutine(DisableMovement(0.1f));
+
+        Vector3 wallDir = collision.onWallRight ? Vector3.left : Vector3.right;
+
+        Jump((Vector3.up / 1.5f + wallDir / 1.5f), wallJumpForce);
+    }
 }
