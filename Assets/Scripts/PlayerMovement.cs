@@ -17,12 +17,12 @@ public class PlayerMovement : MonoBehaviour
 
     PlayerState currPlayerState = PlayerState.Idle;
 
-    public float maxRunSpeed = 10.0f;
+    public float maxRunSpeed = 100.0f;
     public float runForce = 50.0f;
     public float runDragStrength = 0.5f;
-    public float jumpForce = 500.0f;
-    public float onGroundHeight = 0.5f;
-    public float dashForce = 250.0f;
+    public float jumpForce = 800.0f;
+    public float onGroundHeight = 0.2f;
+    public float dashForce = 200.0f;
 
     float distanceToGround = 0.0f;
 

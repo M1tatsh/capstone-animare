@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     public float followSpeed;
     public float followHeight = 2.0f;
     public float smoothTime = 1f;
-    public Vector3 vel = new Vector3(0, 0, 2);sss
+    public Vector3 vel = new Vector3(0, 0, 2);
     private Vector3 targetPosition;
 
     void FixedUpdate()
