@@ -13,9 +13,16 @@ public class PlayerMovement : MonoBehaviour
         Wall,
         Dashing,
     }
+    private enum Rotation
+    {
+        None,
+        Left,
+        Right
+    }
 
 
     [SerializeField] PlayerState currPS = PlayerState.Airborn;
+    [SerializeField] Rotation desiredRotation = Rotation.None;
     private Rigidbody rb;
     private PlayerCollision collision;
 
@@ -26,13 +33,17 @@ public class PlayerMovement : MonoBehaviour
     public float slideForce = 2.5f;
     public float dashSpeed = 5.0f;
     public float dashTime = 0.2f;
+    public float spinSpeed = 2f;
 
     [Header("Toggles")]
-    private bool canMove = true;
+    //private bool canMove = true;
     private bool isDashing = false;
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
+    public bool SetPlayerXToZ = false;
     public int wallSide = 0;
+
+    private Quaternion targRot;
 
     void Start()
     {
@@ -51,6 +62,18 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         PlayerStateMachine();
+
+        if (Input.GetButtonDown("Fire2"))
+        {
+            SetPlayerRotation(Input.GetAxis("Fire2"));
+            SetPlayerXToZ = !SetPlayerXToZ;
+        }
+
+        if (!SetPlayerXToZ)
+            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+
+        else
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ; ;
     }
 
     private void PlayerStateMachine()
@@ -164,12 +187,27 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void SetPlayerRotation(float f)
+    {
+        if (f > 0)
+        {
+            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + 90, 0));
+        }
+        else if (f < 0)
+        {
+            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y - 90, 0));
+        }
+    }
+
     private void Walk(float x)
     {
-        if (!hasWallJumped)
+        if (!hasWallJumped && SetPlayerXToZ != true)
         {
             rb.linearVelocity = (new Vector3(x * moveSpeed, rb.linearVelocity.y, 0));
-            print(rb.linearVelocity);
+        }
+        else if (!hasWallJumped && SetPlayerXToZ == true)
+        {
+            rb.linearVelocity = (new Vector3(0, rb.linearVelocity.y, x * moveSpeed));
         }
         else
         {
@@ -248,5 +286,15 @@ public class PlayerMovement : MonoBehaviour
         Vector3 wallDir = collision.onWallRight ? Vector3.left : Vector3.right;
 
         Jump((Vector3.up / 1.5f + wallDir / 1.5f), wallJumpForce);
+    }
+
+    private void RotateToRight()
+    {
+
+    }
+
+    private void RotateToLeft() 
+    { 
+    
     }
 }
