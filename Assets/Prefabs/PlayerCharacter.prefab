@@ -101,7 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1785650840749759296}
   - component: {fileID: 1477577897756171876}
-  - component: {fileID: 3619018084932221611}
+  - component: {fileID: 5590645596974872088}
   - component: {fileID: 1530116513355350230}
   - component: {fileID: 37948694124208434}
   - component: {fileID: 8165605216197733440}
@@ -155,14 +155,14 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!65 &3619018084932221611
-BoxCollider:
+--- !u!136 &5590645596974872088
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7527523768161664772}
-  m_Material: {fileID: 13400000, guid: 3143ccb15c02c4a44bf690416043634e, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -173,8 +173,10 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1530116513355350230
 MonoBehaviour:
@@ -189,12 +191,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   currPS: 2
+  desiredRotation: 0
   moveSpeed: 5
   normalJumpForce: 5
   wallJumpForce: 7
   slideForce: 2.5
+  dashSpeed: 5
+  dashTime: 0.2
+  spinSpeed: 2
   hasWallJumped: 0
   disableStateMachine: 0
+  SetPlayerXToZ: 0
   wallSide: 0
 --- !u!114 &37948694124208434
 MonoBehaviour:
@@ -216,9 +223,9 @@ MonoBehaviour:
   onWallLeft: 0
   wallSide: 0
   collisionRadius: 0.25
-  bottomOffset: {x: 0, y: 0}
-  rightOffset: {x: 0, y: 0}
-  leftOffset: {x: 0, y: 0}
+  bottomOffset: {x: 0, y: 0, z: 0}
+  rightOffset: {x: 0, y: 0, z: 0}
+  leftOffset: {x: 0, y: 0, z: 0}
   drawDebug: 1
 --- !u!114 &8165605216197733440
 MonoBehaviour:

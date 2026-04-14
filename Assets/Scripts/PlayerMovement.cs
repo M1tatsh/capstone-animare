@@ -69,11 +69,7 @@ public class PlayerMovement : MonoBehaviour
             SetPlayerXToZ = !SetPlayerXToZ;
         }
 
-        if (!SetPlayerXToZ)
-            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-
-        else
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ; ;
+        ChangeConstraints(!SetPlayerXToZ);
     }
 
     private void PlayerStateMachine()
@@ -288,13 +284,12 @@ public class PlayerMovement : MonoBehaviour
         Jump((Vector3.up / 1.5f + wallDir / 1.5f), wallJumpForce);
     }
 
-    private void RotateToRight()
+    private void ChangeConstraints(bool def) //x = default
     {
+        if (def)
+            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        else
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
-    }
-
-    private void RotateToLeft() 
-    { 
-    
     }
 }
