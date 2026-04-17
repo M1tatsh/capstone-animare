@@ -224,8 +224,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   currPS: 2
-  desiredRotation: 0
   moveSpeed: 5
+  maxWalkSpeed: 10
   normalJumpForce: 5
   hasWallJumped: 0
   disableStateMachine: 0
@@ -247,15 +247,15 @@ MonoBehaviour:
     m_Bits: 64
   wallLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   onGround: 0
   onWallRight: 0
   onWallLeft: 0
   wallSide: 0
-  collisionRadius: 0.25
-  bottomOffset: {x: 0, y: 0, z: 0}
-  rightOffset: {x: 0, y: 0, z: 0}
-  leftOffset: {x: 0, y: 0, z: 0}
+  collisionRadius: 0.11
+  bottomOffset: {x: 0, y: -0.5, z: 0}
+  rightOffset: {x: 0.5, y: 0, z: 0}
+  leftOffset: {x: -0.5, y: 0, z: 0}
   drawDebug: 1
 --- !u!114 &8165605216197733440
 MonoBehaviour:

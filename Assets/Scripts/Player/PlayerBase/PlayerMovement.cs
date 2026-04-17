@@ -53,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Fire2"))
         {
             SetPlayerRotation(Input.GetAxis("Fire2"));
+            collision.ChangeAxis();
             SetPlayerXToZ = !SetPlayerXToZ;
         }
 
@@ -207,7 +208,10 @@ public class PlayerMovement : MonoBehaviour
         if (def)
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         else
+        {
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        }
+            
     }
 
     public float GetDirectionalAxis()

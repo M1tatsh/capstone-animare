@@ -19,11 +19,6 @@ public class PlayerCollision : MonoBehaviour
 
     void Update()
     {
-        if (ChangeAxis())
-        {
-            rightOffset = -rightOffset;
-            leftOffset = -leftOffset;
-        }
         onGround = Physics.CheckSphere(transform.position + bottomOffset, collisionRadius, groundLayer | wallLayer);
         onWallRight = Physics.CheckSphere(transform.position + transform.InverseTransformDirection(rightOffset), collisionRadius, wallLayer);
         onWallLeft = Physics.CheckSphere(transform.position + transform.InverseTransformDirection(leftOffset), collisionRadius, wallLayer);
@@ -45,10 +40,9 @@ public class PlayerCollision : MonoBehaviour
         }
     }
 
-    private bool ChangeAxis()
+    public void ChangeAxis()
     {
-        if (GetComponent<PlayerMovement>().SetPlayerXToZ)
-            return true;
-        return false;
+        rightOffset = -rightOffset;
+        leftOffset = -leftOffset;
     }
 }

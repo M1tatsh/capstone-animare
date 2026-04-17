@@ -18,11 +18,16 @@ public class AbilityDash : MonoBehaviour
 
     public void Execute(float x)
     {
+        if (player.SetPlayerXToZ)
+        {
+            x = -x;
+        }
+
         StopCoroutine(DashRoutine());
         StartCoroutine(DashRoutine());
 
         rb.linearVelocity = Vector3.zero;
-        Vector3 dir = new Vector3(-x, 0, 0);
+        Vector3 dir = new Vector3(x, 0, 0);
         rb.linearVelocity += transform.InverseTransformDirection(dir.normalized * dashSpeed);
     }
 

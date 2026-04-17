@@ -271,6 +271,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   FollowTarget: {fileID: 2031953938}
   followSpeed: 2
+  followHeight: 2
+  smoothTime: 1
+  vel: {x: 0, y: 0, z: 2}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,7 +476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1785650840749759296, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.73
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1785650840749759296, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -653,7 +656,7 @@ GameObject:
   - component: {fileID: 1461478575}
   - component: {fileID: 1461478574}
   - component: {fileID: 1461478573}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
