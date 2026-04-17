@@ -15,15 +15,8 @@ public class PlayerMovement : MonoBehaviour
         Wall,
         Dashing,
     }
-    private enum Rotation
-    {
-        None,
-        Left,
-        Right
-    }
 
     [SerializeField] PlayerState currPS = PlayerState.Airborn;
-    [SerializeField] Rotation desiredRotation = Rotation.None;
     private Rigidbody rb;
     private PlayerCollision collision;
     private AbilityDash abilityDash;
@@ -31,14 +24,13 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Stats")]
     public float moveSpeed = 5f;
+    public float maxWalkSpeed = 10f;
     public float normalJumpForce = 5f;
 
     [Header("Toggles")]
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
     public bool SetPlayerXToZ = false;
-
-    private Quaternion targRot;
 
     void Start()
     {
@@ -160,9 +152,10 @@ public class PlayerMovement : MonoBehaviour
                     if (HasDash())
                     {
                         float x = Input.GetAxisRaw("Horizontal");
-                        float y = Input.GetAxisRaw("Vertical");
-                        if (x != 0 || y != 0)
-                            abilityDash.Execute(x, y);
+                        if (x != 0)
+                        {
+                            abilityDash.Execute(x);
+                        }
                     }
                     break;
             }
@@ -179,16 +172,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void Walk(float x)
     {
+        if (SetPlayerXToZ)
+        {
+            x = -x;
+        }
+
         if (currPS != PlayerState.Wall)
         {
             if ((x > 0 && OnWallRight()) || (x < 0 && OnWallLeft()))
                 x = 0;
         }
 
-        if (!hasWallJumped && !SetPlayerXToZ)
-            rb.linearVelocity = new Vector3(x * moveSpeed, rb.linearVelocity.y, 0);
-        else if (!hasWallJumped && SetPlayerXToZ)
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, x * moveSpeed);
+        if (!hasWallJumped && !abilityDash.isDashing)
+        {
+            rb.linearVelocity = transform.InverseTransformDirection(new Vector3(x * moveSpeed, rb.linearVelocity.y, 0));
+        }
         else
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(x * moveSpeed, rb.linearVelocity.y, 0), .5f * Time.deltaTime);
     }
@@ -197,11 +195,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, 0);
         rb.linearVelocity += dir * jumpForce;
-    }
-
-    private bool PlayerIsIdle()
-    {
-        return rb.linearVelocity == Vector3.zero;
     }
 
     private bool OnGround() => collision.onGround;
@@ -215,5 +208,10 @@ public class PlayerMovement : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         else
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+    }
+
+    public float GetDirectionalAxis()
+    {
+        return rb.rotation.y;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AbilityWallJump : MonoBehaviour
@@ -29,8 +30,9 @@ public class AbilityWallJump : MonoBehaviour
         StartCoroutine(DisableMovement());
 
         Vector3 wallDir = collision.onWallRight ? Vector3.left : Vector3.right;
+
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, 0);
-        rb.linearVelocity += (Vector3.up / 1.5f + wallDir / 1.5f) * wallJumpForce;
+        rb.linearVelocity += transform.InverseTransformDirection((Vector3.up / 1.5f + wallDir / 1.5f) * wallJumpForce);
     }
 
     private IEnumerator DisableMovement()

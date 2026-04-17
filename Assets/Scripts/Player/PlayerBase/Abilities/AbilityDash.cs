@@ -16,24 +16,22 @@ public class AbilityDash : MonoBehaviour
         player = GetComponent<PlayerMovement>();
     }
 
-    public void Execute(float x, float y)
+    public void Execute(float x)
     {
         StopCoroutine(DashRoutine());
         StartCoroutine(DashRoutine());
 
         rb.linearVelocity = Vector3.zero;
-        Vector3 dir = new Vector3(x, y, 0);
-        rb.linearVelocity += dir.normalized * dashSpeed;
+        Vector3 dir = new Vector3(-x, 0, 0);
+        rb.linearVelocity += transform.InverseTransformDirection(dir.normalized * dashSpeed);
     }
 
     private IEnumerator DashRoutine()
     {
         isDashing = true;
-        player.hasWallJumped = true;
         player.disableStateMachine = true;
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
-        player.hasWallJumped = false;
         player.disableStateMachine = false;
     }
 }
