@@ -1,7 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -20,28 +22,21 @@ public class PlayerMovement : MonoBehaviour
         Right
     }
 
-
     [SerializeField] PlayerState currPS = PlayerState.Airborn;
     [SerializeField] Rotation desiredRotation = Rotation.None;
     private Rigidbody rb;
     private PlayerCollision collision;
+    private AbilityDash abilityDash;
+    private AbilityWallJump abilityWallJump;
 
     [Header("Stats")]
     public float moveSpeed = 5f;
     public float normalJumpForce = 5f;
-    public float wallJumpForce = 10f;
-    public float slideForce = 2.5f;
-    public float dashSpeed = 5.0f;
-    public float dashTime = 0.2f;
-    public float spinSpeed = 2f;
 
     [Header("Toggles")]
-    //private bool canMove = true;
-    private bool isDashing = false;
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
     public bool SetPlayerXToZ = false;
-    public int wallSide = 0;
 
     private Quaternion targRot;
 
@@ -49,13 +44,13 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         collision = GetComponent<PlayerCollision>();
+        abilityDash = GetComponent<AbilityDash>();
+        abilityWallJump = GetComponent<AbilityWallJump>();
     }
 
     void FixedUpdate()
     {
         float moveX = Input.GetAxis("Horizontal");
-        float speedX = Mathf.Abs(rb.linearVelocity.x);
-
         Walk(moveX);
     }
 
@@ -72,6 +67,9 @@ public class PlayerMovement : MonoBehaviour
         ChangeConstraints(!SetPlayerXToZ);
     }
 
+    private bool HasDash() => abilityDash != null && abilityDash.enabled;
+    private bool HasWallJump() => abilityWallJump != null && abilityWallJump.enabled;
+
     private void PlayerStateMachine()
     {
         if (!disableStateMachine)
@@ -79,16 +77,14 @@ public class PlayerMovement : MonoBehaviour
             switch (currPS)
             {
                 case PlayerState.Grounded:
-
                     if (Input.GetButtonDown("Jump"))
                         SetPlayerState(PlayerState.Jumping);
 
-                    if (Input.GetButtonDown("Fire3"))
+                    if (HasDash() && Input.GetButtonDown("Fire3"))
                         SetPlayerState(PlayerState.Dashing);
 
                     if (!OnGround() && !OnWallGeneric(OnWallLeft(), OnWallRight()))
                         SetPlayerState(PlayerState.Airborn);
-
                     break;
 
                 case PlayerState.Jumping:
@@ -98,51 +94,45 @@ public class PlayerMovement : MonoBehaviour
                     if (!OnGround() && !OnWallGeneric(OnWallLeft(), OnWallRight()))
                         SetPlayerState(PlayerState.Airborn);
 
-                    if (Input.GetButtonDown("Fire3"))
+                    if (HasDash() && Input.GetButtonDown("Fire3"))
                         SetPlayerState(PlayerState.Dashing);
-
                     break;
 
                 case PlayerState.Airborn:
                     if (OnGround())
                         SetPlayerState(PlayerState.Grounded);
 
-                    if (OnWallGeneric(OnWallLeft(), OnWallRight()))
+                    if (HasWallJump() && OnWallGeneric(OnWallLeft(), OnWallRight()))
                         SetPlayerState(PlayerState.Wall);
 
-                    if (Input.GetButtonDown("Fire3"))
+                    if (HasDash() && Input.GetButtonDown("Fire3"))
                         SetPlayerState(PlayerState.Dashing);
-
                     break;
 
                 case PlayerState.Wall:
-                    WallSlide();
+                    if (HasWallJump())
+                        abilityWallJump.WallSlide();
 
                     if (OnGround())
                         SetPlayerState(PlayerState.Grounded);
 
                     if (Input.GetButtonDown("Jump") && OnWallGeneric(OnWallLeft(), OnWallRight()))
-                    {
                         SetPlayerState(PlayerState.Jumping);
-                    }
 
                     if (!OnWallGeneric(OnWallLeft(), OnWallRight()))
                         SetPlayerState(PlayerState.Airborn);
-
                     break;
 
                 case PlayerState.Dashing:
-
-                    if (!isDashing)
+                    if (HasDash() && !abilityDash.isDashing)
                     {
-                        if (OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        if (HasWallJump() && OnWallGeneric(OnWallLeft(), OnWallRight()))
                             SetPlayerState(PlayerState.Wall);
                         else if (OnGround())
                             SetPlayerState(PlayerState.Grounded);
                         else
                             SetPlayerState(PlayerState.Airborn);
                     }
-
                     break;
             }
         }
@@ -159,24 +149,20 @@ public class PlayerMovement : MonoBehaviour
                 case PlayerState.Grounded:
                     break;
                 case PlayerState.Jumping:
-                    if (OnWallGeneric(OnWallLeft(), OnWallRight()))
-                    {
-                        WallJump();
-                    }
+                    if (HasWallJump() && OnWallGeneric(OnWallLeft(), OnWallRight()))
+                        abilityWallJump.Execute();
                     else
-                    {
                         Jump(Vector3.up, normalJumpForce);
-                    }
                     break;
                 case PlayerState.Airborn:
                     break;
                 case PlayerState.Dashing:
-                    float x = Input.GetAxisRaw("Horizontal");
-                    float y = Input.GetAxisRaw("Vertical");
-
-                    if (x != 0 || y != 0)
+                    if (HasDash())
                     {
-                        Dash(x, y);
+                        float x = Input.GetAxisRaw("Horizontal");
+                        float y = Input.GetAxisRaw("Vertical");
+                        if (x != 0 || y != 0)
+                            abilityDash.Execute(x, y);
                     }
                     break;
             }
@@ -186,30 +172,25 @@ public class PlayerMovement : MonoBehaviour
     private void SetPlayerRotation(float f)
     {
         if (f > 0)
-        {
             rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + 90, 0));
-        }
         else if (f < 0)
-        {
             rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y - 90, 0));
-        }
     }
 
     private void Walk(float x)
     {
-        if (!hasWallJumped && SetPlayerXToZ != true)
+        if (currPS != PlayerState.Wall)
         {
-            rb.linearVelocity = (new Vector3(x * moveSpeed, rb.linearVelocity.y, 0));
-        }
-        else if (!hasWallJumped && SetPlayerXToZ == true)
-        {
-            rb.linearVelocity = (new Vector3(0, rb.linearVelocity.y, x * moveSpeed));
-        }
-        else
-        {
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, (new Vector3(x * moveSpeed, rb.linearVelocity.y, 0)), .5f * Time.deltaTime);
+            if ((x > 0 && OnWallRight()) || (x < 0 && OnWallLeft()))
+                x = 0;
         }
 
+        if (!hasWallJumped && !SetPlayerXToZ)
+            rb.linearVelocity = new Vector3(x * moveSpeed, rb.linearVelocity.y, 0);
+        else if (!hasWallJumped && SetPlayerXToZ)
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, x * moveSpeed);
+        else
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(x * moveSpeed, rb.linearVelocity.y, 0), .5f * Time.deltaTime);
     }
 
     private void Jump(Vector3 dir, float jumpForce)
@@ -218,78 +199,21 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity += dir * jumpForce;
     }
 
-    private void Dash(float x, float y)
-    {
-        StopCoroutine(DisableMovement(0));
-        StartCoroutine(DisableMovement(dashTime));
-
-        rb.linearVelocity = Vector3.zero;
-        Vector3 dir = new Vector3(x, y, 0);
-
-        rb.linearVelocity += dir.normalized * dashSpeed;
-    }
-
-    IEnumerator DisableMovement(float time)
-    {
-        hasWallJumped = true;
-        disableStateMachine = true;
-        isDashing = true;
-        yield return new WaitForSeconds(time);
-        hasWallJumped = false;
-        disableStateMachine = false;
-        isDashing = false;
-    }
-
     private bool PlayerIsIdle()
     {
-        if (rb.linearVelocity == Vector3.zero)
-            return true;
-
-        return false;
+        return rb.linearVelocity == Vector3.zero;
     }
 
-    private bool OnGround()
-    {
-        return collision.onGround;
-    }
-    private bool OnWallRight()
-    {
-        return collision.onWallRight;
-    }
-    private bool OnWallLeft()
-    {
-        return collision.onWallLeft;
-    }
+    private bool OnGround() => collision.onGround;
+    private bool OnWallRight() => collision.onWallRight;
+    private bool OnWallLeft() => collision.onWallLeft;
+    private bool OnWallGeneric(bool f, bool b) => f || b;
 
-    private bool OnWallGeneric(bool f, bool b)
-    {
-        if (f || b)
-            return true;
-
-        return false;
-    }
-
-    private void WallSlide()
-    {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, -slideForce, rb.linearVelocity.z);
-    }
-
-    private void WallJump()
-    {
-        StopCoroutine(DisableMovement(0));
-        StartCoroutine(DisableMovement(0.1f));
-
-        Vector3 wallDir = collision.onWallRight ? Vector3.left : Vector3.right;
-
-        Jump((Vector3.up / 1.5f + wallDir / 1.5f), wallJumpForce);
-    }
-
-    private void ChangeConstraints(bool def) //x = default
+    private void ChangeConstraints(bool def)
     {
         if (def)
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         else
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-
     }
 }
