@@ -18,7 +18,7 @@ public class AbilityDash : MonoBehaviour
 
     public void Execute(float x)
     {
-        if (player.SetPlayerXToZ)
+        if (player.setPlayerXToZ)
         {
             x = -x;
         }

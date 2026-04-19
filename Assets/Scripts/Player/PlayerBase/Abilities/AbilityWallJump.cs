@@ -32,7 +32,7 @@ public class AbilityWallJump : MonoBehaviour
 
         Vector3 wallDir;
 
-        if (player.SetPlayerXToZ)
+        if (player.setPlayerXToZ)
             wallDir = collision.onWallRight ? Vector3.right : Vector3.left;
         else
             wallDir = collision.onWallRight ? Vector3.left : Vector3.right;

@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
-
 public class PlayerMovement : MonoBehaviour
 {
     private enum PlayerState
@@ -30,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Toggles")]
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
-    public bool SetPlayerXToZ = false;
+    public bool setPlayerXToZ = false;
 
     void Start()
     {
@@ -44,20 +41,14 @@ public class PlayerMovement : MonoBehaviour
     {
         float moveX = Input.GetAxis("Horizontal");
         Walk(moveX);
+
     }
 
     private void Update()
     {
         PlayerStateMachine();
 
-        if (Input.GetButtonDown("Fire2"))
-        {
-            SetPlayerRotation(Input.GetAxis("Fire2"));
-            collision.ChangeAxis();
-            SetPlayerXToZ = !SetPlayerXToZ;
-        }
-
-        ChangeConstraints(!SetPlayerXToZ);
+        ChangeConstraints(!setPlayerXToZ);
     }
 
     private bool HasDash() => abilityDash != null && abilityDash.enabled;
@@ -163,17 +154,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void SetPlayerRotation(float f)
-    {
-        if (f > 0)
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + 90, 0));
-        else if (f < 0)
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y - 90, 0));
-    }
-
     private void Walk(float x)
     {
-        if (SetPlayerXToZ)
+        if (setPlayerXToZ)
         {
             x = -x;
         }
@@ -217,5 +200,15 @@ public class PlayerMovement : MonoBehaviour
     public float GetDirectionalAxis()
     {
         return rb.rotation.y;
+    }
+
+    public void SetPositionToWholeNumber(bool zAxis)
+    {
+        Vector3 currPos = transform.position;
+        
+        if (zAxis)
+            transform.position = new Vector3 (Mathf.Round(currPos.x), currPos.y, currPos.z );
+        else
+            transform.position = new Vector3(currPos.x, currPos.y, Mathf.Round(currPos.z));
     }
 }

@@ -107,7 +107,14 @@ GameObject:
   - component: {fileID: 1530116513355350230}
   - component: {fileID: 37948694124208434}
   - component: {fileID: 8165605216197733440}
-  - component: {fileID: 6559670481364262943}
+  - component: {fileID: 9011695558596295612}
+  - component: {fileID: 1462560716708943373}
+  - component: {fileID: 1091916191157951678}
+  - component: {fileID: 7941672495880326715}
+  - component: {fileID: 5936379280947062046}
+  - component: {fileID: 2978401658424423808}
+  - component: {fileID: 8105454978254235935}
+  - component: {fileID: 3733694029360898943}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -156,7 +163,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!136 &5590645596974872088
 CapsuleCollider:
@@ -165,7 +172,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7527523768161664772}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3143ccb15c02c4a44bf690416043634e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -224,8 +231,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   currPS: 2
-  moveSpeed: 5
-  maxWalkSpeed: 10
+  moveSpeed: 3
+  maxWalkSpeed: 6
   normalJumpForce: 5
   hasWallJumped: 0
   disableStateMachine: 0
@@ -269,9 +276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1986ba6ce67d042b4bf8b7750fd289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DynamicJump
-  fallMult: 2.5
-  shortHopMult: 2
---- !u!114 &6559670481364262943
+  fallMult: 6
+  shortHopMult: 4
+--- !u!114 &9011695558596295612
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -280,6 +287,132 @@ MonoBehaviour:
   m_GameObject: {fileID: 7527523768161664772}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb5b78435d94060468b61f4f06c7f736, type: 3}
+  m_Script: {fileID: 11500000, guid: bfcc1864e006f7c40bea848fbcf290c5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DirectionalPermutation
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalSwitcher
+  animal1_Reaper: {fileID: 0}
+  animal2_Bear: {fileID: 0}
+  animal3_Cheetah: {fileID: 0}
+  animal4_Frog: {fileID: 0}
+  animal5_Monkey: {fileID: 0}
+  animal6_Ant: {fileID: 0}
+  animal7_Eagle: {fileID: 0}
+--- !u!114 &1462560716708943373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c220cead91f82e340957a16e3e9a7e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Ant
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: -9095717837082945937, guid: 2b8fa87d6ed3e6746b45679294dda2cd, type: 3}
+  canDash: 0
+  canWallJump: 0
+--- !u!114 &1091916191157951678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edc77b74c7d75ea488881f02146fd4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bear
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: -2413806693520163455, guid: 1efa5ccbcbb801340b3e3c9068a2353a, type: 3}
+  canDash: 0
+  canWallJump: 0
+--- !u!114 &7941672495880326715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 341feae001f1ec547b6f2c5ca3d6f798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cheetah
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: 3625043607559282579, guid: da0d21b273b4a044cac579dc7cf8e879, type: 3}
+  canDash: 1
+  canWallJump: 0
+--- !u!114 &5936379280947062046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6797b1625a05d9243a2275e02419fc89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Eagle
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: -712631045867808456, guid: c751aa69e91615e4495a119629410517, type: 3}
+  canDash: 0
+  canWallJump: 0
+--- !u!114 &2978401658424423808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd73e61d8a38e04f94fdfcf948e67bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Frog
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: 7482667652216324306, guid: 769e8b52e75187f43be964494c38a604, type: 3}
+  canDash: 0
+  canWallJump: 0
+--- !u!114 &8105454978254235935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02af48514c4281648b81cfd0384e4a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Monkey
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: 7482667652216324306, guid: 7ecef4d2b80e7d14ebc87b4c504b02cf, type: 3}
+  canDash: 0
+  canWallJump: 1
+--- !u!114 &3733694029360898943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6780eaa4df917419955cf2da7befa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Reaper
+  moveSpeed: 5
+  jumpForce: 5
+  animalSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  canDash: 0
+  canWallJump: 0
