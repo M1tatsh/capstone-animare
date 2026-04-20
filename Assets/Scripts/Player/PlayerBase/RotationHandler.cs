@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class PlayerRotationHandler : MonoBehaviour
+public class RotationHandler : MonoBehaviour
 {
     public LayerMask layerMask;
     private PlayerMovement player;
     private Rigidbody rb;
+    private float amountRotateRight = -90;
+    private float amountRotateLeft = 90;
 
     void Start()
     {
@@ -20,9 +22,9 @@ public class PlayerRotationHandler : MonoBehaviour
         Vector3 velocity = transform.InverseTransformDirection(rb.linearVelocity);
 
         if (velocity.x < 0)
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + 90, 0));
+            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateLeft, 0));
         else if (velocity.x > 0)
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y - 90, 0));
+            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateRight, 0));
 
         player.setPlayerXToZ = !player.setPlayerXToZ;
         gameObject.GetComponent<PlayerCollision>().ChangeAxis();
@@ -89,10 +91,10 @@ public class PlayerRotationHandler : MonoBehaviour
     private float GetNearestHalf(float number)
     {
         float difference = Mathf.Abs(number) % 1.0f;
-        float correctedValue = difference - 0.5f;
+        float amountToHalf = difference - 0.5f;
 
 
-        return number - correctedValue;
+        return number - amountToHalf;
     }
 
     public bool CheckAxis(CameraTriggerVolume.Axis axis)

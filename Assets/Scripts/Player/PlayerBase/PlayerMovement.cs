@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
     public bool setPlayerXToZ = false;
+    public bool isFacingLeft = false;
+
 
     void Start()
     {
@@ -41,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float moveX = Input.GetAxis("Horizontal");
         Walk(moveX);
-
+        FaceDirection(moveX);
     }
 
     private void Update()
@@ -49,6 +51,15 @@ public class PlayerMovement : MonoBehaviour
         PlayerStateMachine();
 
         ChangeConstraints(!setPlayerXToZ);
+
+        if (isFacingLeft)
+        {
+            gameObject.GetComponentInChildren<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
+        }
     }
 
     private bool HasDash() => abilityDash != null && abilityDash.enabled;
@@ -161,11 +172,15 @@ public class PlayerMovement : MonoBehaviour
             x = -x;
         }
 
+        /* commented this out because it stops player movement completely if you are against a wall until you tranform to monkey... not sure why it's needed in the first place?
+         * if I'm missing something and it's necessary, just fix it by breaking it up into 'if, else if' statement instead of just one OR conditional.
+         * 
         if (currPS != PlayerState.Wall)
         {
-            if ((x > 0 && OnWallRight()) || (x < 0 && OnWallLeft()))
+            if ((x > 0 && OnWallRight()) || (x < 0 && OnWallLeft()))  
                 x = 0;
         }
+        */
 
         if (!hasWallJumped && !abilityDash.isDashing)
         {
@@ -210,5 +225,17 @@ public class PlayerMovement : MonoBehaviour
             transform.position = new Vector3 (Mathf.Round(currPos.x), currPos.y, currPos.z );
         else
             transform.position = new Vector3(currPos.x, currPos.y, Mathf.Round(currPos.z));
+    }
+
+    private void FaceDirection(float direction)
+    {
+        if (direction > 0)
+        {
+            isFacingLeft = false;
+        }
+        if (direction < 0)
+        {
+            isFacingLeft = true;
+        }
     }
 }

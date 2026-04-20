@@ -12,9 +12,9 @@ public class CameraTriggerVolume : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.GetComponent<PlayerMovement>() != null && other.GetComponent<PlayerRotationHandler>().CheckAxis(axis))
+        if(other.GetComponent<RotationHandler>() != null && other.GetComponent<RotationHandler>().CheckAxis(axis))
         {
-            other.GetComponent<PlayerRotationHandler>().SetRotation();
+            other.GetComponent<RotationHandler>().SetRotation();
         }
     }
 }
