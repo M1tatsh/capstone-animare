@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 3908818575878161543}
   - component: {fileID: 1339946242836874895}
   - component: {fileID: 8059361009534547427}
+  - component: {fileID: 4800348726935060657}
   - component: {fileID: 1777187637301392921}
   - component: {fileID: 6319168385726925458}
   m_Layer: 0
   m_Name: CarryBlock
-  m_TagString: Untagged
+  m_TagString: Carryable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,7 +44,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7998932155152516021}
   serializedVersion: 5
-  m_Mass: 99999
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -83,6 +84,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.72, y: 0.72, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4800348726935060657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998932155152516021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568747dc561814948b6e20e7e5bbed67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlockCarryable
+  stayInPlace: 0
+  rb: {fileID: 0}
 --- !u!212 &1777187637301392921
 SpriteRenderer:
   serializedVersion: 2
@@ -133,7 +148,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 60acaf77ebb74814588e44deb1175fc6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7264151, g: 0.07195621, b: 0.6184293, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

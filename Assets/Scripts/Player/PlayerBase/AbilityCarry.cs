@@ -14,7 +14,6 @@ public class AbilityCarry : MonoBehaviour
 
     private Color debugCollisionColor = Color.yellow;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Fire3") && playerWithinRange && transform.childCount <= 1)

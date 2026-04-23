@@ -3,7 +3,6 @@ using UnityEngine;
 public class BlockCarryable : BlockBase
 {
     private Vector3 offset;
-    private float lagTime;
 
     void Start()
     {
@@ -40,17 +39,5 @@ public class BlockCarryable : BlockBase
         Vector3 dir = facingRight ? Vector3.right : Vector3.left;
         rb.linearVelocity += transform.InverseTransformDirection(dir.normalized * throwSpeed);
 
-        print(rb.linearVelocity);
-
-    }
-
-    private void SetConstraints(bool def)
-    {
-        if (def)
-            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-        else
-        {
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-        }
     }
 }

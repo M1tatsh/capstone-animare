@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Toggles")]
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
-    public bool setPlayerXToZ = false;
+    public bool setPlayerXToZ;
     public bool isFacingLeft = false;
 
 
@@ -37,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
         collision = GetComponent<PlayerCollision>();
         abilityDash = GetComponent<AbilityDash>();
         abilityWallJump = GetComponent<AbilityWallJump>();
+        setPlayerXToZ = (transform.rotation.eulerAngles.y == Mathf.Abs(90f) || transform.rotation.eulerAngles.y == Mathf.Abs(270f)) ? true : false;
+        print(transform.rotation.eulerAngles.y);
     }
 
     void FixedUpdate()
