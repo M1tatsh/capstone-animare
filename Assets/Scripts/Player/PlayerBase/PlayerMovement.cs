@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerCollision collision;
     private AbilityDash abilityDash;
     private AbilityWallJump abilityWallJump;
+    private AbilityDoubleJump abilityDoubleJump;
 
     [Header("Stats")]
     public float moveSpeed = 5f;
@@ -30,13 +31,13 @@ public class PlayerMovement : MonoBehaviour
     public bool setPlayerXToZ;
     public bool isFacingLeft = false;
 
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         collision = GetComponent<PlayerCollision>();
         abilityDash = GetComponent<AbilityDash>();
         abilityWallJump = GetComponent<AbilityWallJump>();
+        abilityDoubleJump = GetComponent<AbilityDoubleJump>();
         setPlayerXToZ = (transform.rotation.eulerAngles.y == Mathf.Abs(90f) || transform.rotation.eulerAngles.y == Mathf.Abs(270f)) ? true : false;
         print(transform.rotation.eulerAngles.y);
     }
@@ -66,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool HasDash() => abilityDash != null && abilityDash.enabled;
     private bool HasWallJump() => abilityWallJump != null && abilityWallJump.enabled;
+    private bool HasDoubleJump() => abilityDoubleJump != null && abilityDoubleJump.enabled;
 
     private void PlayerStateMachine()
     {
@@ -93,6 +95,10 @@ public class PlayerMovement : MonoBehaviour
 
                     if (HasDash() && Input.GetButtonDown("Fire3"))
                         SetPlayerState(PlayerState.Dashing);
+
+                    if (Input.GetButtonDown("Jump") && HasDoubleJump())
+                        abilityDoubleJump.TryDoubleJump();
+
                     break;
 
                 case PlayerState.Airborn:
@@ -104,6 +110,10 @@ public class PlayerMovement : MonoBehaviour
 
                     if (HasDash() && Input.GetButtonDown("Fire3"))
                         SetPlayerState(PlayerState.Dashing);
+
+                    if (Input.GetButtonDown("Jump") && HasDoubleJump())
+                        abilityDoubleJump.TryDoubleJump();
+
                     break;
 
                 case PlayerState.Wall:
@@ -174,16 +184,6 @@ public class PlayerMovement : MonoBehaviour
             x = -x;
         }
 
-        /* commented this out because it stops player movement completely if you are against a wall until you tranform to monkey... not sure why it's needed in the first place?
-         * if I'm missing something and it's necessary, just fix it by breaking it up into 'if, else if' statement instead of just one OR conditional.
-         * 
-        if (currPS != PlayerState.Wall)
-        {
-            if ((x > 0 && OnWallRight()) || (x < 0 && OnWallLeft()))  
-                x = 0;
-        }
-        */
-
         if (!hasWallJumped && !abilityDash.isDashing)
         {
             rb.linearVelocity = transform.InverseTransformDirection(new Vector3(x * moveSpeed, rb.linearVelocity.y, 0));
@@ -211,7 +211,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
-            
     }
 
     public float GetDirectionalAxis()
@@ -222,9 +221,9 @@ public class PlayerMovement : MonoBehaviour
     public void SetPositionToWholeNumber(bool zAxis)
     {
         Vector3 currPos = transform.position;
-        
+
         if (zAxis)
-            transform.position = new Vector3 (Mathf.Round(currPos.x), currPos.y, currPos.z );
+            transform.position = new Vector3(Mathf.Round(currPos.x), currPos.y, currPos.z);
         else
             transform.position = new Vector3(currPos.x, currPos.y, Mathf.Round(currPos.z));
     }

@@ -10,6 +10,10 @@ public abstract class AnimalBase : MonoBehaviour
     [Header("Abilities")]
     public bool canDash = false;
     public bool canWallJump = false;
+    public bool canCarry = false;
+    public bool canShrink = false;
+    public bool canDoubleJump = false;
+    public bool canGlide = false;
 
     public virtual void OnActivate(PlayerMovement player)
     {
@@ -37,6 +41,30 @@ public abstract class AnimalBase : MonoBehaviour
             player.hasWallJumped = false;
             player.disableStateMachine = false;
             wallJump.enabled = canWallJump;
+        }
+
+        AbilityCarry carry = player.GetComponent<AbilityCarry>();
+        if (carry != null)
+        {
+            carry.enabled = canCarry;
+        }
+
+        AbilityShrink shrink = player.GetComponent<AbilityShrink>();
+        if (shrink != null)
+        {
+            shrink.enabled = canShrink;
+        }
+
+        AbilityDoubleJump doubleJump = player.GetComponent<AbilityDoubleJump>();
+        if (doubleJump != null)
+        {
+            doubleJump.enabled = canDoubleJump;
+        }
+
+        AbilityGlide glide = player.GetComponent<AbilityGlide>();
+        if (glide != null)
+        {
+            glide.enabled = canGlide;
         }
     }
 

@@ -1,17 +1,12 @@
 using UnityEngine;
-using System.Collections;
 
 public class AbilityCarry : MonoBehaviour
 {
     GameObject currentItem = null;
-
     public float throwStrength = 5.0f;
-
     private bool playerWithinRange;
     public bool drawDebug = true;
-
     public Vector3 offset;
-
     private Color debugCollisionColor = Color.yellow;
 
     void Update()
@@ -24,8 +19,8 @@ public class AbilityCarry : MonoBehaviour
         {
             currentItem.GetComponent<BlockCarryable>().ThrowBlock
             (
-                GetPlayerIsOnZAXis(), 
-                PlayerIsFacingRight(), 
+                GetPlayerIsOnZAXis(),
+                PlayerIsFacingRight(),
                 throwStrength
             );
         }
@@ -35,6 +30,16 @@ public class AbilityCarry : MonoBehaviour
     {
         currentItem.GetComponent<BlockCarryable>().SetOffset(offset);
         currentItem.transform.SetParent(transform, false);
+    }
+
+    private void OnDisable()
+    {
+        if (currentItem != null)
+        {
+            currentItem.transform.SetParent(null);
+            currentItem = null;
+            playerWithinRange = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,12 +63,10 @@ public class AbilityCarry : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = debugCollisionColor;
-
         if (drawDebug)
         {
             Gizmos.DrawWireSphere(transform.position + offset, 0.05f);
         }
-
     }
 
     private bool GetPlayerIsOnZAXis()
