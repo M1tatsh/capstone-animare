@@ -105,7 +105,10 @@ GameObject:
   - component: {fileID: 8569546660874058766}
   - component: {fileID: 37948694124208434}
   - component: {fileID: 1530116513355350230}
+  - component: {fileID: 9062918222483982289}
+  - component: {fileID: 2876212419719224503}
   - component: {fileID: 8093983671496381783}
+  - component: {fileID: 2727223681636809752}
   - component: {fileID: 6277828595528957312}
   - component: {fileID: 1327136247893172563}
   - component: {fileID: 8165605216197733440}
@@ -237,8 +240,8 @@ MonoBehaviour:
   wallSide: 0
   collisionRadius: 0.11
   bottomOffset: {x: 0, y: -0.5, z: 0}
-  rightOffset: {x: 0.5, y: 0, z: 0}
-  leftOffset: {x: -0.5, y: 0, z: 0}
+  rightOffset: {x: -0.5, y: 0, z: 0}
+  leftOffset: {x: 0.5, y: 0, z: 0}
   drawDebug: 1
 --- !u!114 &1530116513355350230
 MonoBehaviour:
@@ -260,6 +263,31 @@ MonoBehaviour:
   disableStateMachine: 0
   setPlayerXToZ: 0
   isFacingLeft: 0
+--- !u!114 &9062918222483982289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f76e04586ec63934890955536ca7e84e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityShrink
+  shrinkRatio: 0.5
+--- !u!114 &2876212419719224503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfed68ba6a982dd44a0a3d14523bc62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityDoubleJump
 --- !u!114 &8093983671496381783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +303,20 @@ MonoBehaviour:
   dashSpeed: 20
   dashTime: 0.2
   isDashing: 0
+--- !u!114 &2727223681636809752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527523768161664772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ca0ef4514ea3343823632b9787a8da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityGlide
+  glideDuration: 3
+  glideGravity: 0.3
 --- !u!114 &6277828595528957312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +398,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &1091916191157951678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,6 +419,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &7941672495880326715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,6 +440,9 @@ MonoBehaviour:
   canDash: 1
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &5936379280947062046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +461,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &2978401658424423808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,6 +482,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &8105454978254235935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +503,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 1
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &3733694029360898943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +524,9 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
+  canShrink: 0
+  canDoubleJump: 0
+  canGlide: 0
 --- !u!114 &1025947857184915182
 MonoBehaviour:
   m_ObjectHideFlags: 0
