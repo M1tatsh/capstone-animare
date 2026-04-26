@@ -14,7 +14,7 @@ public class CameraTriggerVolume : MonoBehaviour
     {
         if(other.GetComponent<RotationHandler>() != null && other.GetComponent<RotationHandler>().CheckAxis(axis))
         {
-            other.GetComponent<RotationHandler>().SetRotation();
+            //other.GetComponent<RotationHandler>().RotatePlayer();
         }
     }
 }

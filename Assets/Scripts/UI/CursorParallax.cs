@@ -11,7 +11,6 @@ public class CursorParallax : MonoBehaviour
     void Start()
     {
         startPosition = transform.localPosition;
-        print(transform.localPosition);
     }
 
 

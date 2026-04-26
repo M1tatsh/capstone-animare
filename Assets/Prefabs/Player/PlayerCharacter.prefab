@@ -373,13 +373,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfcc1864e006f7c40bea848fbcf290c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalSwitcher
-  animal1_Reaper: {fileID: 0}
-  animal2_Bear: {fileID: 0}
-  animal3_Cheetah: {fileID: 0}
-  animal4_Frog: {fileID: 0}
-  animal5_Monkey: {fileID: 0}
-  animal6_Ant: {fileID: 0}
-  animal7_Eagle: {fileID: 0}
+  animal1_Reaper: {fileID: 3733694029360898943}
+  animal2_Bear: {fileID: 1091916191157951678}
+  animal3_Cheetah: {fileID: 7941672495880326715}
+  animal4_Frog: {fileID: 2978401658424423808}
+  animal5_Monkey: {fileID: 8105454978254235935}
+  animal6_Ant: {fileID: 1462560716708943373}
+  animal7_Eagle: {fileID: 5936379280947062046}
 --- !u!114 &1462560716708943373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,7 +398,7 @@ MonoBehaviour:
   canDash: 0
   canWallJump: 0
   canCarry: 0
-  canShrink: 0
+  canShrink: 1
   canDoubleJump: 0
   canGlide: 0
 --- !u!114 &1091916191157951678
@@ -418,7 +418,7 @@ MonoBehaviour:
   animalSprite: {fileID: -2413806693520163455, guid: 1efa5ccbcbb801340b3e3c9068a2353a, type: 3}
   canDash: 0
   canWallJump: 0
-  canCarry: 0
+  canCarry: 1
   canShrink: 0
   canDoubleJump: 0
   canGlide: 0
@@ -463,7 +463,7 @@ MonoBehaviour:
   canCarry: 0
   canShrink: 0
   canDoubleJump: 0
-  canGlide: 0
+  canGlide: 1
 --- !u!114 &2978401658424423808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   canWallJump: 0
   canCarry: 0
   canShrink: 0
-  canDoubleJump: 0
+  canDoubleJump: 1
   canGlide: 0
 --- !u!114 &8105454978254235935
 MonoBehaviour:

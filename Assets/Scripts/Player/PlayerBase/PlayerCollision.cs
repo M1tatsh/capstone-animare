@@ -14,11 +14,19 @@ public class PlayerCollision : MonoBehaviour
     [Header("Collision")]
     public float collisionRadius = 0.25f;
     public Vector3 bottomOffset, rightOffset, leftOffset;
+    private Vector3 reverseRightOffset, reverseLeftOffset;
     private Color debugCollisionColor = Color.red;
     public bool drawDebug = true;
 
+    void Start()
+    {
+
+    }
+
     void Update()
     {
+        ChangeAxis();
+
         onGround = Physics.CheckSphere(transform.position + bottomOffset, collisionRadius, groundLayer | wallLayer);
         onWallRight = Physics.CheckSphere(transform.position + transform.InverseTransformDirection(rightOffset), collisionRadius, wallLayer);
         onWallLeft = Physics.CheckSphere(transform.position + transform.InverseTransformDirection(leftOffset), collisionRadius, wallLayer);
@@ -40,9 +48,23 @@ public class PlayerCollision : MonoBehaviour
         }
     }
 
-    public void ChangeAxis()
+    private void ChangeAxis()
     {
-        rightOffset = -rightOffset;
-        leftOffset = -leftOffset;
+        if(GetComponent<PlayerMovement>().movingOnZ)
+        {
+            if (rightOffset.x >= 0 && leftOffset.x <= 0)
+            {
+            rightOffset = -rightOffset;
+            leftOffset = -leftOffset;
+            }
+        }
+        else
+        {
+            if (rightOffset.x <= 0 && leftOffset.x >= 0)
+            {
+                rightOffset = -rightOffset;
+                leftOffset = -leftOffset;
+            }
+        }
     }
 }

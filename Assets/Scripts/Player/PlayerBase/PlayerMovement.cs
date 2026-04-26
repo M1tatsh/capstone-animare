@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Toggles")]
     public bool hasWallJumped = false;
     public bool disableStateMachine = false;
-    public bool setPlayerXToZ;
+    public bool movingOnZ;
     public bool isFacingLeft = false;
 
     void Start()
@@ -38,8 +38,6 @@ public class PlayerMovement : MonoBehaviour
         abilityDash = GetComponent<AbilityDash>();
         abilityWallJump = GetComponent<AbilityWallJump>();
         abilityDoubleJump = GetComponent<AbilityDoubleJump>();
-        setPlayerXToZ = (transform.rotation.eulerAngles.y == Mathf.Abs(90f) || transform.rotation.eulerAngles.y == Mathf.Abs(270f)) ? true : false;
-        print(transform.rotation.eulerAngles.y);
     }
 
     void FixedUpdate()
@@ -51,9 +49,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        PlayerStateMachine();
+        SetMovingOnZ();
 
-        ChangeConstraints(!setPlayerXToZ);
+        ChangeConstraints(!movingOnZ);
+
+        PlayerStateMachine();
 
         if (isFacingLeft)
         {
@@ -179,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Walk(float x)
     {
-        if (setPlayerXToZ)
+        if (movingOnZ)
         {
             x = -x;
         }
@@ -238,5 +238,10 @@ public class PlayerMovement : MonoBehaviour
         {
             isFacingLeft = true;
         }
+    }
+
+    private void SetMovingOnZ()
+    {
+        movingOnZ = (transform.rotation.eulerAngles.y == Mathf.Abs(90f) || transform.rotation.eulerAngles.y == Mathf.Abs(270f)) ? true : false;
     }
 }

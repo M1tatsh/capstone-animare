@@ -13,23 +13,23 @@ public class RotationHandler : MonoBehaviour
         player = GetComponent<PlayerMovement>();
         rb = GetComponent<Rigidbody>();
     }
-    void Update()
-    {
-    }
 
-    public void SetRotation()
+    public void RotatePlayer(Vector3 positionAtRotation)
     {
+        transform.position = positionAtRotation;
+
         Vector3 velocity = transform.InverseTransformDirection(rb.linearVelocity);
 
         if (velocity.x < 0)
+        {
             rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateLeft, 0));
+        }
         else if (velocity.x > 0)
+        {
             rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateRight, 0));
+        }
 
-        player.setPlayerXToZ = !player.setPlayerXToZ;
-        gameObject.GetComponent<PlayerCollision>().ChangeAxis();
-
-        FixAxis();
+        //FixAxis();
     }
 
     public void FixAxis()
@@ -37,7 +37,7 @@ public class RotationHandler : MonoBehaviour
         bool currXIsNearHalf = IsNearHalf(transform.position.x);
         bool currZIsNearHalf = IsNearHalf(transform.position.z);
 
-        if (player.setPlayerXToZ)
+        if (player.movingOnZ)
         {
             if (currXIsNearHalf)
             {
@@ -58,7 +58,7 @@ public class RotationHandler : MonoBehaviour
                 );
             }
         }
-        else if (!player.setPlayerXToZ)
+        else if (!player.movingOnZ)
         {
             if (currZIsNearHalf)
             {
@@ -93,22 +93,26 @@ public class RotationHandler : MonoBehaviour
         float difference = Mathf.Abs(number) % 1.0f;
         float amountToHalf = difference - 0.5f;
 
-
         return number - amountToHalf;
     }
 
     public bool CheckAxis(CameraTriggerVolume.Axis axis)
     {
-        if (player.setPlayerXToZ && axis == CameraTriggerVolume.Axis.Z)
+        if (player.movingOnZ && axis == CameraTriggerVolume.Axis.Z)
         {
             return true;
         }
 
-        if (!player.setPlayerXToZ && axis == CameraTriggerVolume.Axis.X)
+        if (!player.movingOnZ && axis == CameraTriggerVolume.Axis.X)
         {
             return true;
         }
 
          return false;
+    }
+
+    public bool GetIsZAxis()
+    {
+        return player.movingOnZ;
     }
 }

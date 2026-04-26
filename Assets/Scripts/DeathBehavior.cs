@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class DeathBehavior : MonoBehaviour
 {
-    Vector3 startPosition = Vector3.zero;
+    Transform startPosition = null;
 
     private void Start()
     {
-        startPosition = transform.position;
+        startPosition = transform;
     }
     public void KillActor()
     {
-        transform.position = startPosition;
+        transform.position = startPosition.position;
+        transform.rotation = startPosition.rotation;
     }
 }

@@ -8,22 +8,22 @@ public class MoveToBlock : MonoBehaviour
     public float walkPointOffset = 0.5f;
     public float castDistance = 2.0f;
     public float moveTime = 1.0f;
-    bool targetIsNearby = false;
 
 
     void Update()
     {
-        targetIsNearby = Physics.Raycast(transform.position, Vector3.up, castDistance);
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, transform.up);
 
-        if (targetIsNearby)
+        if (Physics.Raycast(ray, out hit, castDistance))
         {
-            MoveTarget(GameObject.FindGameObjectWithTag("Player"), GetEndPoint());
+            MoveTarget(hit.rigidbody.gameObject, GetEndPoint());
         }
     }
 
     public void MoveTarget(GameObject player, Vector3 desiredPosition)
     {
-        if (!player.GetComponent<PlayerMovement>().setPlayerXToZ)
+        if (!player.GetComponent<PlayerMovement>().movingOnZ)
         {
             player.transform.position = new Vector3
             (
@@ -59,14 +59,12 @@ public class MoveToBlock : MonoBehaviour
         Gizmos.DrawLine(GetStartPoint(), GetStartPoint() + Vector3.up * castDistance);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(GetStartPoint(), path.target.position + transform.up * walkPointOffset);
+        Gizmos.DrawLine(GetStartPoint(), GetEndPoint());
 
     }
 
     private bool CheckTag(string tag)
     {
-
-
         return false;
     }
 }

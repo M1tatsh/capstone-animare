@@ -71,7 +71,7 @@ public class AbilityCarry : MonoBehaviour
 
     private bool GetPlayerIsOnZAXis()
     {
-        return GetComponent<PlayerMovement>().setPlayerXToZ;
+        return GetComponent<PlayerMovement>().movingOnZ;
     }
 
     private bool PlayerIsFacingRight()
