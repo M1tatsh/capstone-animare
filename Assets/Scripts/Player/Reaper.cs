@@ -1,2 +1,5 @@
 using UnityEngine;
-public class Reaper : AnimalBase { }
+public class Reaper : AnimalBase 
+{ 
+
+}

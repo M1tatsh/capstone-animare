@@ -5,7 +5,8 @@ public abstract class AnimalBase : MonoBehaviour
     [Header("Animal Stats")]
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
-    public Sprite animalSprite;
+    public float height = 0.49f;
+    public float colliderOffset = 0;
 
     [Header("Abilities")]
     public bool canDash = false;
@@ -15,14 +16,21 @@ public abstract class AnimalBase : MonoBehaviour
     public bool canDoubleJump = false;
     public bool canGlide = false;
 
+    [Header("Sprite Sheet")]
+    public RuntimeAnimatorController animator;
+    public Transform childTransform = null;
     public virtual void OnActivate(PlayerMovement player)
     {
+        SetColliderHeight(height);
+        SetSpriteOffset(colliderOffset);
+
         player.moveSpeed = moveSpeed;
         player.normalJumpForce = jumpForce;
 
-        SpriteRenderer sr = player.GetComponentInChildren<SpriteRenderer>();
-        if (sr != null && animalSprite != null)
-            sr.sprite = animalSprite;
+        if (GetComponentInChildren<Animator>() != null)
+        {
+           GetComponentInChildren<Animator>().runtimeAnimatorController = animator as RuntimeAnimatorController;
+        }
 
         AbilityDash dash = player.GetComponent<AbilityDash>();
         if (dash != null)
@@ -66,6 +74,20 @@ public abstract class AnimalBase : MonoBehaviour
         {
             glide.enabled = canGlide;
         }
+    }
+
+    protected virtual void SetColliderHeight(float colliderHeight)
+    {
+        if (TryGetComponent<CapsuleCollider>(out CapsuleCollider coll))
+        {
+            coll.height = colliderHeight;
+        }
+    }
+
+    protected virtual void SetSpriteOffset(float offset)
+    {
+        if (childTransform != null)
+            childTransform.localPosition = new Vector3(0, -offset, 0);
     }
 
     public virtual void OnDeactivate(PlayerMovement player) { }

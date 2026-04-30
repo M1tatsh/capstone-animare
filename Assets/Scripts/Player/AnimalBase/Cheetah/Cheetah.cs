@@ -1,3 +1,5 @@
 using UnityEngine;
 
-public class Cheetah : AnimalBase { }
+public class Cheetah : AnimalBase {
+
+}

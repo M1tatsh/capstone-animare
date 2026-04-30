@@ -1,2 +1,4 @@
 using UnityEngine;
-public class Ant : AnimalBase { }
+public class Ant : AnimalBase {
+
+}

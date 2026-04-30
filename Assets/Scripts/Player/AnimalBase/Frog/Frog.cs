@@ -1,2 +1,4 @@
 using UnityEngine;
-public class Frog : AnimalBase { }
+public class Frog : AnimalBase {
+
+}

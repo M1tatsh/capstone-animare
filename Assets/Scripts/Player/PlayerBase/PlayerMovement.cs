@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private AbilityDash abilityDash;
     private AbilityWallJump abilityWallJump;
     private AbilityDoubleJump abilityDoubleJump;
+    Animator myAnimator;
 
     [Header("Stats")]
     public float moveSpeed = 5f;
@@ -34,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        myAnimator = GetComponentInChildren<Animator>();
         collision = GetComponent<PlayerCollision>();
         abilityDash = GetComponent<AbilityDash>();
         abilityWallJump = GetComponent<AbilityWallJump>();
@@ -45,6 +48,10 @@ public class PlayerMovement : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         Walk(moveX);
         FaceDirection(moveX);
+
+        if (PlayerIsIdle()) 
+            myAnimator.SetBool("isWalking", false);
+
     }
 
     private void Update()
@@ -154,14 +161,19 @@ public class PlayerMovement : MonoBehaviour
             switch (currPS)
             {
                 case PlayerState.Grounded:
+                    myAnimator.SetBool("inAir", false);
+                    myAnimator.SetTrigger("Landed");
                     break;
                 case PlayerState.Jumping:
+                    myAnimator.SetTrigger("Jumped");
+
                     if (HasWallJump() && OnWallGeneric(OnWallLeft(), OnWallRight()))
                         abilityWallJump.Execute();
                     else
                         Jump(Vector3.up, normalJumpForce);
                     break;
                 case PlayerState.Airborn:
+                    myAnimator.SetBool("inAir", true);
                     break;
                 case PlayerState.Dashing:
                     if (HasDash())
@@ -179,6 +191,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Walk(float x)
     {
+        if (x != 0)
+        {
+            myAnimator.SetBool("isWalking", true);
+        }
+
         if (movingOnZ)
         {
             x = -x;
@@ -243,5 +260,15 @@ public class PlayerMovement : MonoBehaviour
     private void SetMovingOnZ()
     {
         movingOnZ = (transform.rotation.eulerAngles.y == Mathf.Abs(90f) || transform.rotation.eulerAngles.y == Mathf.Abs(270f)) ? true : false;
+    }
+
+    private bool PlayerIsIdle()
+    {
+        if (rb.linearVelocity == Vector3.zero)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -35,6 +35,7 @@ public class RadialSelection : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             SpawnRadialPart();
+            //GameController.SetGameSpeed(setGameSpeed);
         }
 
         if (Input.GetKey(KeyCode.LeftAlt))
@@ -45,11 +46,14 @@ public class RadialSelection : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.LeftAlt))
         {
             HideAndTriggerSelected();
+            //GameController.ResetGameSpeed();
         }
     }
 
     public void HideAndTriggerSelected()
     {
+        SoundManager.PlaySound(SoundType.TRANSFORM);
+
         OnPartSelected.Invoke(currentSelectedRadialPart);
         canvas.gameObject.SetActive(false);
     }
