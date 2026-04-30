@@ -45,7 +45,6 @@ public class RotateToAxis : MonoBehaviour
     {
         GetComponent<SphereCollider>().enabled = false;
         yield return new WaitWhile(() => triggerIsActive);
-        print("Now Active!");
         GetComponent<SphereCollider>().enabled = true;
 
     }

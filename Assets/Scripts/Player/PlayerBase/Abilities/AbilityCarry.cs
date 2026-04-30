@@ -7,7 +7,8 @@ public class AbilityCarry : MonoBehaviour
     private bool playerWithinRange;
     public bool drawDebug = true;
     public Vector3 offset;
-    private Color debugCollisionColor = Color.yellow;
+
+    Color debugCollisionColor = Color.yellow;
 
     void Update()
     {

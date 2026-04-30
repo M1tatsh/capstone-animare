@@ -3,10 +3,12 @@ using UnityEngine;
 public class BlockCarryable : BlockBase
 {
     private Vector3 offset;
+    public Transform targetParent;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        targetParent = FindAnyObjectByType<PlayerMovement>().transform;
     }
 
 
