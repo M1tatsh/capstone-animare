@@ -2,16 +2,21 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameObject mainMenu;
+    public GameObject pauseMenu;
+    public GameObject menuBackground;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape) && !mainMenu.activeInHierarchy)
+        {
+            PauseGame();
+        }
     }
 
     public static void SetGameSpeed(float speed)
@@ -23,5 +28,12 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         //Time.fixedDeltaTime = 1.0f;
+    }
+
+    public void PauseGame()
+    {
+        pauseMenu.SetActive(true);
+        menuBackground.SetActive(true);
+        SetGameSpeed(0);
     }
 }

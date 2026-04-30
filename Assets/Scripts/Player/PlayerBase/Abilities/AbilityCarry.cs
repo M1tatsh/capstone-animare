@@ -18,6 +18,7 @@ public class AbilityCarry : MonoBehaviour
         }
         else if (Input.GetButtonDown("Fire3") && currentItem != null)
         {
+            Debug.Log(currentItem.name);
             currentItem.GetComponent<BlockCarryable>().ThrowBlock
             (
                 GetPlayerIsOnZAXis(),

@@ -3,12 +3,10 @@ using UnityEngine;
 public class BlockCarryable : BlockBase
 {
     private Vector3 offset;
-    public Transform targetParent;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        targetParent = FindAnyObjectByType<PlayerMovement>().transform;
     }
 
 
@@ -16,8 +14,9 @@ public class BlockCarryable : BlockBase
     {
         if (transform.parent != null)
         {
-            transform.position = transform.parent.position + offset;
-            transform.rotation = transform.parent.rotation;
+            rb.useGravity = false;
+
+            transform.SetPositionAndRotation(transform.parent.position + offset, transform.parent.rotation);
         }
     }
 
@@ -29,6 +28,7 @@ public class BlockCarryable : BlockBase
     public void ThrowBlock(bool onZAxis, bool facingRight, float throwSpeed)
     {
         transform.SetParent(null);
+        rb.useGravity = true;
 
         if (onZAxis)
         {

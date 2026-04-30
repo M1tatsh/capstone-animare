@@ -6,7 +6,9 @@ public abstract class AnimalBase : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
     public float height = 0.49f;
-    public float colliderOffset = 0;
+    public float colliderOffset = 0.77f;
+    public float sphereColliderSize = 0f;
+    public Vector3 carryOffset = Vector3.zero;
 
     [Header("Abilities")]
     public bool canDash = false;
@@ -23,6 +25,7 @@ public abstract class AnimalBase : MonoBehaviour
     {
         SetColliderHeight(height);
         SetSpriteOffset(colliderOffset);
+        SetSphereColliderSize(sphereColliderSize);
 
         player.moveSpeed = moveSpeed;
         player.normalJumpForce = jumpForce;
@@ -55,6 +58,7 @@ public abstract class AnimalBase : MonoBehaviour
         if (carry != null)
         {
             carry.enabled = canCarry;
+            carry.offset = carryOffset;
         }
 
         AbilityShrink shrink = player.GetComponent<AbilityShrink>();
@@ -87,7 +91,15 @@ public abstract class AnimalBase : MonoBehaviour
     protected virtual void SetSpriteOffset(float offset)
     {
         if (childTransform != null)
-            childTransform.localPosition = new Vector3(0, -offset, 0);
+            childTransform.localPosition = new Vector3(0, offset, 0);
+    }
+
+    protected virtual void SetSphereColliderSize(float size)
+    {
+        if (TryGetComponent<SphereCollider>(out SphereCollider coll))
+        {
+            coll.radius = size;
+        }
     }
 
     public virtual void OnDeactivate(PlayerMovement player) { }

@@ -7,7 +7,14 @@ using Unity.Cinemachine;
 public class MainMenu : MonoBehaviour
 {
     public CinemachineCamera playCam;
-    public void PlayGame()
+    private AudioSource audioSource;
+
+    protected void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public virtual void PlayGame()
     {
         CameraManager.SwitchCamera(playCam);
 
@@ -18,5 +25,10 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("Quit");
         Application.Quit();
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        audioSource.PlayOneShot(sound);
     }
 }

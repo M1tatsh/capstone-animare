@@ -5,7 +5,8 @@ using UnityEngine;
 public enum SoundType
 {
     TRANSFORM,
-    JUMP
+    JUMP,
+    WALK
 }
 
 [RequireComponent(typeof(AudioSource))]

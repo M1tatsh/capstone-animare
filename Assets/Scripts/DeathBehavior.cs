@@ -10,6 +10,8 @@ public class DeathBehavior : MonoBehaviour
     }
     public void KillActor()
     {
+        Debug.Log(gameObject.name + " Killed");
+
         transform.position = startPosition.position;
         transform.rotation = startPosition.rotation;
     }
