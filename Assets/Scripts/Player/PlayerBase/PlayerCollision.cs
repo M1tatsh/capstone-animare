@@ -25,6 +25,8 @@ public class PlayerCollision : MonoBehaviour
 
     void Update()
     {
+        bottomOffset.y = -(GetComponent<CapsuleCollider>().height * GetComponent<CapsuleCollider>().radius);
+
         ChangeAxis();
 
         onGround = Physics.CheckSphere(transform.position + bottomOffset, collisionRadius, groundLayer | wallLayer);

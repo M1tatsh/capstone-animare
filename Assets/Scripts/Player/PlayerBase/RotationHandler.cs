@@ -5,8 +5,6 @@ public class RotationHandler : MonoBehaviour
     public LayerMask layerMask;
     private PlayerMovement player;
     private Rigidbody rb;
-    private float amountRotateRight = -90;
-    private float amountRotateLeft = 90;
 
     void Start()
     {

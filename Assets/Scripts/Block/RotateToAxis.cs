@@ -6,8 +6,8 @@ using UnityEngine;
 public class RotateToAxis : MonoBehaviour
 {
     public float verticalOffset = 1f;
-    public bool triggerIsActive = true;
-    public float deactiveTime = 10f;
+    private bool triggerIsActive = true;
+    private float deactiveTime = 1f;
 
     public bool flipperBool = false;
 
