@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4800348726935060657}
   - component: {fileID: 1777187637301392921}
   - component: {fileID: 6319168385726925458}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CarryBlock
   m_TagString: Carryable
   m_Icon: {fileID: 0}
