@@ -6,7 +6,7 @@ using UnityEngine;
 public class RotateToAxis : MonoBehaviour
 {
     public float verticalOffset = 1f;
-    public bool triggerIsActive = false;
+    public bool triggerIsActive = true;
     public float deactiveTime = 10f;
 
     public bool flipperBool = false;
@@ -59,9 +59,8 @@ public class RotateToAxis : MonoBehaviour
 
     private IEnumerator DisableTrigger(float time)
     {
-        //yield return new WaitWhile(() => triggerIsActive);
-        yield return new WaitForSeconds(time);
-        triggerIsActive = true;
+        yield return new WaitWhile(() => !triggerIsActive);
+        //yield return new WaitForSeconds(time);
 
     }
 

@@ -17,6 +17,7 @@ public class RadialSelection : MonoBehaviour
     public UnityEvent<int> OnPartSelected;
 
     static float ANGLE_BETWEEN_PART = 10f;
+
     private List<GameObject> spawnedParts = new List<GameObject>();
     private GameObject spawnedCenterPart;
     private int currentSelectedRadialPart = -1;
