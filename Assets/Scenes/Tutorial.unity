@@ -3358,8 +3358,24 @@ PrefabInstance:
       value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1091916191157951678, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 749822597}
+    - target: {fileID: 1091916191157951678, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1091916191157951678, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
       value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1462560716708943373, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 749822597}
+    - target: {fileID: 1462560716708943373, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1462560716708943373, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
@@ -3418,6 +3434,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2978401658424423808, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 749822597}
+    - target: {fileID: 2978401658424423808, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2978401658424423808, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
       value: 0.77
       objectReference: {fileID: 0}
@@ -3438,8 +3462,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3733694029360898943, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3733694029360898943, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3733694029360898943, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
       value: 0.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936379280947062046, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 749822597}
+    - target: {fileID: 5936379280947062046, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5936379280947062046, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
@@ -3521,6 +3561,14 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 9100000, guid: 091393661362b2f4bbd44dd511f31440, type: 2}
+    - target: {fileID: 8105454978254235935, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: childTransform
+      value: 
+      objectReference: {fileID: 749822597}
+    - target: {fileID: 8105454978254235935, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
+      propertyPath: colliderOffset
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8105454978254235935, guid: 294e6172d78de6e46b60a99103aad2b0, type: 3}
       propertyPath: sphereColliderSize
       value: 0.77
@@ -19431,10 +19479,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab9885d87834d314eb8a5369b993e8ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  numberOfRadialPart: 7
+  numberOfRadialPart: 6
   radialPartPrefab: {fileID: 4622679500637621295, guid: 8b7f1d6ee371a2f4091967cc1b4ad8e4, type: 3}
+  centerPartPrefab: {fileID: 4622679500637621295, guid: 903c68989a0d665478b845947a73c2a6, type: 3}
   cursorTransform: {fileID: 0}
-  setGameSpeed: 0.03
+  slowTimeScale: 0.1
+  resumeDelay: 0.2
   OnPartSelected:
     m_PersistentCalls:
       m_Calls:
@@ -35000,6 +35050,14 @@ PrefabInstance:
     - target: {fileID: 1339946242836874895, guid: 24b15de04040bc1499786a4e972e5791, type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777187637301392921, guid: 24b15de04040bc1499786a4e972e5791, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777187637301392921, guid: 24b15de04040bc1499786a4e972e5791, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1069807661
       objectReference: {fileID: 0}
     - target: {fileID: 3908818575878161543, guid: 24b15de04040bc1499786a4e972e5791, type: 3}
       propertyPath: m_LocalPosition.x
