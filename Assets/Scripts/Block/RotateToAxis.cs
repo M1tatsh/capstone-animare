@@ -7,6 +7,9 @@ public class RotateToAxis : MonoBehaviour
 {
     public float verticalOffset = 1f;
     public bool triggerIsActive = false;
+    public float deactiveTime = 10f;
+
+    public bool flipperBool = false;
 
     void Start()
     {
@@ -25,11 +28,24 @@ public class RotateToAxis : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out RotationHandler rt))
+        if (other.TryGetComponent(out RotationHandler rt) && triggerIsActive)
         {
-            triggerIsActive = true;
-            rt.RotatePlayer(GetPosition());
-            StartCoroutine(DisableTrigger());
+            triggerIsActive = false;
+
+            if (!flipperBool)
+            {
+                rt.RotatePlayer(GetPosition(), -90f);
+
+                
+            }
+            else if(flipperBool)
+            {
+                rt.RotatePlayer(GetPosition(), 90f);
+            }
+
+            flipperBool = !flipperBool;
+            StopCoroutine(DisableTrigger(0));
+            StartCoroutine(DisableTrigger(deactiveTime));
         }
     }
 
@@ -37,15 +53,15 @@ public class RotateToAxis : MonoBehaviour
     {
         if (other.gameObject.GetComponent<RotationHandler>() != null)
         {
-            triggerIsActive = false;
+            triggerIsActive = true;
         }
     }
 
-    private IEnumerator DisableTrigger()
+    private IEnumerator DisableTrigger(float time)
     {
-        GetComponent<SphereCollider>().enabled = false;
-        yield return new WaitWhile(() => triggerIsActive);
-        GetComponent<SphereCollider>().enabled = true;
+        //yield return new WaitWhile(() => triggerIsActive);
+        yield return new WaitForSeconds(time);
+        triggerIsActive = true;
 
     }
 

@@ -6,7 +6,7 @@ public abstract class AnimalBase : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
     public float height = 0.49f;
-    public float colliderOffset = 0.77f;
+    public float colliderOffset = 0;
     public float sphereColliderSize = 0f;
     public Vector3 carryOffset = Vector3.zero;
 
