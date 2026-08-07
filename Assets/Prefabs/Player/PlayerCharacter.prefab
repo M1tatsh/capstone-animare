@@ -281,7 +281,7 @@ MonoBehaviour:
   currPS: 2
   moveSpeed: 3
   maxWalkSpeed: 6
-  normalJumpForce: 5
+  normalJumpForce: 7
   hasWallJumped: 0
   disableStateMachine: 0
   movingOnZ: 0
@@ -410,12 +410,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reaper
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 0
   canCarry: 0
   canShrink: 0
   canDoubleJump: 0
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &1091916191157951678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,12 +436,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bear
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 0
   canCarry: 1
   canShrink: 0
   canDoubleJump: 0
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &7941672495880326715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,12 +462,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cheetah
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 1
   canWallJump: 0
   canCarry: 0
   canShrink: 0
   canDoubleJump: 0
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &8105454978254235935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,12 +488,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Monkey
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 1
   canCarry: 0
   canShrink: 0
   canDoubleJump: 0
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &2978401658424423808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,12 +514,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Frog
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 0
   canCarry: 0
   canShrink: 0
   canDoubleJump: 1
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &1462560716708943373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -510,12 +540,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ant
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 0
   canCarry: 0
   canShrink: 1
   canDoubleJump: 0
   canGlide: 0
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &5936379280947062046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -530,12 +566,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Eagle
   moveSpeed: 5
   jumpForce: 5
+  height: 0.49
+  colliderOffset: 0.77
+  sphereColliderSize: 0
+  carryOffset: {x: 0, y: 0, z: 0}
   canDash: 0
   canWallJump: 0
   canCarry: 0
   canShrink: 0
   canDoubleJump: 0
   canGlide: 1
+  animator: {fileID: 0}
+  childTransform: {fileID: 0}
 --- !u!114 &1025947857184915182
 MonoBehaviour:
   m_ObjectHideFlags: 0
