@@ -19,10 +19,10 @@ public class PlatformManager : MonoBehaviour
 
     private float degree = 0;
 
-    //platforms in the level
+    [Tooltip("Platforms in the level")]
     public Transform Platforms;
 
-    //background objects in the level
+    [Tooltip("Background objects in the level")]
     public Transform Buildings;
 
     [Tooltip("Cube object with its mesh turned off. " +
@@ -51,7 +51,7 @@ public class PlatformManager : MonoBehaviour
 
     private void Start()
     {
-        //Define directional and cache the playermovement scripts
+        //Define directional and cache PlayerMovement.
         facingDirection = FacingDirection.Front;
         playerMove = Player.GetComponent<PlayerMovement>();
         UpdateLevel(true);
@@ -74,6 +74,14 @@ public class PlatformManager : MonoBehaviour
 
         if(Input.GetButton("Fire2"))
         {
+            if(OnInvisibleCube())
+            {
+                MovePlayerDepthToClosestPlatform();
+            }
+            lastDirection = facingDirection;
+            facingDirection = RotateDirectionRight();
+            degree -= 90f;
+            UpdateLevel(false);
 
         }
     }

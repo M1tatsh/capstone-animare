@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Stats")]
     public float moveSpeed = 5f;
     public float maxWalkSpeed = 10f;
-    public float normalJumpForce = 7f;
+    public float normalJumpForce = 8f;
 
     [Header("Toggles")]
     public bool hasWallJumped = false;
