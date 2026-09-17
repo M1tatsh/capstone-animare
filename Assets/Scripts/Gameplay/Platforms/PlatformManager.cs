@@ -52,6 +52,7 @@ public class PlatformManager : MonoBehaviour
     private void Start()
     {
         //Define directional and cache the playermovement scripts
+        Player = GameObject.FindWithTag("Player");
         facingDirection = FacingDirection.Front;
         playerMove = Player.GetComponent<PlayerMovement>();
         UpdateLevel(true);
