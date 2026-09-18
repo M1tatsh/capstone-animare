@@ -32,6 +32,24 @@
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RotateWorldLeft",
+                    "type": "Button",
+                    "id": "59a6b320-0d4c-4a94-bf8d-efa7299c21c1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateWorldRight",
+                    "type": "Button",
+                    "id": "268bc8a8-010d-46b5-b4a0-ec2ca65e7292",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -109,6 +127,28 @@
                     "processors": "",
                     "groups": ";Keyboard",
                     "action": "TransformMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07001fcd-ae02-45bb-b5a7-187027983bff",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateWorldLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbbb3700-691b-47e5-af83-90b1f2214dd4",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateWorldRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

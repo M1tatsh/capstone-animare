@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
+using Gameplay.Player;
 
 public class AbilityWallJump : MonoBehaviour
 {
@@ -11,13 +12,13 @@ public class AbilityWallJump : MonoBehaviour
 
     private Rigidbody rb;
     private PlayerMovement player;
-    private PlayerCollision collision;
+    //private PlayerCollision collision;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         player = GetComponent<PlayerMovement>();
-        collision = GetComponent<PlayerCollision>();
+        //collision = GetComponent<PlayerCollision>();
     }
 
     public void WallSlide()
@@ -25,13 +26,14 @@ public class AbilityWallJump : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, -slideForce, rb.linearVelocity.z);
     }
 
+    /*
     public void Execute()
     {
         StopCoroutine(DisableMovement());
         StartCoroutine(DisableMovement());
 
         Vector3 wallDir;
-
+        
         if (player.movingOnZ)
             wallDir = collision.onWallRight ? Vector3.right : Vector3.left;
         else
@@ -39,6 +41,7 @@ public class AbilityWallJump : MonoBehaviour
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, 0);
         rb.linearVelocity += transform.InverseTransformDirection((Vector3.up / 1.5f + wallDir / 1.5f) * wallJumpForce);
+        
     }
 
     private IEnumerator DisableMovement()
@@ -49,4 +52,5 @@ public class AbilityWallJump : MonoBehaviour
         player.hasWallJumped = false;
         player.disableStateMachine = false;
     }
+    */
 }

@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections;
+using Gameplay.Player;
 
 public class MoveToBlock : MonoBehaviour
-{
+{   /*
     public WalkPath path = new WalkPath();
 
     public float walkPointOffset = 0.5f;
     public float castDistance = 2.0f;
     public float moveTime = 1.0f;
 
-
+    
     void Update()
     {
         RaycastHit hit;
@@ -68,7 +69,8 @@ public class MoveToBlock : MonoBehaviour
         return false;
     }
 }
-
+*/
+}
 [System.Serializable]
 
 public class WalkPath
@@ -76,3 +78,4 @@ public class WalkPath
     public Transform target;
     public bool active = true;
 }
+

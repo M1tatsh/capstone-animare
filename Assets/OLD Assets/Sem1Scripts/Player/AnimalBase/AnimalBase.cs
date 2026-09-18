@@ -1,4 +1,5 @@
 using UnityEngine;
+using Gameplay.Player;
 
 public abstract class AnimalBase : MonoBehaviour
 {
@@ -27,8 +28,8 @@ public abstract class AnimalBase : MonoBehaviour
         SetSpriteOffset(colliderOffset);
         SetSphereColliderSize(sphereColliderSize);
 
-        player.moveSpeed = moveSpeed;
-        player.normalJumpForce = jumpForce;
+        player.MoveSpeed = moveSpeed;
+        player.JumpForce = jumpForce;
 
         if (GetComponentInChildren<Animator>() != null)
         {
@@ -40,8 +41,8 @@ public abstract class AnimalBase : MonoBehaviour
         {
             dash.StopAllCoroutines();
             dash.isDashing = false;
-            player.hasWallJumped = false;
-            player.disableStateMachine = false;
+            //player.hasWallJumped = false;
+            //player.disableStateMachine = false;
             dash.enabled = canDash;
         }
 
@@ -49,8 +50,8 @@ public abstract class AnimalBase : MonoBehaviour
         if (wallJump != null)
         {
             wallJump.StopAllCoroutines();
-            player.hasWallJumped = false;
-            player.disableStateMachine = false;
+            //player.hasWallJumped = false;
+            //player.disableStateMachine = false;
             wallJump.enabled = canWallJump;
         }
 

@@ -5,14 +5,14 @@ public class AbilityGlide : MonoBehaviour
     public float glideDuration = 3f;
     public float glideGravity = 0.5f;
     private Rigidbody rb;
-    private PlayerCollision collision;
-    private bool isGliding = false;
-    private float glideTimer = 0f;
-
+    //private PlayerCollision collision;
+    //private bool isGliding = false;
+    //private float glideTimer = 0f;
+    /*
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody>();
-        collision = GetComponent<PlayerCollision>();
+        //collision = GetComponent<PlayerCollision>();
         isGliding = false;
         glideTimer = 0f;
     }
@@ -58,4 +58,5 @@ public class AbilityGlide : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, -glideGravity, rb.linearVelocity.z);
         }
     }
+    */
 }

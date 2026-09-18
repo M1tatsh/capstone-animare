@@ -10,12 +10,14 @@ namespace Gameplay.Player
         {
             [SerializeField][Tooltip("Attach the player prefab to spawn in the scene.")] private GameObject playerPrefab;
 
-            void Start()
+            void Awake()
             {
                 GetComponent<MeshRenderer>().enabled = false;
                 
                 GameObject player = Instantiate(playerPrefab);
                 player.transform.position = transform.position;
+
+                FindAnyObjectByType<Camera>().transform.SetParent(player.transform);
             }
         }
 }

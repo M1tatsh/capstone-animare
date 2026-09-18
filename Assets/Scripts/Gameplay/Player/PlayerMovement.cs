@@ -1,28 +1,47 @@
 using System.Collections;
 using UnityEngine;
+using static Gameplay.Mechanics.PlatformManager;
 
 
 namespace Gameplay.Player
 {
     /// <summary>
     /// Handles player movement data and provides public methods for actions like walking, dashing, and jumping.
+    /// Pass any data to this class that involves manipulating an object's rigidbody.
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
+        #region variables
         //Stats
         [SerializeField]
         private float moveSpeed, maxMoveSpeed, jumpForce, maxJumpVelocity;
         [SerializeField] private float gravityForce = -20f;
         [SerializeField] private float cutJumpSpeed = -1f;
+        [SerializeField] private float rotationSpeed = 8f;
+        private float degree = 0;
+
         private Rigidbody rb;
 
-        [SerializeField] private float jumpTime = 0.4f;
+        //[SerializeField] private float jumpTime = 0.4f;
 
         private bool isJumpPressed = false;
         private bool isJumpReleased = false;
 
-
         private CollisionCheck collisionCheck;
+
+        private FacingDirection myFacingDirection;
+
+        #endregion
+
+
+        public FacingDirection CmdFacingDirection
+        {
+            set
+            {
+                myFacingDirection = value;
+            }
+
+        }
 
         void Awake()
         {
@@ -33,15 +52,45 @@ namespace Gameplay.Player
         /// <summary>
         /// Simulates 1-D movement along the x-axis by added velocity to the object's rigidbody velocity.
         /// The values are clamped by a local variable to cap the max speed of the object.
+        /// Automatically handles logic for determining when the player should move on x or z axis.
         /// </summary>
-        /// <param name="velocity">Direction to move based on Vector3 values.</param>
-        public void Walk(float velocity)
+        /// <param name="direction">Direction to move based on Vector3 values.</param>
+        public void Walk(float direction)
         {
-            rb.linearVelocity = new Vector3(
-                Mathf.Clamp(velocity * moveSpeed, -maxMoveSpeed, maxMoveSpeed),
-                rb.linearVelocity.y,
-                rb.linearVelocity.z
-            );
+            if(myFacingDirection == FacingDirection.Front)
+            {
+                rb.linearVelocity = new Vector3(
+                    Mathf.Clamp(direction * moveSpeed, -maxMoveSpeed, maxMoveSpeed),
+                    rb.linearVelocity.y,
+                    rb.linearVelocity.z
+                );
+            }
+            else if (myFacingDirection == FacingDirection.Back)
+            {
+                rb.linearVelocity = new Vector3(
+                    Mathf.Clamp(-direction * moveSpeed, -maxMoveSpeed, maxMoveSpeed),
+                    rb.linearVelocity.y,
+                    rb.linearVelocity.z
+                );
+            }
+            else if (myFacingDirection == FacingDirection.Right)
+            {
+                rb.linearVelocity = new Vector3(
+                    rb.linearVelocity.x,
+                    rb.linearVelocity.y,
+                    Mathf.Clamp(direction * moveSpeed, -maxMoveSpeed, maxMoveSpeed)
+                );
+            }
+            else if (myFacingDirection == FacingDirection.Left)
+            {
+                rb.linearVelocity = new Vector3(
+                    rb.linearVelocity.x,
+                    rb.linearVelocity.y,
+                    Mathf.Clamp(-direction * moveSpeed, -maxMoveSpeed, maxMoveSpeed)
+                );
+            }
+
+
         }
 
         /// <summary>
@@ -80,6 +129,13 @@ namespace Gameplay.Player
             }
             
         }
+        public void UpdateToFacingDirection(FacingDirection newDirection, float angle)
+        {
+
+            myFacingDirection = newDirection;
+            degree = angle;
+
+        }
 
         /// <summary>
         /// Applies a stronger gravity force on the player while they are not on the ground.
@@ -92,6 +148,14 @@ namespace Gameplay.Player
             }
         }
 
+        /// <summary>
+        /// Rotates the character based on amount of degrees in euler angles.
+        /// </summary>
+        private void HandleRotation()
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, degree, 0), rotationSpeed * Time.deltaTime);
+        }
+
         void FixedUpdate()
         {
             if (isJumpPressed && collisionCheck.IsGrounded)
@@ -101,6 +165,7 @@ namespace Gameplay.Player
             }
                 
             HandleGravity();
+            HandleRotation();
         }
 
         /*
@@ -119,13 +184,18 @@ namespace Gameplay.Player
         public float MoveSpeed
         {
             get { return moveSpeed; }
-            private set { moveSpeed = value; }
+            set { moveSpeed = value; }
         }
 
         public float JumpForce
         {
             get { return JumpForce; }
-            private set { JumpForce = value; }
+            set { JumpForce = value; }
+        }
+        public float Degree
+        {
+            get { return degree; }
+            set { degree = value; }
         }
 
         public bool IsJumpPressed
@@ -133,10 +203,17 @@ namespace Gameplay.Player
             get { return isJumpPressed; }
             set { isJumpPressed = value; }
         }
+
         public bool IsJumpReleased
         {
             get { return isJumpReleased; }
             set { isJumpReleased = value; }
+        }
+
+        public FacingDirection MyFacingDirection
+        {
+            get { return myFacingDirection; }
+            set { myFacingDirection = value; }
         }
         #endregion
 

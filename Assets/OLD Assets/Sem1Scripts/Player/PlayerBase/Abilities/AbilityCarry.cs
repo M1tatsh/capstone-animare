@@ -1,5 +1,7 @@
 using UnityEngine;
+using Gameplay.Player;
 
+//BROKEN PLEASE FIX OR THROW AWAY
 public class AbilityCarry : MonoBehaviour
 {
     GameObject currentItem = null;
@@ -73,11 +75,13 @@ public class AbilityCarry : MonoBehaviour
 
     private bool GetPlayerIsOnZAXis()
     {
-        return GetComponent<PlayerMovement>().movingOnZ;
+        //return GetComponent<PlayerMovement>().movingOnZ;
+        return true;
     }
 
     private bool PlayerIsFacingRight()
     {
-        return !GetComponent<PlayerMovement>().isFacingLeft;
+        //return !GetComponent<PlayerMovement>().isFacingLeft;
+        return true;
     }
 }

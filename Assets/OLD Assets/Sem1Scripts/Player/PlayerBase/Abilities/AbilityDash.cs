@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+using Gameplay.Player;
 public class AbilityDash : MonoBehaviour
 {
     public float dashSpeed = 5f;
@@ -18,10 +18,12 @@ public class AbilityDash : MonoBehaviour
 
     public void Execute(float x)
     {
+        /*
         if (player.movingOnZ)
         {
             x = -x;
         }
+        */
 
         StopCoroutine(DashRoutine());
         StartCoroutine(DashRoutine());
@@ -34,9 +36,9 @@ public class AbilityDash : MonoBehaviour
     private IEnumerator DashRoutine()
     {
         isDashing = true;
-        player.disableStateMachine = true;
+        //player.disableStateMachine = true;
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
-        player.disableStateMachine = false;
+        //player.disableStateMachine = false;
     }
 }

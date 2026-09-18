@@ -1,4 +1,5 @@
 using UnityEngine;
+using Gameplay.Player;
 
 public class RotationHandler : MonoBehaviour
 {
@@ -12,23 +13,14 @@ public class RotationHandler : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    /*
     public void RotatePlayer(Vector3 positionAtRotation, float rotationAmount)
     {
         transform.position = positionAtRotation;
 
         Vector3 velocity = transform.InverseTransformDirection(rb.linearVelocity);
         rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + rotationAmount, 0));
-
-        /*
-        if (velocity.x < 0)
-        {
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateLeft, 0));
-        }
-        else if (velocity.x > 0)
-        {
-            rb.MoveRotation(Quaternion.Euler(0, rb.rotation.eulerAngles.y + amountRotateRight, 0));
-        }
-        */
+        
 
         //FixAxis();
     }
@@ -116,4 +108,5 @@ public class RotationHandler : MonoBehaviour
     {
         return player.movingOnZ;
     }
+    */
 }

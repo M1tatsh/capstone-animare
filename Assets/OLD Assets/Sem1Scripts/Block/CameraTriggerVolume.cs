@@ -9,7 +9,7 @@ public class CameraTriggerVolume : MonoBehaviour
     }
 
     public Axis axis = Axis.X;
-
+    /*
     private void OnTriggerEnter(Collider other)
     {
         if(other.GetComponent<RotationHandler>() != null && other.GetComponent<RotationHandler>().CheckAxis(axis))
@@ -17,4 +17,5 @@ public class CameraTriggerVolume : MonoBehaviour
             //other.GetComponent<RotationHandler>().RotatePlayer();
         }
     }
+    */
 }

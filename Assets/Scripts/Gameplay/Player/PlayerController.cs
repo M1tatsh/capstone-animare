@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Gameplay.Mechanics;
 
 namespace Gameplay.Player
 {
@@ -8,18 +9,32 @@ namespace Gameplay.Player
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
+        #region variables
         private Vector2 move;
         private PlayerMovement playerMovement;
         private RadialSelection radialSelection;
+        private PlatformManager platformManager;
+        #endregion
 
         void Start()
         {
             playerMovement = GetComponent<PlayerMovement>();
             radialSelection = FindAnyObjectByType<RadialSelection>();
+            platformManager = FindAnyObjectByType<PlatformManager>();
+
+            if (playerMovement == null)
+            {
+                Debug.LogError("PlayerController: Game Object is missing Player Movement component!");
+            }
 
             if (radialSelection == null)
             {
                 Debug.LogError("PlayerController: RadialSelection is missing in the scene!");
+            }
+
+            if (platformManager == null)
+            {
+                Debug.LogError("PlayerController: Platform Manager is missing in the scene!");
             }
         }
 
@@ -57,14 +72,22 @@ namespace Gameplay.Player
         /// <param name="value">The input value that triggers the menu transformation.</param>
         public void OnTransformMenu(InputValue value)
         {
-            Debug.Log($"OnTransformMenu called! isPressed: {value.isPressed}");
+            //Debug.Log($"OnTransformMenu called! isPressed: {value.isPressed}");
 
             if (radialSelection != null)
             {
                 radialSelection.SetMenuState(value.isPressed);
             }
         }
+        public void OnRotateWorldLeft(InputValue button)
+        {
+            platformManager.rotateLeft = button.isPressed;
+        }
 
+        public void OnRotateWorldRight(InputValue button)
+        {
+            platformManager.rotateRight = button.isPressed;
+        }
 
         private void FixedUpdate()
         {

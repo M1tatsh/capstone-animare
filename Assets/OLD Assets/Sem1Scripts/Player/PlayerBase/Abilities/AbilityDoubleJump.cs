@@ -1,16 +1,17 @@
 using UnityEngine;
-
+using Gameplay.Player;
 public class AbilityDoubleJump : MonoBehaviour
 {
     private Rigidbody rb;
+    /*
     private PlayerCollision collision;
     private bool canDoubleJump = false;
     private bool wasGrounded = false;
-
+    
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody>();
-        collision = GetComponent<PlayerCollision>();
+        //collision = GetComponent<PlayerCollision>();
         canDoubleJump = false;
         wasGrounded = false;
     }
@@ -39,10 +40,11 @@ public class AbilityDoubleJump : MonoBehaviour
         if (canDoubleJump)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, 0);
-            rb.linearVelocity += Vector3.up * GetComponent<PlayerMovement>().normalJumpForce;
+            rb.linearVelocity += Vector3.up * GetComponent<PlayerMovement>().JumpForce;
             canDoubleJump = false;
             return true;
         }
         return false;
     }
+    */
 }

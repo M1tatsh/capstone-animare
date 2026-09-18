@@ -120,6 +120,24 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateWorldLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""59a6b320-0d4c-4a94-bf8d-efa7299c21c1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateWorldRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""268bc8a8-010d-46b5-b4a0-ec2ca65e7292"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -199,6 +217,28 @@ namespace Gameplay.Input
                     ""action"": ""TransformMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07001fcd-ae02-45bb-b5a7-187027983bff"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateWorldLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bbbb3700-691b-47e5-af83-90b1f2214dd4"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateWorldRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -222,6 +262,8 @@ namespace Gameplay.Input
             m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
             m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
             m_Gameplay_TransformMenu = m_Gameplay.FindAction("TransformMenu", throwIfNotFound: true);
+            m_Gameplay_RotateWorldLeft = m_Gameplay.FindAction("RotateWorldLeft", throwIfNotFound: true);
+            m_Gameplay_RotateWorldRight = m_Gameplay.FindAction("RotateWorldRight", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -305,6 +347,8 @@ namespace Gameplay.Input
         private readonly InputAction m_Gameplay_Move;
         private readonly InputAction m_Gameplay_Jump;
         private readonly InputAction m_Gameplay_TransformMenu;
+        private readonly InputAction m_Gameplay_RotateWorldLeft;
+        private readonly InputAction m_Gameplay_RotateWorldRight;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -328,6 +372,14 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/TransformMenu".
             /// </summary>
             public InputAction @TransformMenu => m_Wrapper.m_Gameplay_TransformMenu;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/RotateWorldLeft".
+            /// </summary>
+            public InputAction @RotateWorldLeft => m_Wrapper.m_Gameplay_RotateWorldLeft;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/RotateWorldRight".
+            /// </summary>
+            public InputAction @RotateWorldRight => m_Wrapper.m_Gameplay_RotateWorldRight;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -363,6 +415,12 @@ namespace Gameplay.Input
                 @TransformMenu.started += instance.OnTransformMenu;
                 @TransformMenu.performed += instance.OnTransformMenu;
                 @TransformMenu.canceled += instance.OnTransformMenu;
+                @RotateWorldLeft.started += instance.OnRotateWorldLeft;
+                @RotateWorldLeft.performed += instance.OnRotateWorldLeft;
+                @RotateWorldLeft.canceled += instance.OnRotateWorldLeft;
+                @RotateWorldRight.started += instance.OnRotateWorldRight;
+                @RotateWorldRight.performed += instance.OnRotateWorldRight;
+                @RotateWorldRight.canceled += instance.OnRotateWorldRight;
             }
 
             /// <summary>
@@ -383,6 +441,12 @@ namespace Gameplay.Input
                 @TransformMenu.started -= instance.OnTransformMenu;
                 @TransformMenu.performed -= instance.OnTransformMenu;
                 @TransformMenu.canceled -= instance.OnTransformMenu;
+                @RotateWorldLeft.started -= instance.OnRotateWorldLeft;
+                @RotateWorldLeft.performed -= instance.OnRotateWorldLeft;
+                @RotateWorldLeft.canceled -= instance.OnRotateWorldLeft;
+                @RotateWorldRight.started -= instance.OnRotateWorldRight;
+                @RotateWorldRight.performed -= instance.OnRotateWorldRight;
+                @RotateWorldRight.canceled -= instance.OnRotateWorldRight;
             }
 
             /// <summary>
@@ -457,6 +521,20 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTransformMenu(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RotateWorldLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRotateWorldLeft(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RotateWorldRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRotateWorldRight(InputAction.CallbackContext context);
         }
     }
 }
