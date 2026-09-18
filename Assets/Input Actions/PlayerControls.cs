@@ -111,6 +111,15 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TransformMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""825f6cea-ee21-47ff-b678-014c32e4b595"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -179,6 +188,17 @@ namespace Gameplay.Input
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb358d03-d8a4-4711-9d59-bae9a4bd9b22"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""TransformMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -201,6 +221,7 @@ namespace Gameplay.Input
             m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
             m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
             m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+            m_Gameplay_TransformMenu = m_Gameplay.FindAction("TransformMenu", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -283,6 +304,7 @@ namespace Gameplay.Input
         private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
         private readonly InputAction m_Gameplay_Move;
         private readonly InputAction m_Gameplay_Jump;
+        private readonly InputAction m_Gameplay_TransformMenu;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -302,6 +324,10 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/Jump".
             /// </summary>
             public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/TransformMenu".
+            /// </summary>
+            public InputAction @TransformMenu => m_Wrapper.m_Gameplay_TransformMenu;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -334,6 +360,9 @@ namespace Gameplay.Input
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @TransformMenu.started += instance.OnTransformMenu;
+                @TransformMenu.performed += instance.OnTransformMenu;
+                @TransformMenu.canceled += instance.OnTransformMenu;
             }
 
             /// <summary>
@@ -351,6 +380,9 @@ namespace Gameplay.Input
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
+                @TransformMenu.started -= instance.OnTransformMenu;
+                @TransformMenu.performed -= instance.OnTransformMenu;
+                @TransformMenu.canceled -= instance.OnTransformMenu;
             }
 
             /// <summary>
@@ -418,6 +450,13 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnJump(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "TransformMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnTransformMenu(InputAction.CallbackContext context);
         }
     }
 }

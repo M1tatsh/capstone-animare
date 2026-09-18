@@ -10,10 +10,17 @@ namespace Gameplay.Player
     {
         private Vector2 move;
         private PlayerMovement playerMovement;
+        private RadialSelection radialSelection;
 
         void Start()
         {
             playerMovement = GetComponent<PlayerMovement>();
+            radialSelection = FindAnyObjectByType<RadialSelection>();
+
+            if (radialSelection == null)
+            {
+                Debug.LogError("PlayerController: RadialSelection is missing in the scene!");
+            }
         }
 
         /// <summary>
@@ -37,12 +44,27 @@ namespace Gameplay.Player
         {
             playerMovement.IsJumpPressed = button.isPressed;
 
-            if(!button.isPressed)
+            if (!button.isPressed)
             {
                 playerMovement.OnJumpReleased();
             }
             //Debug.Log($"PlayerController | X:{button.isPressed}");
         }
+
+        /// <summary>
+        /// Handles menu transformation based on the specified input value.
+        /// </summary>
+        /// <param name="value">The input value that triggers the menu transformation.</param>
+        public void OnTransformMenu(InputValue value)
+        {
+            Debug.Log($"OnTransformMenu called! isPressed: {value.isPressed}");
+
+            if (radialSelection != null)
+            {
+                radialSelection.SetMenuState(value.isPressed);
+            }
+        }
+
 
         private void FixedUpdate()
         {
