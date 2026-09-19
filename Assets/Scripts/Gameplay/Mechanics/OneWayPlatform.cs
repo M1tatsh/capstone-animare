@@ -12,7 +12,7 @@ namespace Gameplay.Mechanics
     public class OneWayPlatform : MonoBehaviour
     {
         public Collider platformCollider;
-        private float bufferArea = 1f;
+        private float bufferArea = 0.8f;
 
         void Start()
         {
