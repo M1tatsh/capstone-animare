@@ -11,6 +11,7 @@ namespace Gameplay.Player
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
+
         #region variables
         //Stats
         [SerializeField]

@@ -31,8 +31,10 @@ namespace Gameplay.Input
                 {
                     defaultMap.Enable();
                     playerInput.SwitchCurrentActionMap(defaultMap.name);
+
                 }
             }
+
         }
 
         /// <summary>

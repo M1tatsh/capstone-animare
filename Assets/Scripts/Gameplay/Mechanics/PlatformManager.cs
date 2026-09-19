@@ -23,6 +23,10 @@ namespace Gameplay.Mechanics
         private FacingDirection facingDirection;
         
         private float degree = 0;
+        [SerializeField]private float bufferArea = 0.5f;
+        [SerializeField] private float leniencyArea = 0.1f;
+        [Tooltip("Size of 1 block in world transform")]
+        private static float STANDARD_UNIT = 1.0f;
 
         public Transform Platforms; //objects that can be stood on
         public Transform Buildings; //all other objects
@@ -37,11 +41,10 @@ namespace Gameplay.Mechanics
         private FacingDirection lastDirection;
         private float lastDepth = 0f;
 
-        [Tooltip("Size of 1 block in world transform")]
-        private static float STANDARD_UNIT = 1.000f;
 
         public bool rotateLeft = false;
         public bool rotateRight = false;
+        public bool updateCubeArray = false;
         #endregion
 
         private void Start()
@@ -70,16 +73,19 @@ namespace Gameplay.Mechanics
 
         private void Update()
         {
+
+            //Debug.Log($"PlatformManager.Update | Current Facing Direction: {facingDirection}");
             //Player depth handler
             if (collisionCheck.IsGrounded)
             {
                 bool updateLevel = false;
-
+                
                 if (OnInvisibleCube())
+                {
                     if (MovePlayerDepthToClosestPlatform())
                         updateLevel = true;
-                if (MoveToClosestPlatformToCamera())
-                    updateLevel = true;
+                }
+
                 if (updateLevel)
                     UpdateLevel(false);
             }
@@ -91,9 +97,8 @@ namespace Gameplay.Mechanics
                 //If we don't, then we could be standing in mid air after the rotation
                 if (OnInvisibleCube())
                 {
-                    //MoveToClosestPlatform();
+                    //MovePlayerToClosestPlatformFromCamera();
                     MovePlayerDepthToClosestPlatform();
-
                 }
                 lastDirection = facingDirection;
                 facingDirection = RotateDirectionRight();
@@ -106,7 +111,7 @@ namespace Gameplay.Mechanics
             {
                 if (OnInvisibleCube())
                 {
-                    //MoveToClosestPlatform();
+                    //MovePlayerToClosestPlatformFromCamera();
                     MovePlayerDepthToClosestPlatform();
 
                 }
@@ -158,7 +163,11 @@ namespace Gameplay.Mechanics
         {
             if (!forceRebuild)
                 if (lastDirection == facingDirection && lastDepth == GetPlayerDepth())
+                {
+                    //Debug.Log($"PlatformManager.UpdateLevel | Returned early!");
                     return;
+                }
+                    
 
             foreach(Transform item in cubes)
             {
@@ -168,10 +177,12 @@ namespace Gameplay.Mechanics
                 Destroy(item.gameObject);
             }
             cubes.Clear();
-            float newDepth = 0f;
 
+            float newDepth = 0f;
             newDepth = GetPlayerDepth();
             CreateCubesAtNewDepth(newDepth);
+
+            //Debug.Log($"PlatformManager.UpdateLevel | Level Updated!");
         }
 
         /// <summary>
@@ -182,14 +193,71 @@ namespace Gameplay.Mechanics
             foreach(Transform item in cubes)
             {
                 //check player's position against cube's position
-                if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) < STANDARD_UNIT && Mathf.Abs(item.position.z - playerMovement.transform.position.z) < STANDARD_UNIT)
-                    if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + 0.2f && playerMovement.transform.position.y - item.position.y > 0)
+                if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) <= STANDARD_UNIT - bufferArea && Mathf.Abs(item.position.z - playerMovement.transform.position.z) <= STANDARD_UNIT - bufferArea)
+                {
+                    if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + leniencyArea && playerMovement.transform.position.y - item.position.y > STANDARD_UNIT - leniencyArea)
+                    {
+                        //Debug.Log($"PlatformManager.OnInvisibleCube | Standing on invisible cube: {item.position} with player position at {playerMovement.transform.position}");
                         return true;
+                    }
+                }
             }
-
             return false;
         }
 
+        //deprecated
+        private bool MovePlayerToClosestPlatformFromCamera()
+        {
+            foreach (Transform item in Platforms)
+            {
+                //check if player is outside of block's y position
+                if (playerMovement.transform.position.y - item.position.y >= STANDARD_UNIT + leniencyArea && playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT - leniencyArea)    
+                    continue;
+
+                if (!collisionCheck.IsGrounded)
+                    continue;
+
+                if (facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
+                {
+                    //check if player is outside of block's x position
+                    if (Mathf.Abs(playerMovement.transform.position.x - item.position.x) > STANDARD_UNIT - bufferArea)
+                        continue;
+
+                    if (facingDirection == FacingDirection.Front && playerMovement.transform.position.z - item.position.z > STANDARD_UNIT - bufferArea)
+                    {
+                        playerMovement.transform.position = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y, item.position.z);
+                        return true;
+                    }
+
+                    if (facingDirection == FacingDirection.Back && item.position.z - playerMovement.transform.position.z > STANDARD_UNIT - bufferArea)
+                    {
+                        playerMovement.transform.position = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y, item.position.z);
+                        return true;
+                    }
+                }
+                else
+                {
+                    //check if player is outside of block's x position
+                    if (Mathf.Abs(playerMovement.transform.position.z - item.position.z) > STANDARD_UNIT - bufferArea)
+                        continue;
+
+                    if (facingDirection == FacingDirection.Right && item.position.x - playerMovement.transform.position.x > STANDARD_UNIT - bufferArea)
+                    {
+                        playerMovement.transform.position = new Vector3(item.position.x,  playerMovement.transform.position.y, playerMovement.transform.position.z);
+                        return true;
+                    }
+
+                    if (facingDirection == FacingDirection.Left && playerMovement.transform.position.x - item.position.x > STANDARD_UNIT - bufferArea)
+                    {
+                        playerMovement.transform.position = new Vector3(item.position.x, playerMovement.transform.position.y, playerMovement.transform.position.z);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /*
         /// <summary>
         /// Moves the player to the closest walkable ground based on camera height.
         /// Also returns bool based on if we move the player or not.
@@ -203,12 +271,12 @@ namespace Gameplay.Mechanics
                 if (facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
                 {
 
-                    //When facing Front, find cubes that are close enough in the x position and the just below our current y value
+                    //When facing Front, find cubes that are close enough in the x position and just below our current y value
                     //This would have to be updated if using cubes bigger or smaller than (1,1,1)
-                    if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) < STANDARD_UNIT + 0.1f)
+                    if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) < STANDARD_UNIT + leniency)
                     {
 
-                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + 0.2f && playerMovement.transform.position.y - item.position.y > 0 && collisionCheck.IsGrounded)
+                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + leniency && playerMovement.transform.position.y - item.position.y > 0 && collisionCheck.IsGrounded)
                         {
                             if (facingDirection == FacingDirection.Front && item.position.z < playerMovement.transform.position.z)
                                 moveCloser = true;
@@ -229,9 +297,9 @@ namespace Gameplay.Mechanics
                 }
                 else
                 {
-                    if (Mathf.Abs(item.position.z - playerMovement.transform.position.z) < STANDARD_UNIT + 0.1f)
+                    if (Mathf.Abs(item.position.z - playerMovement.transform.position.z) < STANDARD_UNIT + leniency)
                     {
-                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + 0.2f && playerMovement.transform.position.y - item.position.y > 0 && collisionCheck.IsGrounded)
+                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + leniency && playerMovement.transform.position.y - item.position.y > 0 && collisionCheck.IsGrounded)
                         {
                             if (facingDirection == FacingDirection.Right && item.position.x > playerMovement.transform.position.x)
                                 moveCloser = true;
@@ -255,6 +323,46 @@ namespace Gameplay.Mechanics
 
             return false;
         }
+        */
+
+        /// <summary>
+        /// Will set player's position to closest platform available.
+        /// </summary>
+        /// <returns>Returns true if the player was moved, false otherwise.</returns>
+        private bool MovePlayerDepthToClosestPlatform()
+        {
+            foreach(Transform item in Platforms)
+            {
+                if (playerMovement.transform.position.y - item.position.y >= STANDARD_UNIT + leniencyArea && playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT - leniencyArea)
+                        continue;
+
+                if (facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
+                {
+                    if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) > STANDARD_UNIT - bufferArea)
+                        continue;
+
+                    lastDepth = playerMovement.transform.position.z;
+                    playerMovement.transform.position = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y, item.position.z);
+                    
+
+                    //Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.z}");
+                    return true;
+                }
+                else
+                {
+                    if (Mathf.Abs(item.position.z - playerMovement.transform.position.z) > STANDARD_UNIT - bufferArea)
+                        continue;
+
+                    lastDepth = playerMovement.transform.position.x;
+                    playerMovement.transform.position = new Vector3(item.position.x, playerMovement.transform.position.y, playerMovement.transform.position.z);
+
+                    //Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.z}");
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Looks for an invisible cube at Vector3 position and returns a bool if it finds one.
@@ -272,7 +380,7 @@ namespace Gameplay.Mechanics
         }
 
         /// <summary>
-        /// Returns the player's distance from camera.
+        /// Returns the player's x or z coordinate, depending on facing direction.
         /// </summary>
         /// <returns></returns>
         private float GetPlayerDepth()
@@ -283,11 +391,12 @@ namespace Gameplay.Mechanics
             {
                 closestPoint = playerMovement.transform.position.z;
             }
-            else if(facingDirection == FacingDirection.Right ||  facingDirection == FacingDirection.Left)
+            else if(facingDirection == FacingDirection.Right || facingDirection == FacingDirection.Left)
             {
                 closestPoint = playerMovement.transform.position.x;
             }
 
+            //Debug.Log($"PlatformManager.GetPlayerDepth | closest point found: {Mathf.Round(closestPoint)}");
             return Mathf.Round(closestPoint);
         }
 
@@ -319,7 +428,16 @@ namespace Gameplay.Mechanics
                 if(facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
                 {
                     tempCube = new Vector3(item.position.x, item.position.y, newDepth);
-                    if(!FindTransformInCubes(tempCube) && !FindTransformPlatform(tempCube) && !FindTransformBuilding(item.position))
+                    if(!FindTransformInCubes(tempCube) && !FindTransformPlatform(tempCube) && !FindTransformBuilding(item.position) && (Mathf.Abs(playerMovement.transform.position.x - item.position.x) > STANDARD_UNIT - bufferArea || Mathf.Abs(playerMovement.transform.position.y - item.position.y) > STANDARD_UNIT - bufferArea))
+                    {
+                        Transform go = CreateCube(tempCube);
+                        cubes.Add(go);
+                    }
+                }
+                if (facingDirection == FacingDirection.Right || facingDirection == FacingDirection.Left)
+                {
+                    tempCube = new Vector3(newDepth, item.position.y, item.position.z);
+                    if (!FindTransformInCubes(tempCube) && !FindTransformPlatform(tempCube) && !FindTransformBuilding(item.position) && (Mathf.Abs(playerMovement.transform.position.z - item.position.z) > STANDARD_UNIT - bufferArea || Mathf.Abs(playerMovement.transform.position.y - item.position.y) > STANDARD_UNIT - bufferArea))
                     {
                         Transform go = CreateCube(tempCube);
                         cubes.Add(go);
@@ -328,10 +446,11 @@ namespace Gameplay.Mechanics
             }
         }
 
+        
         /// <summary>
         /// Finds physical cube in the platform list at given cube position.
         /// </summary>
-        /// <param name="cube"></param>
+        /// <param name="cube">Vector3 to check</param>
         /// <returns></returns>
         private bool FindTransformPlatform(Vector3 cube)
         {
@@ -342,7 +461,9 @@ namespace Gameplay.Mechanics
             }
             return false;
         }
+        
 
+        
         /// <summary>
         /// Determine whether there are any buildings (background) objects between the camera and the given cube.
         /// </summary>
@@ -377,40 +498,7 @@ namespace Gameplay.Mechanics
             }
             return false;
         }
-
-        /// <summary>
-        /// Will set player's position to closest platform available and return true, false if otherwise.
-        /// Intended for use during the player's jump, in-case they need to land on an invisible platform.
-        /// </summary>
-        /// <returns></returns>
-        private bool MovePlayerDepthToClosestPlatform()
-        {
-            foreach(Transform item in Platforms)
-            {
-                if (facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
-                {
-                    if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) < STANDARD_UNIT + 0.1f)
-                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + 0.2f && playerMovement.transform.position.y - item.position.y > 0)
-                        {
-
-                            playerMovement.transform.position = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y, item.position.z);
-                            return true;
-
-                        }
-                }
-                else
-                {
-                    if (Mathf.Abs(item.position.z - playerMovement.transform.position.z) < STANDARD_UNIT + 0.1f)
-                        if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + 0.2f && playerMovement.transform.position.y - item.position.y > 0)
-                        {
-
-                            playerMovement.transform.position = new Vector3(item.position.x, playerMovement.transform.position.y, playerMovement.transform.position.z);
-                            return true;
-                        }
-                }
-            }
-            return false;
-        }
+        
 
         public enum FacingDirection
         {

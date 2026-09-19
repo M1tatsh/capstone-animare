@@ -219,7 +219,7 @@ MonoBehaviour:
   maxJumpVelocity: 8
   gravityForce: -20
   cutJumpSpeed: -5
-  jumpTime: 0.4
+  rotationSpeed: 8
 --- !u!114 &8260852435359028652
 MonoBehaviour:
   m_ObjectHideFlags: 0
