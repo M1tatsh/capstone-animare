@@ -14,11 +14,15 @@ namespace Gameplay.Player
         private PlayerMovement playerMovement;
         private RadialSelection radialSelection;
         private PlatformManager platformManager;
+        private DashAbility dashAbility;
+        private DoubleJumpAbility doubleJumpAbility;
         #endregion
 
         void Start()
         {
             playerMovement = GetComponent<PlayerMovement>();
+            dashAbility = GetComponent<DashAbility>();
+            doubleJumpAbility = GetComponent<DoubleJumpAbility>();
             radialSelection = FindAnyObjectByType<RadialSelection>();
             platformManager = FindAnyObjectByType<PlatformManager>();
 
@@ -57,13 +61,25 @@ namespace Gameplay.Player
         /// <param name="button">bool that is assigned true/false when user is pressing/releasing the input.</param>
         public void OnJump(InputValue button)
         {
+            if (button.isPressed && doubleJumpAbility != null && doubleJumpAbility.TryAirJump())
+            {
+                return;
+            }
+
             playerMovement.IsJumpPressed = button.isPressed;
 
             if (!button.isPressed)
             {
                 playerMovement.OnJumpReleased();
             }
-            //Debug.Log($"PlayerController | X:{button.isPressed}");
+        }
+
+        public void OnDash(InputValue button)
+        {
+            if (button.isPressed && dashAbility != null)
+            {
+                dashAbility.TryDash(move.x);
+            }
         }
 
         /// <summary>

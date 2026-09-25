@@ -27,6 +27,8 @@ namespace Gameplay.Player
 
         private bool isJumpPressed = false;
         private bool isJumpReleased = false;
+        private bool isDashing = false;
+        private float lastMoveSign = 1f;
 
         private CollisionCheck collisionCheck;
 
@@ -58,7 +60,17 @@ namespace Gameplay.Player
         /// <param name="direction">Direction to move based on Vector3 values.</param>
         public void Walk(float direction)
         {
-            if(myFacingDirection == FacingDirection.Front)
+            if (Mathf.Abs(direction) > 0.1f)
+            {
+                lastMoveSign = Mathf.Sign(direction);
+            }
+
+            if (isDashing)
+            {
+                return;
+            }
+
+            if (myFacingDirection == FacingDirection.Front)
             {
                 rb.linearVelocity = new Vector3(
                     Mathf.Clamp(direction * moveSpeed, -maxMoveSpeed, maxMoveSpeed),
@@ -107,7 +119,7 @@ namespace Gameplay.Player
             {
                 rb.AddForce(new Vector3(0, velocity, 0), ForceMode.Impulse);
             }
-            
+
         }
 
         /// <summary>
@@ -128,7 +140,7 @@ namespace Gameplay.Player
 
                 //Debug.Log("PlayerMovement: Speed cut.");
             }
-            
+
         }
         public void UpdateToFacingDirection(FacingDirection newDirection, float angle)
         {
@@ -138,12 +150,27 @@ namespace Gameplay.Player
 
         }
 
+        public Vector3 GetMoveAxis()
+        {
+            switch (myFacingDirection)
+            {
+                case FacingDirection.Back:
+                    return Vector3.left;
+                case FacingDirection.Right:
+                    return Vector3.forward;
+                case FacingDirection.Left:
+                    return Vector3.back;
+                default:
+                    return Vector3.right;
+            }
+        }
+
         /// <summary>
         /// Applies a stronger gravity force on the player while they are not on the ground.
         /// </summary>
         private void HandleGravity()
         {
-            if (!collisionCheck.IsGrounded)
+            if (!collisionCheck.IsGrounded && !isDashing)
             {
                 rb.AddForce(new Vector3(0, gravityForce, 0), ForceMode.Acceleration);
             }
@@ -159,12 +186,12 @@ namespace Gameplay.Player
 
         void FixedUpdate()
         {
-            if (isJumpPressed && collisionCheck.IsGrounded)
+            if (isJumpPressed && collisionCheck.IsGrounded && !isDashing)
             {
                 Jump(jumpForce);
                 isJumpPressed = false;
             }
-                
+
             HandleGravity();
             HandleRotation();
         }
@@ -190,8 +217,8 @@ namespace Gameplay.Player
 
         public float JumpForce
         {
-            get { return JumpForce; }
-            set { JumpForce = value; }
+            get { return jumpForce; }
+            set { jumpForce = value; }
         }
         public float Degree
         {
@@ -209,6 +236,17 @@ namespace Gameplay.Player
         {
             get { return isJumpReleased; }
             set { isJumpReleased = value; }
+        }
+
+        public bool IsDashing
+        {
+            get { return isDashing; }
+            set { isDashing = value; }
+        }
+
+        public float LastMoveSign
+        {
+            get { return lastMoveSign; }
         }
 
         public FacingDirection MyFacingDirection

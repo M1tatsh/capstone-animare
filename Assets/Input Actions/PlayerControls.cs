@@ -138,6 +138,15 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""27b34866-982b-4a48-a8eb-f23a5b417d9c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -338,6 +347,17 @@ namespace Gameplay.Input
                     ""action"": ""RotateWorldRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""593261ca-bc09-4b26-aa1d-1680ba70ae9d"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -384,6 +404,7 @@ namespace Gameplay.Input
             m_Gameplay_TransformMenu = m_Gameplay.FindAction("TransformMenu", throwIfNotFound: true);
             m_Gameplay_RotateWorldLeft = m_Gameplay.FindAction("RotateWorldLeft", throwIfNotFound: true);
             m_Gameplay_RotateWorldRight = m_Gameplay.FindAction("RotateWorldRight", throwIfNotFound: true);
+            m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -469,6 +490,7 @@ namespace Gameplay.Input
         private readonly InputAction m_Gameplay_TransformMenu;
         private readonly InputAction m_Gameplay_RotateWorldLeft;
         private readonly InputAction m_Gameplay_RotateWorldRight;
+        private readonly InputAction m_Gameplay_Dash;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -500,6 +522,10 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/RotateWorldRight".
             /// </summary>
             public InputAction @RotateWorldRight => m_Wrapper.m_Gameplay_RotateWorldRight;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/Dash".
+            /// </summary>
+            public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -541,6 +567,9 @@ namespace Gameplay.Input
                 @RotateWorldRight.started += instance.OnRotateWorldRight;
                 @RotateWorldRight.performed += instance.OnRotateWorldRight;
                 @RotateWorldRight.canceled += instance.OnRotateWorldRight;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
             }
 
             /// <summary>
@@ -567,6 +596,9 @@ namespace Gameplay.Input
                 @RotateWorldRight.started -= instance.OnRotateWorldRight;
                 @RotateWorldRight.performed -= instance.OnRotateWorldRight;
                 @RotateWorldRight.canceled -= instance.OnRotateWorldRight;
+                @Dash.started -= instance.OnDash;
+                @Dash.performed -= instance.OnDash;
+                @Dash.canceled -= instance.OnDash;
             }
 
             /// <summary>
@@ -668,6 +700,13 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRotateWorldRight(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Dash" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDash(InputAction.CallbackContext context);
         }
     }
 }

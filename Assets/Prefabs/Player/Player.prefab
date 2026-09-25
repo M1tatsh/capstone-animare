@@ -18,6 +18,9 @@ GameObject:
   - component: {fileID: 7021658692393199064}
   - component: {fileID: 5324082434582542738}
   - component: {fileID: 8260852435359028652}
+  - component: {fileID: 5963078496820880986}
+  - component: {fileID: 417637772631498720}
+  - component: {fileID: 1210778331805400983}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -238,3 +241,50 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &5963078496820880986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86cedd89851868438a2c5b26cc42e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.PlayerFormManager
+  foxSlot: 1
+  rabbitSlot: 2
+  reaperModel: {fileID: 0}
+  foxModel: {fileID: 0}
+  rabbitModel: {fileID: 0}
+--- !u!114 &417637772631498720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191fb788039bf5a47b87b4ed2f668106, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.DoubleJumpAbility
+  extraJumps: 1
+  jumpForceMultiplier: 1
+--- !u!114 &1210778331805400983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2118e2c008aba4897a6faf0dbd13ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.DashAbility
+  dashSpeed: 20
+  dashDuration: 0.2
+  dashCooldown: 0.4
+  maxAirDashes: 1
