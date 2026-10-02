@@ -97,7 +97,6 @@ namespace Gameplay.Mechanics
                 //If we don't, then we could be standing in mid air after the rotation
                 if (OnInvisibleCube())
                 {
-                    //MovePlayerToClosestPlatformFromCamera();
                     MovePlayerDepthToClosestPlatform();
                 }
                 lastDirection = facingDirection;
