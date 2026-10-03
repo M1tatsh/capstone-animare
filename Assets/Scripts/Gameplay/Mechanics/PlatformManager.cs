@@ -110,9 +110,7 @@ namespace Gameplay.Mechanics
             {
                 if (OnInvisibleCube())
                 {
-                    //MovePlayerToClosestPlatformFromCamera();
                     MovePlayerDepthToClosestPlatform();
-
                 }
                 lastDirection = facingDirection;
                 facingDirection = RotateDirectionLeft();
@@ -196,7 +194,7 @@ namespace Gameplay.Mechanics
                 {
                     if (playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT + leniencyArea && playerMovement.transform.position.y - item.position.y > STANDARD_UNIT - leniencyArea)
                     {
-                        //Debug.Log($"PlatformManager.OnInvisibleCube | Standing on invisible cube: {item.position} with player position at {playerMovement.transform.position}");
+                        Debug.Log($"PlatformManager.OnInvisibleCube | Standing on invisible cube: {item.position} with player position at {playerMovement.transform.position}");
                         return true;
                     }
                 }
@@ -332,30 +330,39 @@ namespace Gameplay.Mechanics
         {
             foreach(Transform item in Platforms)
             {
-                if (playerMovement.transform.position.y - item.position.y >= STANDARD_UNIT + leniencyArea && playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT - leniencyArea)
-                        continue;
+                if (playerMovement.transform.position.y - item.position.y >= STANDARD_UNIT + leniencyArea || playerMovement.transform.position.y - item.position.y <= STANDARD_UNIT - leniencyArea)
+                {
+                    Debug.Log("PlatformManager.MovePlayerDepthToClosestPlatform: y-check confirmed.");
+                    continue;
+                }
 
                 if (facingDirection == FacingDirection.Front || facingDirection == FacingDirection.Back)
                 {
                     if (Mathf.Abs(item.position.x - playerMovement.transform.position.x) > STANDARD_UNIT - bufferArea)
+                    {
+                        Debug.Log("PlatformManager.MovePlayerDepthToClosestPlatform: x-check confirmed.");
                         continue;
+                    }
 
                     lastDepth = playerMovement.transform.position.z;
                     playerMovement.transform.position = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y, item.position.z);
                     
 
-                    //Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.z}");
+                    Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.z} using block: {item.name}");
                     return true;
                 }
                 else
                 {
                     if (Mathf.Abs(item.position.z - playerMovement.transform.position.z) > STANDARD_UNIT - bufferArea)
+                    {
+                        Debug.Log("PlatformManager.MovePlayerDepthToClosestPlatform: z-check confirmed.");
                         continue;
+                    }
 
                     lastDepth = playerMovement.transform.position.x;
                     playerMovement.transform.position = new Vector3(item.position.x, playerMovement.transform.position.y, playerMovement.transform.position.z);
 
-                    //Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.z}");
+                    Debug.Log($"PlatformManager.MovePlayerDepthToClosestPlatform | Moved player to: {item.position.x}  using block: {item.name}");
                     return true;
                 }
             }
