@@ -1,0 +1,53 @@
+:root {
+}
+
+.menuButton {
+    height: 60px;
+    width: 233px;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+    font-size: 49px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.menuButton:hover {
+    height: 60px;
+    width: 233px;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+    font-size: 49px;
+    background-color: rgb(4, 4, 5);
+    color: rgb(255, 255, 255);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    scale: 1.05 1.05;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out-bounce;
+}
+
+.menuButton:active {
+    height: 60px;
+    width: 233px;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+    font-size: 49px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    scale: 0.93 0.93 0.93;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+}
