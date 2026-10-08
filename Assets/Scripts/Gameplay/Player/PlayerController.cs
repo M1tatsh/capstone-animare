@@ -16,6 +16,7 @@ namespace Gameplay.Player
         private PlatformManager platformManager;
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
+        private GlideAbility glideAbility;
         #endregion
 
         void Start()
@@ -23,6 +24,7 @@ namespace Gameplay.Player
             playerMovement = GetComponent<PlayerMovement>();
             dashAbility = GetComponent<DashAbility>();
             doubleJumpAbility = GetComponent<DoubleJumpAbility>();
+            glideAbility = GetComponent<GlideAbility>();
             radialSelection = FindAnyObjectByType<RadialSelection>();
             platformManager = FindAnyObjectByType<PlatformManager>();
 
@@ -61,14 +63,26 @@ namespace Gameplay.Player
         /// <param name="button">bool that is assigned true/false when user is pressing/releasing the input.</param>
         public void OnJump(InputValue button)
         {
+            bool wasGliding = glideAbility != null && glideAbility.IsGliding;
+
+            if (glideAbility != null)
+            {
+                glideAbility.SetHeld(button.isPressed);
+            }
+
             if (button.isPressed && doubleJumpAbility != null && doubleJumpAbility.TryAirJump())
+            {
+                return;
+            }
+
+            if (button.isPressed && glideAbility != null && glideAbility.CanGlide)
             {
                 return;
             }
 
             playerMovement.IsJumpPressed = button.isPressed;
 
-            if (!button.isPressed)
+            if (!button.isPressed && !wasGliding)
             {
                 playerMovement.OnJumpReleased();
             }

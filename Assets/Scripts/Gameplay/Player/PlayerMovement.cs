@@ -28,6 +28,7 @@ namespace Gameplay.Player
         private bool isJumpPressed = false;
         private bool isJumpReleased = false;
         private bool isDashing = false;
+        private bool isGliding = false;
         private float lastMoveSign = 1f;
 
         private CollisionCheck collisionCheck;
@@ -170,7 +171,7 @@ namespace Gameplay.Player
         /// </summary>
         private void HandleGravity()
         {
-            if (!collisionCheck.IsGrounded && !isDashing)
+            if (!collisionCheck.IsGrounded && !isDashing && !isGliding)
             {
                 rb.AddForce(new Vector3(0, gravityForce, 0), ForceMode.Acceleration);
             }
@@ -242,6 +243,12 @@ namespace Gameplay.Player
         {
             get { return isDashing; }
             set { isDashing = value; }
+        }
+
+        public bool IsGliding
+        {
+            get { return isGliding; }
+            set { isGliding = value; }
         }
 
         public float LastMoveSign

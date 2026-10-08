@@ -6,7 +6,8 @@ namespace Gameplay.Player
     {
         Reaper,
         Fox,
-        Rabbit
+        Rabbit,
+        Crow
     }
 
     [RequireComponent(typeof(CollisionCheck))]
@@ -14,13 +15,16 @@ namespace Gameplay.Player
     {
         [SerializeField] private int foxSlot = 1;
         [SerializeField] private int rabbitSlot = 2;
+        [SerializeField] private int crowSlot = 3;
 
         [SerializeField] private GameObject reaperModel;
         [SerializeField] private GameObject foxModel;
         [SerializeField] private GameObject rabbitModel;
+        [SerializeField] private GameObject crowModel;
 
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
+        private GlideAbility glideAbility;
         private CollisionCheck collisionCheck;
         private RadialSelection radialSelection;
         private PlayerForm currentForm = PlayerForm.Reaper;
@@ -29,6 +33,7 @@ namespace Gameplay.Player
         {
             dashAbility = GetComponent<DashAbility>();
             doubleJumpAbility = GetComponent<DoubleJumpAbility>();
+            glideAbility = GetComponent<GlideAbility>();
             collisionCheck = GetComponent<CollisionCheck>();
         }
 
@@ -88,6 +93,10 @@ namespace Gameplay.Player
             {
                 SetForm(PlayerForm.Rabbit);
             }
+            else if (slot == crowSlot)
+            {
+                SetForm(PlayerForm.Crow);
+            }
         }
 
         public void SetForm(PlayerForm form)
@@ -104,6 +113,11 @@ namespace Gameplay.Player
                 doubleJumpAbility.enabled = form == PlayerForm.Rabbit;
             }
 
+            if (glideAbility != null)
+            {
+                glideAbility.enabled = form == PlayerForm.Crow;
+            }
+
             if (reaperModel != null)
             {
                 reaperModel.SetActive(form == PlayerForm.Reaper);
@@ -117,6 +131,11 @@ namespace Gameplay.Player
             if (rabbitModel != null)
             {
                 rabbitModel.SetActive(form == PlayerForm.Rabbit);
+            }
+
+            if (crowModel != null)
+            {
+                crowModel.SetActive(form == PlayerForm.Crow);
             }
 
             Debug.Log($"PlayerFormManager | Form: {form}");

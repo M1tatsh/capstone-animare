@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 5963078496820880986}
   - component: {fileID: 417637772631498720}
   - component: {fileID: 1210778331805400983}
+  - component: {fileID: 604689127515413120}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -256,9 +257,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.PlayerFormManager
   foxSlot: 1
   rabbitSlot: 2
+  crowSlot: 3
   reaperModel: {fileID: 0}
   foxModel: {fileID: 0}
   rabbitModel: {fileID: 0}
+  crowModel: {fileID: 0}
 --- !u!114 &417637772631498720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +292,20 @@ MonoBehaviour:
   dashDuration: 0.2
   dashCooldown: 0.4
   maxAirDashes: 1
+--- !u!114 &604689127515413120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b09c9d7d14ec0a46b28ad104f526159, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.GlideAbility
+  glideFallSpeed: 1.5
+  glideAcceleration: 40
 --- !u!1001 &1358012660624172141
 PrefabInstance:
   m_ObjectHideFlags: 0
