@@ -1,29 +1,47 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using Data.Scene;
 
+[RequireComponent(typeof(UIDocument))]
 public class TitleMenuBehavior : MonoBehaviour
 {
-    private Button playButton;
+    private VisualElement root;
+    private Button startButton;
     private Button quitButton;
     private VisualElement titleLogo;
 
-    void Awake()
-    {
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+    [SerializeField] private string gameplaySceneName = "";
+    [SerializeField] private float fadeDuration = 0.6f;
 
-        playButton = root.Q<Button>("StartButton");
+
+    IEnumerator Start()
+    {
+        root = GetComponent<UIDocument>().rootVisualElement;
+
+        startButton = root.Q<Button>("StartButton");
         quitButton = root.Q<Button>("QuitButton");
         titleLogo = root.Q<VisualElement>("TitleLogo");
 
-        playButton.RegisterCallback<ClickEvent>(OnStartButtonClicked);
+        startButton.RegisterCallback<ClickEvent>(OnStartButtonClicked);
         quitButton.RegisterCallback<ClickEvent>(OnQuitButtonClicked);
-    }
-    void Start()
-    {
+
+        var op = SceneManager.LoadSceneAsync(gameplaySceneName, LoadSceneMode.Additive);
+        yield return op;
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(gameplaySceneName));
+
+        startButton.SetEnabled(true);
     }
 
     private void OnStartButtonClicked(ClickEvent clickEvent)
     {
+        startButton.SetEnabled(false);
+
+        GameFlow.Begin();
+
+        CloseTitle();
     }
 
     private void OnQuitButtonClicked(ClickEvent clickEvent)
@@ -36,8 +54,8 @@ public class TitleMenuBehavior : MonoBehaviour
         #endif
     }
 
-    void Update()
+    void CloseTitle()
     {
-
+        SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 }
