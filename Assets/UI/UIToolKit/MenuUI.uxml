@@ -1,7 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/TitleStyles.uss?fileID=7433441132597879392&amp;guid=b8ed3b1018d1d55489fd23c3da34efc5&amp;type=3#TitleStyles"/>
     <Style src="project://database/Assets/floating.uss?fileID=7433441132597879392&amp;guid=54b47c6cba0f0ba4e98121acf01730e0&amp;type=3#floating"/>
-    <ui:VisualElement name="TitleMenu" style="flex-grow: 1; align-items: flex-start; align-self: flex-start; align-content: auto; height: 0; flex-direction: column; min-height: 0;">
+    <ui:VisualElement name="TitleMenu" class="floating" style="flex-grow: 1; align-items: flex-start; align-self: flex-start; align-content: auto; height: 0; flex-direction: column; min-height: 0;">
         <ui:Image source="project://database/Assets/Art/Other/Animare%20Logo.png?fileID=2800000&amp;guid=0c07b8bb3e468824d8dda1cf74d6779a&amp;type=3#Animare Logo" class="floating"/>
         <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; align-items: flex-start; justify-content: flex-start; opacity: 1; right: auto; left: auto; margin-left: 151px;">
             <ui:Button text="Start" name="StartButton" class="menuButton floating"/>

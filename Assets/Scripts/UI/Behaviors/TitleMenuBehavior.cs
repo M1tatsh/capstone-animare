@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.SceneManagement;
-using System.Collections;
 using Data.Scene;
+using DG.Tweening;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(UIDocument))]
 public class TitleMenuBehavior : MonoBehaviour
@@ -13,7 +14,7 @@ public class TitleMenuBehavior : MonoBehaviour
     private VisualElement titleLogo;
 
     [SerializeField] private string gameplaySceneName = "";
-    [SerializeField] private float fadeDuration = 0.6f;
+    [SerializeField] private float fadeDuration = 1.5f;
 
 
     IEnumerator Start()
@@ -39,9 +40,13 @@ public class TitleMenuBehavior : MonoBehaviour
     {
         startButton.SetEnabled(false);
 
-        GameFlow.Begin();
+        DOTween.To(() => root.resolvedStyle.opacity,
+                   v => root.style.opacity = v,
+                   0f, fadeDuration)
+               .SetTarget(this)
+               .OnComplete(CloseTitle);
 
-        CloseTitle();
+        //CloseTitle();
     }
 
     private void OnQuitButtonClicked(ClickEvent clickEvent)
@@ -56,6 +61,7 @@ public class TitleMenuBehavior : MonoBehaviour
 
     void CloseTitle()
     {
+        GameFlow.Begin();
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 }
