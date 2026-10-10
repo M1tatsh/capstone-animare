@@ -45,7 +45,7 @@ namespace Gameplay.Player
 
             if (playerMovement == null || collisionCheck == null || rb == null || playerCollider == null)
             {
-                Debug.LogError("FootstepVFX: Place this under the Player object!");
+                
                 enabled = false;
                 return;
             }

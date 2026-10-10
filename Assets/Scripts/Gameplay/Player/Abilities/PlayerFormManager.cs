@@ -45,10 +45,7 @@ namespace Gameplay.Player
             {
                 radialSelection.OnPartSelected.AddListener(OnPartSelected);
             }
-            else
-            {
-                Debug.LogWarning("PlayerFormManager: RadialSelection is missing in the scene!");
-            }
+            
 
             SetForm(PlayerForm.Reaper);
         }
@@ -138,7 +135,7 @@ namespace Gameplay.Player
                 crowModel.SetActive(form == PlayerForm.Crow);
             }
 
-            Debug.Log($"PlayerFormManager | Form: {form}");
+           
         }
 
         public PlayerForm CurrentForm
