@@ -8,14 +8,12 @@ namespace Gameplay.Player
         [SerializeField] private int extraJumps = 1;
         [SerializeField] private float jumpForceMultiplier = 1f;
 
-        private Rigidbody rb;
         private PlayerMovement playerMovement;
         private CollisionCheck collisionCheck;
         private int jumpsUsed = 0;
 
         void Awake()
         {
-            rb = GetComponent<Rigidbody>();
             playerMovement = GetComponent<PlayerMovement>();
             collisionCheck = GetComponent<CollisionCheck>();
         }
@@ -28,8 +26,9 @@ namespace Gameplay.Player
             }
 
             jumpsUsed++;
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * playerMovement.JumpForce * jumpForceMultiplier, ForceMode.Impulse);
+            //Josh: playerMovement moves the player on the grid now, so the air jump sets the upward speed there.
+            //replacing the speed (instead of adding to it) cancels any falling speed first, the same as before.
+            playerMovement.VerticalVelocity = playerMovement.JumpForce * jumpForceMultiplier;
             return true;
         }
 

@@ -147,6 +147,15 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""3eaa8bb0-93c6-46bd-aa85-df793a7add10"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -358,6 +367,39 @@ namespace Gameplay.Input
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""5f3c9ac6-4ba6-4714-9739-f89f1f388ab5"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateCamera"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""7b65743c-ad4f-4249-b0d5-c19e977e6f9a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""09586f92-a993-4c6e-93b0-692c34a0d3c0"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -405,6 +447,7 @@ namespace Gameplay.Input
             m_Gameplay_RotateWorldLeft = m_Gameplay.FindAction("RotateWorldLeft", throwIfNotFound: true);
             m_Gameplay_RotateWorldRight = m_Gameplay.FindAction("RotateWorldRight", throwIfNotFound: true);
             m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
+            m_Gameplay_RotateCamera = m_Gameplay.FindAction("RotateCamera", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -491,6 +534,7 @@ namespace Gameplay.Input
         private readonly InputAction m_Gameplay_RotateWorldLeft;
         private readonly InputAction m_Gameplay_RotateWorldRight;
         private readonly InputAction m_Gameplay_Dash;
+        private readonly InputAction m_Gameplay_RotateCamera;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -526,6 +570,10 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/Dash".
             /// </summary>
             public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/RotateCamera".
+            /// </summary>
+            public InputAction @RotateCamera => m_Wrapper.m_Gameplay_RotateCamera;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -570,6 +618,9 @@ namespace Gameplay.Input
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
+                @RotateCamera.started += instance.OnRotateCamera;
+                @RotateCamera.performed += instance.OnRotateCamera;
+                @RotateCamera.canceled += instance.OnRotateCamera;
             }
 
             /// <summary>
@@ -599,6 +650,9 @@ namespace Gameplay.Input
                 @Dash.started -= instance.OnDash;
                 @Dash.performed -= instance.OnDash;
                 @Dash.canceled -= instance.OnDash;
+                @RotateCamera.started -= instance.OnRotateCamera;
+                @RotateCamera.performed -= instance.OnRotateCamera;
+                @RotateCamera.canceled -= instance.OnRotateCamera;
             }
 
             /// <summary>
@@ -707,6 +761,13 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDash(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RotateCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRotateCamera(InputAction.CallbackContext context);
         }
     }
 }

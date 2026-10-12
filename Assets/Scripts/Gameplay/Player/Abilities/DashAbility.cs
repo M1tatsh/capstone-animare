@@ -10,7 +10,6 @@ namespace Gameplay.Player
         [SerializeField] private float dashCooldown = 0.4f;
         [SerializeField] private int maxAirDashes = 1;
 
-        private Rigidbody rb;
         private PlayerMovement playerMovement;
         private CollisionCheck collisionCheck;
 
@@ -21,7 +20,6 @@ namespace Gameplay.Player
 
         void Awake()
         {
-            rb = GetComponent<Rigidbody>();
             playerMovement = GetComponent<PlayerMovement>();
             collisionCheck = GetComponent<CollisionCheck>();
         }
@@ -72,7 +70,10 @@ namespace Gameplay.Player
                 return;
             }
 
-            rb.linearVelocity = playerMovement.GetMoveAxis() * (dashSign * dashSpeed);
+            //Josh: playermovement moves the player on the grid now, so the dash sets its speed there instead of on the rb.
+            //dashSign is -1 for the left side of the screen and 1 for the right side, in whichever view the camera is in.
+            playerMovement.HorizontalVelocity = dashSign * dashSpeed;
+            playerMovement.VerticalVelocity = 0f;
             dashTimer -= Time.fixedDeltaTime;
 
             if (dashTimer <= 0f)

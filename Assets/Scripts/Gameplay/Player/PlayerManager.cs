@@ -17,7 +17,7 @@ namespace Gameplay.Player
                 GameObject player = Instantiate(playerPrefab);
                 player.transform.position = transform.position;
 
-                FindAnyObjectByType<Camera>().transform.SetParent(player.transform);
+                //FindAnyObjectByType<Camera>().transform.SetParent(player.transform);
             }
         }
 }

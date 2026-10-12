@@ -1,22 +1,26 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Gameplay.Mechanics;
+using Gameplay.Rotation;
 
 namespace Gameplay.Player
 {
     /// <summary>
     /// Handles player actions through input actions assigned to the player upon initialization.
     /// </summary>
+    [RequireComponent(typeof(PlayerMovement))]
+    [RequireComponent(typeof(DashAbility))]
+    [RequireComponent(typeof(DoubleJumpAbility))]
+    [RequireComponent(typeof(GlideAbility))]
     public class PlayerController : MonoBehaviour
     {
         #region variables
         private Vector2 move;
         private PlayerMovement playerMovement;
         private RadialSelection radialSelection;
-        private PlatformManager platformManager;
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
         private GlideAbility glideAbility;
+        private ViewRotator viewRotator;
         #endregion
 
         void Start()
@@ -25,23 +29,22 @@ namespace Gameplay.Player
             dashAbility = GetComponent<DashAbility>();
             doubleJumpAbility = GetComponent<DoubleJumpAbility>();
             glideAbility = GetComponent<GlideAbility>();
+
             radialSelection = FindAnyObjectByType<RadialSelection>();
-            platformManager = FindAnyObjectByType<PlatformManager>();
+            viewRotator = FindAnyObjectByType<ViewRotator>();
 
-            if (playerMovement == null)
-            {
-                Debug.LogError("PlayerController: Game Object is missing Player Movement component!");
-            }
-
+            #region ThrowExceptions
             if (radialSelection == null)
             {
                 Debug.LogError("PlayerController: RadialSelection is missing in the scene!");
             }
 
-            if (platformManager == null)
+            if (viewRotator == null)
             {
-                Debug.LogError("PlayerController: Platform Manager is missing in the scene!");
+                // viewRotator is null here, so calling a method on it would crash. nameof gives the class name safely.
+                Debug.LogError($"PlayerController: {nameof(ViewRotator)} is missing in the scene!");
             }
+            #endregion
         }
 
         /// <summary>
@@ -52,6 +55,7 @@ namespace Gameplay.Player
         public void OnMove(InputValue value)
         {
             move = value.Get<Vector2>();
+            playerMovement.SetMoveInput(move.x);
             //Debug.Log($"PlayerController | X:{move.x} Y:{move.y}");
         }
 
@@ -82,6 +86,12 @@ namespace Gameplay.Player
 
             playerMovement.IsJumpPressed = button.isPressed;
 
+            if (button.isPressed)
+            {
+                //queues the jump request
+                playerMovement.RequestJump();
+            }
+
             if (!button.isPressed && !wasGliding)
             {
                 playerMovement.OnJumpReleased();
@@ -109,21 +119,27 @@ namespace Gameplay.Player
                 radialSelection.SetMenuState(value.isPressed);
             }
         }
-        public void OnRotateWorldLeft(InputValue button)
+        /// <summary>
+        /// Called when the input assigned to the action "RotateCamera" changes (Q = -1, E = 1, released = 0).
+        /// </summary>
+        public void OnRotateCamera(InputValue value)
         {
-            platformManager.rotateLeft = button.isPressed;
-        }
+            if (viewRotator == null)
+            {
+                return;
+            }
 
-        public void OnRotateWorldRight(InputValue button)
-        {
-            platformManager.rotateRight = button.isPressed;
+            int rotateDirection = Mathf.RoundToInt(value.Get<float>());
+
+            if(!viewRotator.IsRotating)
+                viewRotator.RotateDir = rotateDirection;
         }
 
         private void FixedUpdate()
         {
             //Vector3 movement2D = new Vector3(move.x, move.y, 0f);
 
-            playerMovement.Walk(move.x);
+            //playerMovement.Walk(move.x);
         }
     }
 }

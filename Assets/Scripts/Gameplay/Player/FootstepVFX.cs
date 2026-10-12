@@ -57,7 +57,8 @@ namespace Gameplay.Player
         void Update()
         {
             Vector3 moveAxis = playerMovement.GetMoveAxis();
-            Vector3 velocity = rb.linearVelocity;
+            //Josh: the rb is kinematic now so I included a new way to retrieve movement data
+            Vector3 velocity = playerMovement.WorldVelocity;
             float moveSpeed = Vector3.Dot(velocity, moveAxis);
 
             bool isWalking = collisionCheck.IsGrounded
