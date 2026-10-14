@@ -3,7 +3,7 @@ using UnityEngine;
 public class RespawnObject : MonoBehaviour
 {
 
-    private Collider collider;
+    //private Collider collider;
 
     //public void OnCollision
 }

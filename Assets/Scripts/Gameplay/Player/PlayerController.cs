@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Gameplay.Rotation;
+using Gameplay.Dialogue;
 
 namespace Gameplay.Player
 {
@@ -21,6 +22,7 @@ namespace Gameplay.Player
         private DoubleJumpAbility doubleJumpAbility;
         private GlideAbility glideAbility;
         private ViewRotator viewRotator;
+        private ContextDialogueManager dialogueManager;
         #endregion
 
         void Start()
@@ -32,6 +34,8 @@ namespace Gameplay.Player
 
             radialSelection = FindAnyObjectByType<RadialSelection>();
             viewRotator = FindAnyObjectByType<ViewRotator>();
+            //optional: scenes without contextual dialogue simply have no manager.
+            dialogueManager = FindAnyObjectByType<ContextDialogueManager>();
 
             #region ThrowExceptions
             if (radialSelection == null)
@@ -56,6 +60,7 @@ namespace Gameplay.Player
         {
             move = value.Get<Vector2>();
             playerMovement.SetMoveInput(move.x);
+            playerMovement.SetVerticalMoveInput(move.y);
             //Debug.Log($"PlayerController | X:{move.x} Y:{move.y}");
         }
 
@@ -133,6 +138,18 @@ namespace Gameplay.Player
 
             if(!viewRotator.IsRotating)
                 viewRotator.RotateDir = rotateDirection;
+        }
+
+        /// <summary>
+        /// Called when the input assigned to the action "Interact" is pressed (F / gamepad left face button).
+        /// Shows the next dialogue page or lets the object next to the player react.
+        /// </summary>
+        public void OnInteract(InputValue button)
+        {
+            if (button.isPressed && dialogueManager != null)
+            {
+                dialogueManager.Interact();
+            }
         }
 
         private void FixedUpdate()

@@ -11,11 +11,15 @@ namespace Gameplay.Player
     /// The change is faded with DOTween: the player's own colors are tinted toward the silhouette color and back.
     /// If a silhouette material is assigned, it is swapped in once the fade to dark has finished,
     /// and swapped out again before the fade back starts.
+    ///
+    /// Sprites (SpriteRenderer) are tinted through their Color instead of their material. They keep their own
+    /// material even when a silhouette material is assigned, because a mesh material can't draw a sprite.
     /// </summary>
     [RequireComponent(typeof(PlayerMovement))]
     public class PlayerSilhouette : MonoBehaviour
     {
-        [Tooltip("Optional. For example a transparent URP Unlit material. Leave empty to only tint the player's own materials.")]
+        [Tooltip("Optional. For example a transparent URP Unlit material. Leave empty to only tint the player's own materials. " +
+            "Only used on meshes; sprites are always tinted instead.")]
         [SerializeField] private Material silhouetteMaterial;
         [Tooltip("The color the player fades to.")]
         [SerializeField] private Color silhouetteColor = new Color(0.1f, 0.1f, 0.15f, 1f);
@@ -33,6 +37,8 @@ namespace Gameplay.Player
         private Color[][] originalColors;
         private MaterialPropertyBlock tintBlock;
         private MaterialPropertyBlock emptyBlock;
+        private SpriteRenderer[] playerSprites;
+        private Color[] originalSpriteColors;
 
         //0 = the player's normal look, 1 = full silhouette. The tween moves this between the two.
         private float silhouetteAmount;
@@ -68,6 +74,15 @@ namespace Gameplay.Player
 
             tintBlock = new MaterialPropertyBlock();
             emptyBlock = new MaterialPropertyBlock();
+
+            //sprites: remember each one's own color, the same as the mesh colors above.
+            playerSprites = GetComponentsInChildren<SpriteRenderer>(true);
+            originalSpriteColors = new Color[playerSprites.Length];
+
+            for (int i = 0; i < playerSprites.Length; i++)
+            {
+                originalSpriteColors[i] = playerSprites[i].color;
+            }
         }
 
         void LateUpdate()
@@ -131,6 +146,9 @@ namespace Gameplay.Player
         /// </summary>
         private void ApplyTint()
         {
+            //sprites never swap material, so they are tinted even while the meshes use the silhouette material.
+            ApplySpriteTint();
+
             if (isUsingSilhouetteMaterial)
                 return;
 
@@ -153,6 +171,27 @@ namespace Gameplay.Player
                     tintBlock.SetColor(ColorId, tintedColor);
                     playerMeshes[i].SetPropertyBlock(tintBlock, slot);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tints every sprite part of the way from its own color to the silhouette color.
+        /// A sprite's color multiplies its picture, so a dark color keeps the sprite's shape but darkens it.
+        /// </summary>
+        private void ApplySpriteTint()
+        {
+            for (int i = 0; i < playerSprites.Length; i++)
+            {
+                if (playerSprites[i] == null)
+                    continue;
+
+                Color originalColor = originalSpriteColors[i];
+                Color tintedColor = Color.Lerp(originalColor, silhouetteColor, silhouetteAmount);
+
+                //keep the sprite's own see-through amount, only the color changes.
+                tintedColor.a = originalColor.a;
+
+                playerSprites[i].color = tintedColor;
             }
         }
 

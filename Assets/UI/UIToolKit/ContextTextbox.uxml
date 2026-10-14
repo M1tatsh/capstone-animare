@@ -1,0 +1,10 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="ContextTextbox.uss"/>
+    <ui:VisualElement name="ContextLayer" picking-mode="Ignore" class="context-layer">
+        <ui:VisualElement name="ContextTextbox" picking-mode="Ignore" class="context-textbox">
+            <ui:VisualElement name="ContextImage" picking-mode="Ignore" class="context-image"/>
+            <ui:Label name="ContextText" text="[F] Interact" picking-mode="Ignore" class="context-text"/>
+            <ui:Label name="ContextHint" text="[F] Next" picking-mode="Ignore" class="context-hint"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

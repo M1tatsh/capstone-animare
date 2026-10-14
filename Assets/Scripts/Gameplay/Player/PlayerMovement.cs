@@ -1,3 +1,4 @@
+using Data.Audio;
 using Gameplay.Rotation;
 using UnityEngine;
 
@@ -45,6 +46,13 @@ namespace Gameplay.Player
 
         //Movement logic variables
         private float moveInput;
+        //up/down on the move stick or W/S. Only used for dropping through one-way blocks.
+        private float verticalMoveInput;
+        [Tooltip("How far down the player has to hold for Down + Jump to drop through a one-way block.")]
+        [SerializeField] private float dropInputThreshold = 0.5f;
+        //while dropping, the one-way block the player was standing on (and any at that height) is ignored.
+        private bool isDroppingThrough;
+        private float dropThroughHeight;
         private Vector2 velocity;
         private float jumpBufferTimer;
         [SerializeField] private float jumpBufferTime = 0.4f;
@@ -58,8 +66,24 @@ namespace Gameplay.Player
         private bool isGliding = false;
         private bool isFrozen;
         private bool isGrounded;
-        //for background mode shifts.
         private bool isBehindGeometry;
+        private bool isWaitingToSnapDepth;
+
+        //sound
+        [Header("Sounds")]
+        [SerializeField] private SoundEffect jumpSound;
+        [SerializeField] private SoundEffect landSound;
+        [Tooltip("The landing sound only plays when falling at least this fast, so stepping off a tiny ledge stays quiet.")]
+        [SerializeField] private float landSoundMinimumFallSpeed = 5f;
+        [SerializeField] private SoundEffect footstepSound;
+        [Tooltip("Seconds between footstep sounds while walking.")]
+        [SerializeField] private float footstepInterval = 0.3f;
+        [SerializeField] private SoundEffect dropThroughSound;
+        [Tooltip("The player's sounds are muffled while they are behind a building (in background mode).")]
+        [SerializeField] private bool muffleSoundsBehindBuildings = true;
+        [SerializeField] private float behindBuildingMuffleCutoff = 1200f;
+        private float footstepTimer;
+        private bool wasGroundedLastFrame;
 
         //Local instance objects and other monobehaviors
         private CollisionCheck collisionCheck;
@@ -80,6 +104,9 @@ namespace Gameplay.Player
 
         void Start()
         {
+            //sounds in the world (Sound Effect Emitters) are heard from the player's position.
+            AudioManager.Listener = transform;
+
             if (grid == null)
             {
                 Debug.LogError("PlayerMovement: There is no BlockGrid in this scene, so the player cannot move. " +
@@ -107,8 +134,16 @@ namespace Gameplay.Player
             {
                 UpdateDepthFromGround(nearestToCamera: false);
             }
+            wasGroundedLastFrame = isGrounded;
 
             ApplyTransform();
+        }
+
+        void OnDestroy()
+        {
+            //don't leave the AudioManager listening from a player that no longer exists.
+            if (AudioManager.Listener == transform)
+                AudioManager.Listener = null;
         }
 
         //using update because movement doesn't rely on physics anymore hahahahaha teeheepero
@@ -128,16 +163,40 @@ namespace Gameplay.Player
 
             jumpBufferTimer -= deltaTime;
 
+            //Down + Jump on a one-way block drops through it instead of jumping.
+            if (isGrounded && jumpBufferTimer > 0f && !isDashing
+                && verticalMoveInput < -dropInputThreshold && IsStandingOnlyOnOneWay())
+            {
+                StartDropThrough();
+            }
+
             if (isGrounded && jumpBufferTimer > 0f && !isDashing)
             {
                 Jump(jumpForce);
                 isJumpPressed = false;
             }
 
+            float horizontalBeforeMoving = horizontal;
+            float verticalBeforeMoving = vertical;
+            //saved before moving, because landing sets the falling speed back to 0.
+            float fallSpeedBeforeMoving = -velocity.y;
+
             Walk(velocity.x * deltaTime);
             MoveVertical(velocity.y * deltaTime);
 
             UpdateGrounded();
+
+            //landed this frame after falling fast enough.
+            if (isGrounded && !wasGroundedLastFrame && fallSpeedBeforeMoving >= landSoundMinimumFallSpeed)
+            {
+                PlayPlayerSound(landSound);
+            }
+            wasGroundedLastFrame = isGrounded;
+
+            bool isWalking = isGrounded && !isDashing && Mathf.Abs(horizontal - horizontalBeforeMoving) > 0.001f;
+            UpdateFootsteps(deltaTime, isWalking);
+
+            bool movedThisFrame = horizontal != horizontalBeforeMoving || vertical != verticalBeforeMoving;
 
             if (isBehindGeometry)
             {
@@ -146,7 +205,16 @@ namespace Gameplay.Player
             }
             else
             {
-                if (isGrounded)
+                if (isWaitingToSnapDepth)
+                {
+                    //the first step (or landing) after a rotation pulls the player to the depth nearest the camera.
+                    if (movedThisFrame && isGrounded)
+                    {
+                        isWaitingToSnapDepth = false;
+                        UpdateDepthFromGround(nearestToCamera: true);
+                    }
+                }
+                else if (isGrounded)
                 {
                     UpdateDepthFromGround(nearestToCamera: false);
                 }
@@ -177,6 +245,14 @@ namespace Gameplay.Player
         {
             if (!isFrozen)
                 jumpBufferTimer = jumpBufferTime;
+        }
+
+        /// <summary>
+        /// Up (positive) or down (negative) on the move input. Holding down while pressing Jump drops through one-way blocks.
+        /// </summary>
+        public void SetVerticalMoveInput(float input)
+        {
+            verticalMoveInput = Mathf.Clamp(input, -1f, 1f);
         }
 
         public void SetMoveInput(float input)
@@ -242,6 +318,7 @@ namespace Gameplay.Player
             }
 
             float newVertical = vertical + distance;
+            float feetBeforeMoving = vertical - halfSize.y;
 
             if (IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
                 newVertical - halfSize.y, newVertical + halfSize.y))
@@ -260,6 +337,19 @@ namespace Gameplay.Player
                     int blockedRow = BlockGrid.CellIndex(newVertical - halfSize.y + BlockGrid.EdgeTolerance);
                     newVertical = blockedRow + 0.5f + halfSize.y;
                 }
+
+                velocity.y = 0;
+            }
+
+            //one-way blocks: only stop the player when falling onto their top from above.
+            if (distance < 0 && LandsOnOneWay(horizontal - halfSize.x, horizontal + halfSize.x,
+                feetBeforeMoving, newVertical - halfSize.y, out float oneWayTop))
+            {
+                float landedVertical = oneWayTop + halfSize.y;
+
+                //keep whichever landing is higher, in case a solid block was also reached this frame.
+                if (landedVertical > newVertical)
+                    newVertical = landedVertical;
 
                 velocity.y = 0;
             }
@@ -283,6 +373,8 @@ namespace Gameplay.Player
 
                 isGrounded = false;
                 collisionCheck.IsGrounded = false;
+
+                PlayPlayerSound(jumpSound);
             }
 
         }
@@ -312,6 +404,8 @@ namespace Gameplay.Player
         {
             //a teleport always lands the player back in the normal flattened view.
             isBehindGeometry = false;
+            isWaitingToSnapDepth = false;
+            isDroppingThrough = false;
 
             //from a rotated view, a block somewhere else in the level can line up with the target spot.
             //FindPlacement slides the player sideways to a free column, the same way a rotation does.
@@ -330,6 +424,8 @@ namespace Gameplay.Player
             velocity = Vector2.zero;
 
             UpdateGrounded();
+            //a teleport is not a landing, so no landing sound.
+            wasGroundedLastFrame = isGrounded;
 
             if (isGrounded)
             {
@@ -365,6 +461,7 @@ namespace Gameplay.Player
             horizontal = Vector3.Dot(world, (Vector3)ViewAxes.Right(view));
             depth = Vector3.Dot(world, (Vector3)ViewAxes.Forward(view));
             velocity = Vector2.zero;
+            isDroppingThrough = false;
 
             int depthLayer = FindFreeDepthLayer(FindStandingDepthLayer());
 
@@ -375,22 +472,23 @@ namespace Gameplay.Player
                 horizontal = nudgedHorizontal;
                 depth = nudgedDepth;
                 isBehindGeometry = false;
+                isWaitingToSnapDepth = true;
             }
             else if (ShouldBeBehindGeometry(depthLayer))
             {
                 //keep the player where they really are until nothing is in front of them.
                 isBehindGeometry = true;
+                isWaitingToSnapDepth = false;
                 depth = depthLayer;
             }
             else
             {
+                //the player stays exactly where they are; Update pulls them to the nearest depth once they move.
                 isBehindGeometry = false;
+                isWaitingToSnapDepth = true;
             }
 
             UpdateGrounded();
-
-            if (!isBehindGeometry && isGrounded)
-                UpdateDepthFromGround(nearestToCamera: true);
 
             ApplyTransform();
         }
@@ -435,10 +533,15 @@ namespace Gameplay.Player
             float probeHeight = feetHeight - groundProbeDistance;
 
             bool groundIsBelow = IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
-                probeHeight, probeHeight);
+                probeHeight, probeHeight)
+                || LandsOnOneWay(horizontal - halfSize.x, horizontal + halfSize.x, feetHeight, probeHeight, out _);
 
             //moving upward never counts as grounded, otherwise a jump would be cancelled on its first frame.
             isGrounded = velocity.y <= 0 && groundIsBelow;
+
+            //the drop is over once the player lands on something or has fallen a full block below where it started.
+            if (isDroppingThrough && (isGrounded || feetHeight < dropThroughHeight - 1f))
+                isDroppingThrough = false;
             collisionCheck.IsGrounded = isGrounded;
         }
 
@@ -460,6 +563,115 @@ namespace Gameplay.Player
         }
 
         /// <summary>
+        /// One-way blocks: did the feet cross the top of one while moving down from previousFeet to newFeet?
+        /// Uses the flattened view normally, and only the player's own depth layer in background mode.
+        /// </summary>
+        private bool LandsOnOneWay(float minHorizontal, float maxHorizontal, float previousFeet, float newFeet, out float landingHeight)
+        {
+            //while dropping through, pretend the feet started half a block below the block that was dropped through,
+            //so its top (and any other one-way top at that height) can't catch the player again.
+            if (isDroppingThrough)
+                previousFeet = Mathf.Min(previousFeet, dropThroughHeight - 0.5f);
+
+            if (isBehindGeometry)
+                return grid.LandsOnOneWayAtDepth(view, minHorizontal, maxHorizontal, previousFeet, newFeet, DepthLayer, out landingHeight);
+
+            return grid.LandsOnOneWay(view, minHorizontal, maxHorizontal, previousFeet, newFeet, out landingHeight);
+        }
+
+        /// <summary>
+        /// True when the only thing under the player's feet is the top of a one-way block (no solid block).
+        /// </summary>
+        private bool IsStandingOnlyOnOneWay()
+        {
+            float leftEdge = horizontal - halfSize.x;
+            float rightEdge = horizontal + halfSize.x;
+            float feetHeight = vertical - halfSize.y;
+            float probeHeight = feetHeight - groundProbeDistance;
+
+            if (IsBlocked(leftEdge, rightEdge, probeHeight, probeHeight))
+                return false;
+
+            return LandsOnOneWay(leftEdge, rightEdge, feetHeight, probeHeight, out _);
+        }
+
+        /// <summary>
+        /// Starts falling through the one-way block under the player. Gravity takes it from here.
+        /// </summary>
+        private void StartDropThrough()
+        {
+            isDroppingThrough = true;
+            dropThroughHeight = vertical - halfSize.y;
+
+            //use up the jump press so it doesn't also jump.
+            jumpBufferTimer = 0f;
+            isJumpPressed = false;
+
+            isGrounded = false;
+            collisionCheck.IsGrounded = false;
+
+            PlayPlayerSound(dropThroughSound);
+        }
+
+        /// <summary>
+        /// Plays one of the player's own sounds. These are always at full volume (the player is the listener),
+        /// but they are muffled while the player is behind a building.
+        /// The ability scripts use this too, so all player sounds get the same muffling.
+        /// </summary>
+        public void PlayPlayerSound(SoundEffect sound)
+        {
+            if (sound == null)
+                return;
+
+            if (muffleSoundsBehindBuildings && isBehindGeometry)
+                AudioManager.PlaySoundEffect(sound, SoundPlayOptions.Muffled(behindBuildingMuffleCutoff));
+            else
+                AudioManager.PlaySoundEffect(sound);
+        }
+
+        /// <summary>
+        /// Plays a footstep every footstepInterval seconds while walking. The first step plays right away.
+        /// </summary>
+        private void UpdateFootsteps(float deltaTime, bool isWalking)
+        {
+            if (!isWalking)
+            {
+                footstepTimer = 0f;
+                return;
+            }
+
+            footstepTimer -= deltaTime;
+
+            if (footstepTimer <= 0f)
+            {
+                PlayPlayerSound(footstepSound);
+                footstepTimer = footstepInterval;
+            }
+        }
+
+        /// <summary>
+        /// Is there ground (a solid block, or the top of a one-way block) just under the feet on this depth layer?
+        /// </summary>
+        private bool HasGroundAtDepth(float leftEdge, float rightEdge, float feetHeight, int depthLayer)
+        {
+            float probeHeight = feetHeight - groundProbeDistance;
+
+            return grid.BlockedAtDepth(view, leftEdge, rightEdge, probeHeight, probeHeight, depthLayer)
+                || grid.LandsOnOneWayAtDepth(view, leftEdge, rightEdge, feetHeight, probeHeight, depthLayer, out _);
+        }
+
+        /// <summary>
+        /// Is there ground the camera can see just under the feet, in the flattened view?
+        /// </summary>
+        private bool HasVisibleGround(float leftEdge, float rightEdge, float feetHeight)
+        {
+            float probeHeight = feetHeight - groundProbeDistance;
+
+            return grid.Blocked(view, leftEdge, rightEdge, probeHeight, probeHeight)
+                || grid.LandsOnOneWay(view, leftEdge, rightEdge, feetHeight, probeHeight, out _);
+        }
+
+        /// <summary>
         /// True while something is in front of the player at this depth layer, so they have to stay in background mode.
         /// </summary>
         private bool ShouldBeBehindGeometry(int depthLayer)
@@ -468,7 +680,6 @@ namespace Gameplay.Player
             float rightEdge = horizontal + halfSize.x;
             float feetHeight = vertical - halfSize.y;
             float headHeight = vertical + halfSize.y;
-            float probeHeight = feetHeight - groundProbeDistance;
 
             //a building is between part of the player and the camera.
             if (grid.BehindBuilding(view, leftEdge, rightEdge, feetHeight, headHeight, depthLayer))
@@ -479,8 +690,8 @@ namespace Gameplay.Player
                 return true;
 
             //the player is standing on a platform on their own layer that the camera can't see.
-            bool standingOnOwnLayer = grid.BlockedAtDepth(view, leftEdge, rightEdge, probeHeight, probeHeight, depthLayer);
-            bool visibleGroundBelow = grid.Blocked(view, leftEdge, rightEdge, probeHeight, probeHeight);
+            bool standingOnOwnLayer = HasGroundAtDepth(leftEdge, rightEdge, feetHeight, depthLayer);
+            bool visibleGroundBelow = HasVisibleGround(leftEdge, rightEdge, feetHeight);
 
             return standingOnOwnLayer && !visibleGroundBelow;
         }
@@ -502,6 +713,7 @@ namespace Gameplay.Player
                 return;
 
             isBehindGeometry = true;
+            isWaitingToSnapDepth = false;
             depth = depthLayer;
 
             UpdateGrounded();
@@ -531,19 +743,19 @@ namespace Gameplay.Player
         {
             float leftEdge = horizontal - halfSize.x;
             float rightEdge = horizontal + halfSize.x;
-            float probeHeight = vertical - halfSize.y - groundProbeDistance;
+            float feetHeight = vertical - halfSize.y;
 
             int middleLayer = BlockGrid.CellIndex(depth);
             int nearLayer = BlockGrid.CellIndex(depth - halfSize.x + BlockGrid.EdgeTolerance);
             int farLayer = BlockGrid.CellIndex(depth + halfSize.x - BlockGrid.EdgeTolerance);
 
-            if (grid.BlockedAtDepth(view, leftEdge, rightEdge, probeHeight, probeHeight, middleLayer))
+            if (HasGroundAtDepth(leftEdge, rightEdge, feetHeight, middleLayer))
                 return middleLayer;
 
-            if (grid.BlockedAtDepth(view, leftEdge, rightEdge, probeHeight, probeHeight, nearLayer))
+            if (HasGroundAtDepth(leftEdge, rightEdge, feetHeight, nearLayer))
                 return nearLayer;
 
-            if (grid.BlockedAtDepth(view, leftEdge, rightEdge, probeHeight, probeHeight, farLayer))
+            if (HasGroundAtDepth(leftEdge, rightEdge, feetHeight, farLayer))
                 return farLayer;
 
             return middleLayer;
@@ -597,6 +809,10 @@ namespace Gameplay.Player
         /// </summary>
         void UpdateDepthFromGround(bool nearestToCamera)
         {
+            //some scenes turn depth pulling off on their BlockGrid.
+            if (!grid.AllowDepthPulling)
+                return;
+
             int row = BlockGrid.CellIndex(vertical - halfSize.y - groundProbeDistance);
             int currentDepth = Mathf.RoundToInt(depth);
 
@@ -665,6 +881,14 @@ namespace Gameplay.Player
         public bool IsGrounded
         {
             get { return isGrounded; }
+        }
+
+        /// <summary>
+        /// Which of the four views the camera is looking from (0, 1, 2 or 3). Used with ViewAxes.
+        /// </summary>
+        public int CurrentView
+        {
+            get { return view; }
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+using Data.Audio;
 using DG.Tweening;
 using Gameplay.Player;
 using UnityEngine;
@@ -19,6 +20,11 @@ namespace Gameplay.Rotation
         [SerializeField] float duration = 0.5f;
         [Tooltip("Keeps the pivot on top of the player, so the camera follows the player and turns around them.")]
         [SerializeField] bool pivotFollowsPlayer = true;
+
+        [Header("Sounds")]
+        [SerializeField] SoundEffect rotateSound;
+        [Tooltip("Plays when the player tries to rotate but can't (for example something would trap them).")]
+        [SerializeField] SoundEffect rotateBlockedSound;
 
         int view;
 
@@ -85,8 +91,12 @@ namespace Gameplay.Rotation
             //wrap to 0 once view reaches 4
             int nextView = (view + direction + 4) % 4;
             if (!player.CanRotateTo(nextView))
+            {
+                AudioManager.PlaySoundEffect(rotateBlockedSound);
                 return;
+            }
 
+            AudioManager.PlaySoundEffect(rotateSound);
             IsRotating = true;
             player.SetFrozen(true);
 

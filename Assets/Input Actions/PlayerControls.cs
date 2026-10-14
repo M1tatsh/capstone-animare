@@ -122,24 +122,6 @@ namespace Gameplay.Input
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateWorldLeft"",
-                    ""type"": ""Button"",
-                    ""id"": ""59a6b320-0d4c-4a94-bf8d-efa7299c21c1"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""RotateWorldRight"",
-                    ""type"": ""Button"",
-                    ""id"": ""268bc8a8-010d-46b5-b4a0-ec2ca65e7292"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Dash"",
                     ""type"": ""Button"",
                     ""id"": ""27b34866-982b-4a48-a8eb-f23a5b417d9c"",
@@ -156,6 +138,15 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""a9b52d1b-fcd8-432f-8a4c-67dd8a40bda4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -315,50 +306,6 @@ namespace Gameplay.Input
                 },
                 {
                     ""name"": """",
-                    ""id"": ""07001fcd-ae02-45bb-b5a7-187027983bff"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard"",
-                    ""action"": ""RotateWorldLeft"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""51794c7e-1f0c-4b3f-b815-c743eb4737e7"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""RotateWorldLeft"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bbbb3700-691b-47e5-af83-90b1f2214dd4"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard"",
-                    ""action"": ""RotateWorldRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9f574a87-fe8d-4582-a3af-f1fa93b76b94"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""RotateWorldRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""593261ca-bc09-4b26-aa1d-1680ba70ae9d"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
@@ -400,6 +347,28 @@ namespace Gameplay.Input
                     ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de307c1a-7d45-4d7a-9dec-2f2cd69f9d76"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64d672d4-d4b7-495c-b85d-90c2a78271ac"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -444,10 +413,9 @@ namespace Gameplay.Input
             m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
             m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
             m_Gameplay_TransformMenu = m_Gameplay.FindAction("TransformMenu", throwIfNotFound: true);
-            m_Gameplay_RotateWorldLeft = m_Gameplay.FindAction("RotateWorldLeft", throwIfNotFound: true);
-            m_Gameplay_RotateWorldRight = m_Gameplay.FindAction("RotateWorldRight", throwIfNotFound: true);
             m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
             m_Gameplay_RotateCamera = m_Gameplay.FindAction("RotateCamera", throwIfNotFound: true);
+            m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -531,10 +499,9 @@ namespace Gameplay.Input
         private readonly InputAction m_Gameplay_Move;
         private readonly InputAction m_Gameplay_Jump;
         private readonly InputAction m_Gameplay_TransformMenu;
-        private readonly InputAction m_Gameplay_RotateWorldLeft;
-        private readonly InputAction m_Gameplay_RotateWorldRight;
         private readonly InputAction m_Gameplay_Dash;
         private readonly InputAction m_Gameplay_RotateCamera;
+        private readonly InputAction m_Gameplay_Interact;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -559,14 +526,6 @@ namespace Gameplay.Input
             /// </summary>
             public InputAction @TransformMenu => m_Wrapper.m_Gameplay_TransformMenu;
             /// <summary>
-            /// Provides access to the underlying input action "Gameplay/RotateWorldLeft".
-            /// </summary>
-            public InputAction @RotateWorldLeft => m_Wrapper.m_Gameplay_RotateWorldLeft;
-            /// <summary>
-            /// Provides access to the underlying input action "Gameplay/RotateWorldRight".
-            /// </summary>
-            public InputAction @RotateWorldRight => m_Wrapper.m_Gameplay_RotateWorldRight;
-            /// <summary>
             /// Provides access to the underlying input action "Gameplay/Dash".
             /// </summary>
             public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
@@ -574,6 +533,10 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/RotateCamera".
             /// </summary>
             public InputAction @RotateCamera => m_Wrapper.m_Gameplay_RotateCamera;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/Interact".
+            /// </summary>
+            public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -609,18 +572,15 @@ namespace Gameplay.Input
                 @TransformMenu.started += instance.OnTransformMenu;
                 @TransformMenu.performed += instance.OnTransformMenu;
                 @TransformMenu.canceled += instance.OnTransformMenu;
-                @RotateWorldLeft.started += instance.OnRotateWorldLeft;
-                @RotateWorldLeft.performed += instance.OnRotateWorldLeft;
-                @RotateWorldLeft.canceled += instance.OnRotateWorldLeft;
-                @RotateWorldRight.started += instance.OnRotateWorldRight;
-                @RotateWorldRight.performed += instance.OnRotateWorldRight;
-                @RotateWorldRight.canceled += instance.OnRotateWorldRight;
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
                 @RotateCamera.started += instance.OnRotateCamera;
                 @RotateCamera.performed += instance.OnRotateCamera;
                 @RotateCamera.canceled += instance.OnRotateCamera;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
 
             /// <summary>
@@ -641,18 +601,15 @@ namespace Gameplay.Input
                 @TransformMenu.started -= instance.OnTransformMenu;
                 @TransformMenu.performed -= instance.OnTransformMenu;
                 @TransformMenu.canceled -= instance.OnTransformMenu;
-                @RotateWorldLeft.started -= instance.OnRotateWorldLeft;
-                @RotateWorldLeft.performed -= instance.OnRotateWorldLeft;
-                @RotateWorldLeft.canceled -= instance.OnRotateWorldLeft;
-                @RotateWorldRight.started -= instance.OnRotateWorldRight;
-                @RotateWorldRight.performed -= instance.OnRotateWorldRight;
-                @RotateWorldRight.canceled -= instance.OnRotateWorldRight;
                 @Dash.started -= instance.OnDash;
                 @Dash.performed -= instance.OnDash;
                 @Dash.canceled -= instance.OnDash;
                 @RotateCamera.started -= instance.OnRotateCamera;
                 @RotateCamera.performed -= instance.OnRotateCamera;
                 @RotateCamera.canceled -= instance.OnRotateCamera;
+                @Interact.started -= instance.OnInteract;
+                @Interact.performed -= instance.OnInteract;
+                @Interact.canceled -= instance.OnInteract;
             }
 
             /// <summary>
@@ -741,20 +698,6 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTransformMenu(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "RotateWorldLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnRotateWorldLeft(InputAction.CallbackContext context);
-            /// <summary>
-            /// Method invoked when associated input action "RotateWorldRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnRotateWorldRight(InputAction.CallbackContext context);
-            /// <summary>
             /// Method invoked when associated input action "Dash" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -768,6 +711,13 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRotateCamera(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInteract(InputAction.CallbackContext context);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Data.Audio;
 using UnityEngine;
 
 namespace Gameplay.Player
@@ -7,6 +8,8 @@ namespace Gameplay.Player
     {
         [SerializeField] private int extraJumps = 1;
         [SerializeField] private float jumpForceMultiplier = 1f;
+        //Josh: sound for the air jump. Leave empty for no sound.
+        [SerializeField] private SoundEffect airJumpSound;
 
         private PlayerMovement playerMovement;
         private CollisionCheck collisionCheck;
@@ -29,6 +32,7 @@ namespace Gameplay.Player
             //Josh: playerMovement moves the player on the grid now, so the air jump sets the upward speed there.
             //replacing the speed (instead of adding to it) cancels any falling speed first, the same as before.
             playerMovement.VerticalVelocity = playerMovement.JumpForce * jumpForceMultiplier;
+            playerMovement.PlayPlayerSound(airJumpSound);
             return true;
         }
 

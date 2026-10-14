@@ -1,0 +1,45 @@
+/* Covers the whole screen so the textbox can be placed anywhere. Ignores the mouse. */
+.context-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* ContextDialogueManager sets left and top to the point next to the object.
+   translate moves the box so it sits centered just above that point. */
+.context-textbox {
+    position: absolute;
+    translate: -50% -100%;
+    max-width: 360px;
+    padding: 10px 14px 10px 14px;
+    align-items: center;
+    background-color: rgba(20, 18, 28, 0.9);
+    border-width: 2px;
+    border-color: rgb(235, 230, 210);
+    border-radius: 6px;
+}
+
+.context-image {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 6px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.context-text {
+    color: rgb(245, 240, 225);
+    font-size: 24px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+}
+
+.context-hint {
+    align-self: flex-end;
+    margin-top: 6px;
+    color: rgb(180, 175, 160);
+    font-size: 18px;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+}

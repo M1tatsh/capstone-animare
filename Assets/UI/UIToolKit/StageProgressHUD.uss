@@ -1,0 +1,27 @@
+/* Covers the whole screen and ignores the mouse, so the panel can sit in a corner. */
+.progress-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Top-left corner, same look as the dialogue textbox. */
+.progress-panel {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    padding: 6px 14px 6px 14px;
+    background-color: rgba(20, 18, 28, 0.9);
+    border-width: 2px;
+    border-color: rgb(235, 230, 210);
+    border-radius: 6px;
+    transform-origin: left top;
+}
+
+.progress-count {
+    color: rgb(245, 240, 225);
+    font-size: 28px;
+    -unity-font-definition: url("project://database/Assets/Art/UI/Font/m6x11plus.ttf?fileID=12800000&guid=5c4849afec005f14bb5956122a7bc595&type=3#m6x11plus");
+}

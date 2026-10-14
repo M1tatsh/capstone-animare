@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="StageProgressHUD.uss"/>
+    <ui:VisualElement name="ProgressLayer" picking-mode="Ignore" class="progress-layer">
+        <ui:VisualElement name="ProgressPanel" picking-mode="Ignore" class="progress-panel">
+            <ui:Label name="ProgressCount" text="0 / 0" picking-mode="Ignore" class="progress-count"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

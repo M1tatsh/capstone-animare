@@ -1,3 +1,4 @@
+using Data.Audio;
 using UnityEngine;
 
 namespace Gameplay.Player
@@ -9,6 +10,8 @@ namespace Gameplay.Player
         [SerializeField] private float dashDuration = 0.2f;
         [SerializeField] private float dashCooldown = 0.4f;
         [SerializeField] private int maxAirDashes = 1;
+        //Josh: sound for the dash. Leave empty for no sound.
+        [SerializeField] private SoundEffect dashSound;
 
         private PlayerMovement playerMovement;
         private CollisionCheck collisionCheck;
@@ -49,6 +52,8 @@ namespace Gameplay.Player
             dashSign = Mathf.Abs(input) > 0.1f ? Mathf.Sign(input) : playerMovement.LastMoveSign;
             dashTimer = dashDuration;
             playerMovement.IsDashing = true;
+            //Josh: played through playermovement so it gets muffled behind buildings like the other player sounds.
+            playerMovement.PlayPlayerSound(dashSound);
             return true;
         }
 

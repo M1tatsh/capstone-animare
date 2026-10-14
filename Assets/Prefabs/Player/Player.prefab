@@ -23,6 +23,8 @@ GameObject:
   - component: {fileID: 417637772631498720}
   - component: {fileID: 1210778331805400983}
   - component: {fileID: 604689127515413120}
+  - component: {fileID: -9149280644360051109}
+  - component: {fileID: 5545633500534809922}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -44,6 +46,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1870679785667185450}
+  - {fileID: 1491254042509033740}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5961694877178225949
@@ -61,7 +64,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3719121380565931121}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -229,7 +232,16 @@ MonoBehaviour:
   halfSize: {x: 0.25, y: 0.5}
   groundProbeDistance: 0.05
   respawnBelowHeight: -30
+  dropInputThreshold: 0.5
   jumpBufferTime: 0.4
+  jumpSound: {fileID: 11400000, guid: d7b7954154017b94a963716de7bcd2ed, type: 2}
+  landSound: {fileID: 0}
+  landSoundMinimumFallSpeed: 5
+  footstepSound: {fileID: 0}
+  footstepInterval: 0.3
+  dropThroughSound: {fileID: 0}
+  muffleSoundsBehindBuildings: 1
+  behindBuildingMuffleCutoff: 1200
   grid: {fileID: 0}
 --- !u!114 &-1401167691037079110
 MonoBehaviour:
@@ -244,7 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.PlayerSilhouette
   silhouetteMaterial: {fileID: 2100000, guid: d830f2ce0fe93d14296aca32d6de2866, type: 2}
-  silhouetteColor: {r: 1, g: 1, b: 1, a: 1}
+  silhouetteColor: {r: 0, g: 0, b: 0, a: 1}
   fadeDuration: 0.25
   fadeEase: 6
 --- !u!114 &8260852435359028652
@@ -284,6 +296,10 @@ MonoBehaviour:
   foxModel: {fileID: 0}
   rabbitModel: {fileID: 0}
   crowModel: {fileID: 0}
+  reaperSound: {fileID: 0}
+  foxSound: {fileID: 11400000, guid: b699c8b485c5d4c47b20d0af77cb7893, type: 2}
+  rabbitSound: {fileID: 11400000, guid: 8a8f8417cea5a6e4382e963b1285905b, type: 2}
+  crowSound: {fileID: 0}
 --- !u!114 &417637772631498720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.DoubleJumpAbility
   extraJumps: 1
   jumpForceMultiplier: 1
+  airJumpSound: {fileID: 11400000, guid: 8459971787d1a8440a07533bf5d5eaa2, type: 2}
 --- !u!114 &1210778331805400983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +331,7 @@ MonoBehaviour:
   dashDuration: 0.2
   dashCooldown: 0.4
   maxAirDashes: 1
+  dashSound: {fileID: 11400000, guid: 1349ecce78143974488e87b074077081, type: 2}
 --- !u!114 &604689127515413120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +346,161 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.GlideAbility
   glideFallSpeed: 1.5
   glideAcceleration: 40
+  glideStartSound: {fileID: 0}
+--- !u!95 &-9149280644360051109
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 02e3dfdf8c730d44a8d6e6bc3dbf58a6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5545633500534809922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 403f5fd9e0589214cb230400939b1041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.PlayerAnimation
+  animator: {fileID: 422944462687481257}
+  spriteRenderer: {fileID: 7598856777836857623}
+  walkingParameterName: isWalking
+  groundedParameterName: Grounded
+  minimumWalkSpeed: 0.1
+  spriteFacesRight: 0
+--- !u!1 &3817237226668949842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1491254042509033740}
+  - component: {fileID: 7598856777836857623}
+  - component: {fileID: 422944462687481257}
+  m_Layer: 9
+  m_Name: Sprite
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1491254042509033740
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3817237226668949842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.06, z: 0}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 3448388774881205609}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &7598856777836857623
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3817237226668949842}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 1294418686, guid: f0902cc0b2346bc4286028bea76494d1, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1.28, y: 1.28}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!95 &422944462687481257
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3817237226668949842}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 02e3dfdf8c730d44a8d6e6bc3dbf58a6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1358012660624172141
 PrefabInstance:
   m_ObjectHideFlags: 0

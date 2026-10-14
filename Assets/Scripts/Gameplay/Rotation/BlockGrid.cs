@@ -5,7 +5,12 @@ namespace Gameplay.Rotation
 {
     /// <summary>
     /// Stores every solid block in the level as a cell on a 3D grid of whole numbers.
-    /// Each child of this object counts as one platform block, and its position is rounded to the nearest cell.
+    /// Each block under this object counts as one platform cell, and its position is rounded to the nearest cell.
+    ///
+    /// Blocks can be grouped: an empty object (no Renderer and no Collider) that has children is a group,
+    /// and the blocks inside it are read too, at any depth (for example Platforms > Island1 > Cube).
+    /// Anything else is a block, and its own children are treated as part of it (decorations), not as more blocks.
+    /// Putting OneWayBlock on a group makes every block inside that group one-way.
     /// A screen cell is solid if at least one platform block lines up behind it, no matter how deep it is.
     ///
     /// Meshes under the buildings parent are background. The player is never blocked by them,
@@ -28,15 +33,30 @@ namespace Gameplay.Rotation
             "and they hide any platform block that is behind them.")]
         [SerializeField] private Transform buildingsParent;
 
-        //every platform block in the level, as a 3D cell.
+        [Tooltip("On: the player's depth is pulled to the block they stand on (normal flatten behavior). " +
+            "Off: the player keeps their depth in this scene; flattened collision and rotation still work the same.")]
+        [SerializeField] private bool allowDepthPulling = true;
+
+        public bool AllowDepthPulling => allowDepthPulling;
+
+        //every solid platform block in the level, as a 3D cell.
         private readonly HashSet<Vector3Int> cells = new HashSet<Vector3Int>();
+
+        //every one-way platform block (top-only collision), as a 3D cell.
+        private readonly HashSet<Vector3Int> oneWayCells = new HashSet<Vector3Int>();
 
         //every cell covered by a background building.
         private readonly HashSet<Vector3Int> buildingCells = new HashSet<Vector3Int>();
 
         //one dictionary per view. The key is a screen cell (horizontal, vertical).
-        //the value is the depths of the platform blocks that can be seen behind that screen cell, nearest first.
+        //the value is the depths of the platform blocks (solid and one-way) that can be seen behind that screen cell, nearest first.
         private readonly Dictionary<Vector2Int, List<int>>[] depthsByScreenCell = new Dictionary<Vector2Int, List<int>>[ViewCount];
+
+        //per view: the screen cells with at least one visible solid block. These block the player from every side.
+        private readonly HashSet<Vector2Int>[] solidScreenCells = new HashSet<Vector2Int>[ViewCount];
+
+        //per view: the screen cells with at least one visible one-way block. These only hold the player up from above.
+        private readonly HashSet<Vector2Int>[] oneWayScreenCells = new HashSet<Vector2Int>[ViewCount];
 
         //one dictionary per view. The key is a screen cell, the value is the depth of the building nearest to the camera there.
         private readonly Dictionary<Vector2Int, int>[] nearestBuildingDepthByScreenCell = new Dictionary<Vector2Int, int>[ViewCount];
@@ -53,18 +73,12 @@ namespace Gameplay.Rotation
         public void Rebuild()
         {
             cells.Clear();
+            oneWayCells.Clear();
             buildingCells.Clear();
 
-            foreach (Transform block in transform)
+            foreach (Transform child in transform)
             {
-                if (!block.gameObject.activeInHierarchy)
-                    continue;
-
-                //the buildings parent is allowed to sit under this object without counting as a platform.
-                if (block == buildingsParent)
-                    continue;
-
-                cells.Add(Vector3Int.RoundToInt(block.position));
+                AddBlocksFrom(child, false);
             }
 
             if (buildingsParent != null)
@@ -99,34 +113,103 @@ namespace Gameplay.Rotation
                 nearestBuildingDepthByScreenCell[view] = buildingDepthsThisView;
 
                 Dictionary<Vector2Int, List<int>> screenCells = new Dictionary<Vector2Int, List<int>>();
+                HashSet<Vector2Int> solidCellsThisView = new HashSet<Vector2Int>();
+                HashSet<Vector2Int> oneWayCellsThisView = new HashSet<Vector2Int>();
 
-                foreach (Vector3Int cell in cells)
-                {
-                    Vector2Int screenCell = new Vector2Int(Dot(cell, right), cell.y);
-                    int platformDepth = Dot(cell, forward);
-
-                    //a platform with a building between it and the camera can't be seen from this view,
-                    //so it is left out and does not block or hold up the player from this view.
-                    if (buildingDepthsThisView.TryGetValue(screenCell, out int nearestBuildingDepth) && nearestBuildingDepth < platformDepth)
-                        continue;
-
-                    if (!screenCells.TryGetValue(screenCell, out List<int> depths))
-                    {
-                        depths = new List<int>();
-                        screenCells[screenCell] = depths;
-                    }
-
-                    depths.Add(platformDepth);   //smaller number means closer to the camera
-                }
+                AddVisiblePlatforms(cells, right, forward, buildingDepthsThisView, screenCells, solidCellsThisView);
+                AddVisiblePlatforms(oneWayCells, right, forward, buildingDepthsThisView, screenCells, oneWayCellsThisView);
 
                 foreach (List<int> depths in screenCells.Values)
                     depths.Sort();
 
                 depthsByScreenCell[view] = screenCells;
+                solidScreenCells[view] = solidCellsThisView;
+                oneWayScreenCells[view] = oneWayCellsThisView;
             }
         }
 
+        /// <summary>
+        /// Adds one object under the grid. A group is opened and everything inside it is added the same way
+        /// (this method calls itself for each child). Anything that isn't a group is one block.
+        /// </summary>
+        /// <param name="insideOneWayGroup">True when a group above this object has OneWayBlock on it.</param>
+        private void AddBlocksFrom(Transform current, bool insideOneWayGroup)
+        {
+            //turning off an object (or a whole group) removes it from the grid.
+            if (!current.gameObject.activeInHierarchy)
+                return;
+
+            //the buildings parent is allowed to sit under this object without counting as a platform.
+            if (current == buildingsParent)
+                return;
+
+            bool isOneWay = insideOneWayGroup || current.GetComponent<OneWayBlock>() != null;
+
+            if (IsGroup(current))
+            {
+                foreach (Transform child in current)
+                {
+                    AddBlocksFrom(child, isOneWay);
+                }
+
+                return;
+            }
+
+            Vector3Int blockCell = Vector3Int.RoundToInt(current.position);
+
+            if (isOneWay)
+                oneWayCells.Add(blockCell);
+            else
+                cells.Add(blockCell);
+        }
+
+        /// <summary>
+        /// A group is an empty object used to organize blocks: it has children, and nothing that is visible or solid.
+        /// An empty object with no children still counts as an invisible block, the same as before groups existed.
+        /// </summary>
+        private static bool IsGroup(Transform current)
+        {
+            if (current.childCount == 0)
+                return false;
+
+            bool hasRenderer = current.GetComponent<Renderer>() != null;
+            bool hasCollider = current.GetComponent<Collider>() != null;
+
+            return !hasRenderer && !hasCollider;
+        }
+
         static int Dot(Vector3Int a, Vector3Int b) => a.x * b.x + a.y * b.y + a.z * b.z;
+
+        /// <summary>
+        /// Flattens one set of platform blocks for one view. A platform with a building between it and the camera
+        /// can't be seen from this view, so it is left out and does not block or hold up the player from this view.
+        /// </summary>
+        static void AddVisiblePlatforms(
+            HashSet<Vector3Int> platformCells,
+            Vector3Int right,
+            Vector3Int forward,
+            Dictionary<Vector2Int, int> buildingDepthsThisView,
+            Dictionary<Vector2Int, List<int>> screenCells,
+            HashSet<Vector2Int> visibleScreenCells)
+        {
+            foreach (Vector3Int cell in platformCells)
+            {
+                Vector2Int screenCell = new Vector2Int(Dot(cell, right), cell.y);
+                int platformDepth = Dot(cell, forward);
+
+                if (buildingDepthsThisView.TryGetValue(screenCell, out int nearestBuildingDepth) && nearestBuildingDepth < platformDepth)
+                    continue;
+
+                if (!screenCells.TryGetValue(screenCell, out List<int> depths))
+                {
+                    depths = new List<int>();
+                    screenCells[screenCell] = depths;
+                }
+
+                depths.Add(platformDepth);   //smaller number means closer to the camera
+                visibleScreenCells.Add(screenCell);
+            }
+        }
 
         /// <summary>
         /// Adds every cell whose center is inside the mesh's bounding box.
@@ -182,7 +265,62 @@ namespace Gameplay.Rotation
         /// </summary>
         public bool IsSolid(int view, int column, int row)
         {
-            return depthsByScreenCell[view].ContainsKey(new Vector2Int(column, row));
+            //one-way blocks are not solid: the player only collides with their top (see LandsOnOneWay).
+            return solidScreenCells[view].Contains(new Vector2Int(column, row));
+        }
+
+        /// <summary>
+        /// One-way blocks: did the player's feet cross the top of a visible one-way block while moving down
+        /// from previousFeet to newFeet? Only tops the feet were at or above before the move count, which is
+        /// what lets the player jump up through these blocks.
+        /// </summary>
+        /// <param name="landingHeight">The highest top that was crossed (where the feet should stop).</param>
+        public bool LandsOnOneWay(int view, float minHorizontal, float maxHorizontal, float previousFeet, float newFeet, out float landingHeight)
+        {
+            return FindOneWayLanding(view, minHorizontal, maxHorizontal, previousFeet, newFeet, false, 0, out landingHeight);
+        }
+
+        /// <summary>
+        /// Background mode version of LandsOnOneWay: only one-way blocks on exactly this depth layer count.
+        /// </summary>
+        public bool LandsOnOneWayAtDepth(int view, float minHorizontal, float maxHorizontal, float previousFeet, float newFeet, int depth, out float landingHeight)
+        {
+            return FindOneWayLanding(view, minHorizontal, maxHorizontal, previousFeet, newFeet, true, depth, out landingHeight);
+        }
+
+        private bool FindOneWayLanding(int view, float minHorizontal, float maxHorizontal, float previousFeet, float newFeet,
+            bool onlyThisDepth, int depth, out float landingHeight)
+        {
+            landingHeight = 0f;
+
+            //the top of row r is at r + 0.5. A top counts if newFeet < top <= previousFeet.
+            int highestRow = Mathf.FloorToInt(previousFeet + EdgeTolerance - 0.5f);
+            int lowestRow = Mathf.FloorToInt(newFeet - 0.5f) + 1;
+
+            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
+            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
+
+            //check from the highest row down, so the first top found is the one the feet reach first.
+            for (int row = highestRow; row >= lowestRow; row--)
+            {
+                for (int column = firstColumn; column <= lastColumn; column++)
+                {
+                    bool hasOneWayBlock;
+
+                    if (onlyThisDepth)
+                        hasOneWayBlock = oneWayCells.Contains(CellAt(view, column, row, depth));
+                    else
+                        hasOneWayBlock = oneWayScreenCells[view].Contains(new Vector2Int(column, row));
+
+                    if (hasOneWayBlock)
+                    {
+                        landingHeight = row + 0.5f;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

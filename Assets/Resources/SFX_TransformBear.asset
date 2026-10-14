@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c559ed6bb61b94f41917f5f8c0ce536b, type: 3}
+  m_Name: SFX_TransformBear
+  m_EditorClassIdentifier: Assembly-CSharp::Data.Audio.SoundEffect
+  clips:
+  - {fileID: 8300000, guid: 02ce8d6f1cb52a84d9a6297e64ed2f8f, type: 3}
+  volume: 1
+  pitchRange: {x: 1, y: 1}
+  minimumTimeBetweenPlays: 0.05
+  mixerGroupOverride: {fileID: 0}

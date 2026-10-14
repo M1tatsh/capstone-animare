@@ -1,3 +1,4 @@
+using Data.Audio;
 using UnityEngine;
 
 namespace Gameplay.Player
@@ -7,6 +8,8 @@ namespace Gameplay.Player
     {
         [SerializeField] private float glideFallSpeed = 1.5f;
         [SerializeField] private float glideAcceleration = 40f;
+        //Josh: sound for when a glide starts. Leave empty for no sound.
+        [SerializeField] private SoundEffect glideStartSound;
 
         private PlayerMovement playerMovement;
         private CollisionCheck collisionCheck;
@@ -40,6 +43,12 @@ namespace Gameplay.Player
             {
                 EndGlide();
                 return;
+            }
+
+            //Josh: only on the first frame of the glide, not every frame while gliding.
+            if (!playerMovement.IsGliding)
+            {
+                playerMovement.PlayPlayerSound(glideStartSound);
             }
 
             playerMovement.IsGliding = true;
