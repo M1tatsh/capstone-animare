@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 407864905384117061}
   - component: {fileID: 8349637228735193640}
+  - component: {fileID: 7972535850152651067}
   m_Layer: 0
   m_Name: GameSystem
   m_TagString: Untagged
@@ -48,3 +49,21 @@ MonoBehaviour:
   player: {fileID: 0}
   duration: 0.5
   pivotFollowsPlayer: 1
+  rotateSound: {fileID: 11400000, guid: 1d6851dbf72ade2468912e67698911c0, type: 2}
+  rotateBlockedSound: {fileID: 11400000, guid: 1d6851dbf72ade2468912e67698911c0, type: 2}
+--- !u!114 &7972535850152651067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154548055557079826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b4290d0dba3ee4985b87958d465a2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Progression.StageProgress
+  requiredCount: 3
+  onUnlocked:
+    m_PersistentCalls:
+      m_Calls: []

@@ -2190,10 +2190,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5154548055557079826, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1435974690}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
 --- !u!1001 &83519728
 PrefabInstance:
@@ -32833,27 +32830,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1435974687 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5154548055557079826, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
-  m_PrefabInstance: {fileID: 76724543}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1435974690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435974687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7b4290d0dba3ee4985b87958d465a2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Progression.StageProgress
-  requiredCount: 3
-  onUnlocked:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &1436464549
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45355,97 +45331,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1959358791
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1959358792}
-  - component: {fileID: 1959358793}
-  - component: {fileID: 1959358794}
-  - component: {fileID: 1959358795}
-  m_Layer: 0
-  m_Name: DoorWay
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1959358792
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959358791}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28, y: 5, z: -22}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1959358793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959358791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6d3a0c70b3ad69418e3faefeaac39fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Dialogue.ContextDialogue
-  promptText: '[F] Interact'
-  promptImage: {fileID: 0}
-  pages: []
-  showDistance: 1.5
-  ignoreDepth: 0
-  textboxOffset: {x: 0, y: 1, z: 0}
-  onInteract:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1959358794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959358791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d45edc65b196d454aa081a69ff585077, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NextSceneObject
-  nextScene: LVL2_WIP
-  useFade: 1
-  fadeOutDuration: 0.5
-  fadeInDuration: 0.5
-  fadeColor: {r: 0, g: 0, b: 0, a: 1}
---- !u!114 &1959358795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959358791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceeeb8b6981f0934689af95a76e9782c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Progression.StageExitDoor
-  lockedPrompt: 'Locked: find {0} more'
-  unlockedPrompt: '[F] Enter'
-  lockedVisual: {fileID: 0}
-  unlockedVisual: {fileID: 0}
-  onUnlocked:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &1960443075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50495,6 +50380,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f999b0cce1f16754ebfee459632a0252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Rotation.OneWayBlock
+--- !u!1001 &7016503038692877270
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140292969154650159, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9065607887865519972, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: m_Name
+      value: DoorWay
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
 --- !u!1001 &7495854035519275215
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50677,4 +50619,4 @@ SceneRoots:
   - {fileID: 1521287427}
   - {fileID: 1871116164}
   - {fileID: 7495854035519275215}
-  - {fileID: 1959358792}
+  - {fileID: 7016503038692877270}
