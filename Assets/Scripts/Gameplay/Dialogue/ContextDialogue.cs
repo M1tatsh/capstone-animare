@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Data.Audio;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -17,6 +18,10 @@ namespace Gameplay.Dialogue
         [Tooltip("Optional. If set, this page moves on when the player uses this action " +
             "(for example RotateCamera or Jump) instead of Interact. The [F] hint is hidden, so say what to press in the text.")]
         public InputActionReference advanceWithAction;
+
+        [Tooltip("Optional. The typing blip for this page only, for example when a different character speaks. " +
+            "Empty uses the object's Voice Sound (or the manager's Default Typing Sound).")]
+        public SoundEffect voiceSound;
     }
 
     /// <summary>
@@ -37,6 +42,16 @@ namespace Gameplay.Dialogue
         [Tooltip("Shown one at a time, each time the player presses Interact. Leave empty for objects that only react.")]
         [SerializeField] private List<DialoguePage> pages = new List<DialoguePage>();
 
+        [Header("Typewriter")]
+        [Tooltip("Pages appear one letter at a time, like a character speaking. Prompts always appear all at once.")]
+        [SerializeField] private bool typeOutPages = true;
+        [Tooltip("Optional. The blip played while this object's pages are typed out, like a character's voice. " +
+            "Empty uses the Context Dialogue Manager's Default Typing Sound.")]
+        [SerializeField] private SoundEffect voiceSound;
+        [Tooltip("Letters per second for this object's pages. 0 uses the Context Dialogue Manager's speed.")]
+        [Min(0f)]
+        [SerializeField] private float charactersPerSecond = 0f;
+
         [Header("Placement")]
         [Tooltip("How close the player has to be, in world units.")]
         [SerializeField] private float showDistance = 1.5f;
@@ -56,6 +71,9 @@ namespace Gameplay.Dialogue
         public float ShowDistance => showDistance;
         public bool IgnoreDepth => ignoreDepth;
         public Vector3 TextboxAnchor => transform.position + textboxOffset;
+        public bool TypeOutPages => typeOutPages;
+        public SoundEffect VoiceSound => voiceSound;
+        public float CharactersPerSecond => charactersPerSecond;
 
         /// <summary>
         /// Runs when the player presses Interact next to this object. Other scripts can add listeners in code.

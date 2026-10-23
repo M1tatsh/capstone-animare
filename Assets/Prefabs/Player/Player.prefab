@@ -242,6 +242,16 @@ MonoBehaviour:
   dropThroughSound: {fileID: 0}
   muffleSoundsBehindBuildings: 1
   behindBuildingMuffleCutoff: 1200
+  allowLedgeGrab: 1
+  holdTowardWallToGrab: 0
+  ledgeGrabTolerance: 0.25
+  ledgeGrabReach: 0.15
+  hangHeightBelowLedge: 0.1
+  climbDuration: 0.3
+  regrabDelay: 0.25
+  climbWithUp: 1
+  ledgeGrabSound: {fileID: 0}
+  ledgeClimbSound: {fileID: 0}
   grid: {fileID: 0}
 --- !u!114 &-1401167691037079110
 MonoBehaviour:
@@ -385,6 +395,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7598856777836857623}
   walkingParameterName: isWalking
   groundedParameterName: Grounded
+  hangingParameterName: isHanging
+  climbingParameterName: isClimbing
   minimumWalkSpeed: 0.1
   spriteFacesRight: 0
 --- !u!1 &3817237226668949842

@@ -2226,7 +2226,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9105426311985488535, guid: 0769ee9f85262f54a98040445a2582fa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9105426311985488535, guid: 0769ee9f85262f54a98040445a2582fa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4932,10 +4932,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 7972535850152651067, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
+      propertyPath: requiredCount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8349637228735193640, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
       propertyPath: pivot
       value: 
       objectReference: {fileID: 195646265}
+    - target: {fileID: 8349637228735193640, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
+      propertyPath: pivotFollowsPlayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

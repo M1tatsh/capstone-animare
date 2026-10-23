@@ -85,6 +85,81 @@ namespace Gameplay.Player
         private float footstepTimer;
         private bool wasGroundedLastFrame;
 
+        //ledge grabbing: hanging from the top edge of a platform while in the air, then climbing up onto it.
+        [Header("Ledge Grab")]
+        [Tooltip("Lets the player grab the top edge of a platform while falling past it, then climb up onto it.")]
+        [SerializeField] private bool allowLedgeGrab = true;
+        [Tooltip("On: the player has to hold toward the wall to grab its ledge. Off: any ledge the player's hands pass is grabbed.")]
+        [SerializeField] private bool holdTowardWallToGrab = true;
+        [Tooltip("How far below a ledge's top the top of the player can already be and still grab it. Bigger is more forgiving.")]
+        [SerializeField] private float ledgeGrabTolerance = 0.25f;
+        [Tooltip("How far away from the wall the player can be and still grab its ledge.")]
+        [SerializeField] private float ledgeGrabReach = 0.15f;
+        [Tooltip("How far below the ledge's top the top of the player sits while hanging.")]
+        [SerializeField] private float hangHeightBelowLedge = 0.1f;
+        [Tooltip("Seconds the climb up onto the ledge takes. 0 is instant.")]
+        [SerializeField] private float climbDuration = 0.3f;
+        [Tooltip("Seconds after letting go before the player can grab a ledge again, so they don't grab the same one straight away.")]
+        [SerializeField] private float regrabDelay = 0.25f;
+        [Tooltip("On: pressing Up also climbs. Off: only Jump climbs.")]
+        [SerializeField] private bool climbWithUp = true;
+        [SerializeField] private SoundEffect ledgeGrabSound;
+        [SerializeField] private SoundEffect ledgeClimbSound;
+
+        //climbable blocks (ladders and vines). A separate system from ledge grabbing.
+        [Header("Climbing (Ladders and Vines)")]
+        [Tooltip("Lets the player grab blocks marked with ClimbableBlock by pressing Up, and climb them.")]
+        [SerializeField] private bool allowClimbing = true;
+        [Tooltip("Speed climbing up and down, in units per second.")]
+        [SerializeField] private float climbingSpeed = 3f;
+        [Tooltip("Speed moving left and right while climbing, in units per second.")]
+        [SerializeField] private float climbingSidewaysSpeed = 2.5f;
+        [Tooltip("Jumping off a climbable block uses the normal jump times this.")]
+        [SerializeField] private float climbingJumpMultiplier = 0.8f;
+        [Tooltip("Moves the player to the middle of the ladder's column when they grab it, so they line up with the rungs.")]
+        [SerializeField] private bool snapToClimbableCenter = true;
+        [Tooltip("Seconds after jumping off before the player can grab a climbable block again.")]
+        [SerializeField] private float climbingRegrabDelay = 0.2f;
+        [SerializeField] private SoundEffect climbingGrabSound;
+        [Tooltip("Played every Climbing Step Interval seconds while the player moves on a climbable block.")]
+        [SerializeField] private SoundEffect climbingStepSound;
+        [SerializeField] private float climbingStepInterval = 0.25f;
+
+        private bool isOnClimbable;
+        //true from jumping off a climbable block until the jump starts falling, so holding Up during
+        //the jump doesn't grab the same ladder again on the way up.
+        private bool jumpedOffClimbable;
+        private float climbingRegrabTimer;
+        private float climbingStepTimer;
+
+        private enum LedgeState
+        {
+            None,
+            Hanging,
+            Climbing
+        }
+
+        private LedgeState ledgeState = LedgeState.None;
+        //which side the wall is on: 1 = right side of the screen, -1 = left side.
+        private int ledgeSide;
+        //the screen cell of the block being held.
+        private int ledgeColumn;
+        private int ledgeRow;
+        //true when hanging from underneath a one-way platform instead of beside a block's edge.
+        private bool isHangingUnderLedge;
+        private float regrabTimer;
+        private float climbTimer;
+        private Vector2 climbStart;   //x = horizontal, y = vertical
+        private Vector2 climbEnd;
+        //inputs held on the last hanging frame, so holding a direction from before the grab doesn't count as a new press.
+        private bool upWasHeld;
+        private bool downWasHeld;
+        private bool awayWasHeld;
+        //how far to the side the player ends up past the ledge's edge after climbing.
+        private const float ClimbInset = 0.05f;
+        //how far a direction has to be held (0 to 1) to count as pressed while on a ledge.
+        private const float LedgeInputThreshold = 0.5f;
+
         //Local instance objects and other monobehaviors
         private CollisionCheck collisionCheck;
         private Rigidbody rb;
@@ -154,6 +229,30 @@ namespace Gameplay.Player
 
             float deltaTime = Mathf.Min(Time.deltaTime, MaximumDeltaTime);
 
+            //hanging from or climbing up a ledge replaces normal movement until it is over.
+            if (ledgeState != LedgeState.None)
+            {
+                UpdateLedge(deltaTime);
+                return;
+            }
+
+            //on a ladder or vines: climbing replaces normal movement until the player gets off.
+            if (isOnClimbable)
+            {
+                UpdateClimbing(deltaTime);
+                return;
+            }
+
+            regrabTimer -= deltaTime;
+            climbingRegrabTimer -= deltaTime;
+
+            //Up next to a climbable block (or Down while standing on top of a ladder) grabs it.
+            if (TryStartClimbing())
+            {
+                ApplyTransform();
+                return;
+            }
+
             if (!isDashing)
             {
                 velocity.x = Mathf.Clamp(moveInput * moveSpeed, -maxMoveSpeed, maxMoveSpeed);
@@ -185,6 +284,13 @@ namespace Gameplay.Player
             MoveVertical(velocity.y * deltaTime);
 
             UpdateGrounded();
+
+            //falling past a ledge while next to it grabs it.
+            if (TryGrabLedge(verticalBeforeMoving + halfSize.y, vertical + halfSize.y))
+            {
+                ApplyTransform();
+                return;
+            }
 
             //landed this frame after falling fast enough.
             if (isGrounded && !wasGroundedLastFrame && fallSpeedBeforeMoving >= landSoundMinimumFallSpeed)
@@ -287,13 +393,13 @@ namespace Gameplay.Player
                 if (distance > 0)
                 {
                     //right edge went into a solid column correction.
-                    int blockedColumn = BlockGrid.CellIndex(newHorizontal + halfSize.x - BlockGrid.EdgeTolerance);
+                    int blockedColumn = BlockGrid.CellIndex(newHorizontal + halfSize.x - BlockGrid.EDGE_TOLERANCE);
                     newHorizontal = blockedColumn - 0.5f - halfSize.x;
                 }
                 else
                 {
                     //ditto for left edge.
-                    int blockedColumn = BlockGrid.CellIndex(newHorizontal - halfSize.x + BlockGrid.EdgeTolerance);
+                    int blockedColumn = BlockGrid.CellIndex(newHorizontal - halfSize.x + BlockGrid.EDGE_TOLERANCE);
                     newHorizontal = blockedColumn + 0.5f + halfSize.x;
                 }
 
@@ -308,7 +414,8 @@ namespace Gameplay.Player
         /// Landing on a block or hitting a ceiling stops the player flush against it.
         /// </summary>
         /// <param name="distance">How far to move this frame. Positive is up.</param>
-        private void MoveVertical(float distance)
+        /// <param name="canLandOnOneWay">False while climbing, so the player can climb down through the top of a ladder.</param>
+        private void MoveVertical(float distance, bool canLandOnOneWay = true)
         {
             distance = Mathf.Clamp(distance, -MaximumStepDistance, MaximumStepDistance);
 
@@ -327,14 +434,14 @@ namespace Gameplay.Player
                 if (distance > 0)
                 {
                     
-                    int blockedRow = BlockGrid.CellIndex(newVertical + halfSize.y - BlockGrid.EdgeTolerance);
+                    int blockedRow = BlockGrid.CellIndex(newVertical + halfSize.y - BlockGrid.EDGE_TOLERANCE);
                     newVertical = blockedRow - 0.5f - halfSize.y;
                 }
                 //feet went into a solid row
                 else
                 {
                     
-                    int blockedRow = BlockGrid.CellIndex(newVertical - halfSize.y + BlockGrid.EdgeTolerance);
+                    int blockedRow = BlockGrid.CellIndex(newVertical - halfSize.y + BlockGrid.EDGE_TOLERANCE);
                     newVertical = blockedRow + 0.5f + halfSize.y;
                 }
 
@@ -342,7 +449,7 @@ namespace Gameplay.Player
             }
 
             //one-way blocks: only stop the player when falling onto their top from above.
-            if (distance < 0 && LandsOnOneWay(horizontal - halfSize.x, horizontal + halfSize.x,
+            if (canLandOnOneWay && distance < 0 && LandsOnOneWay(horizontal - halfSize.x, horizontal + halfSize.x,
                 feetBeforeMoving, newVertical - halfSize.y, out float oneWayTop))
             {
                 float landedVertical = oneWayTop + halfSize.y;
@@ -387,6 +494,10 @@ namespace Gameplay.Player
         {
             //isJumpPressed = false;
 
+            //letting go of Jump while on a ledge shouldn't push the player down.
+            if (ledgeState != LedgeState.None || isOnClimbable)
+                return;
+
             if (!isGrounded && velocity.y > cutJumpSpeed)
             {
                 velocity.y = cutJumpSpeed;
@@ -406,6 +517,8 @@ namespace Gameplay.Player
             isBehindGeometry = false;
             isWaitingToSnapDepth = false;
             isDroppingThrough = false;
+            ledgeState = LedgeState.None;
+            isOnClimbable = false;
 
             //from a rotated view, a block somewhere else in the level can line up with the target spot.
             //FindPlacement slides the player sideways to a free column, the same way a rotation does.
@@ -454,7 +567,18 @@ namespace Gameplay.Player
 
         public void CommitRotation(int newView)
         {
-            //the player keeps their 3D position; only how it is measured changes.
+            if (ledgeState == LedgeState.Climbing)
+            {
+                horizontal = climbEnd.x;
+                vertical = climbEnd.y;
+                ledgeState = LedgeState.None;
+            }
+
+            bool wasHanging = ledgeState == LedgeState.Hanging;
+            ledgeState = LedgeState.None;
+
+            bool wasOnClimbable = isOnClimbable;
+            isOnClimbable = false;
             Vector3 world = WorldPosition();
 
             view = newView;
@@ -464,9 +588,6 @@ namespace Gameplay.Player
             isDroppingThrough = false;
 
             int depthLayer = FindFreeDepthLayer(FindStandingDepthLayer());
-
-            //boxed in on every nearby layer (rare, e.g. rotating while falling past a floor):
-            //use the old sideways nudge in the flattened view instead.
             if (IsInsideBlockAtDepth(depthLayer) && FindPlacement(view, world, out float nudgedHorizontal, out float nudgedDepth))
             {
                 horizontal = nudgedHorizontal;
@@ -476,19 +597,32 @@ namespace Gameplay.Player
             }
             else if (ShouldBeBehindGeometry(depthLayer))
             {
-                //keep the player where they really are until nothing is in front of them.
                 isBehindGeometry = true;
                 isWaitingToSnapDepth = false;
                 depth = depthLayer;
             }
             else
             {
-                //the player stays exactly where they are; Update pulls them to the nearest depth once they move.
                 isBehindGeometry = false;
                 isWaitingToSnapDepth = true;
             }
 
             UpdateGrounded();
+
+
+            //on a ladder or vines: keep climbing if there is still something to climb in the new view.
+            if (wasOnClimbable)
+            {
+                if (FindTouchedClimbable(out int climbableColumn, out int climbableRow))
+                    StartClimbing(climbableColumn, climbableRow, false);
+                else
+                    StopClimbing();
+            }
+
+            if (wasHanging && !TryRegrabAfterRotation())
+            {
+                ReleaseLedge();
+            }
 
             ApplyTransform();
         }
@@ -522,6 +656,665 @@ namespace Gameplay.Player
                 velocity.y = -maxFallSpeed;
             }
         }
+
+        #region Climbing (ladders and vines)
+
+        /// <summary>
+        /// Is this screen cell climbable? Uses the flattened view, or only the player's own layer in background mode.
+        /// </summary>
+        private bool IsClimbableCell(int column, int row)
+        {
+            if (isBehindGeometry)
+                return grid.IsClimbableAtDepth(view, column, row, DepthLayer);
+
+            return grid.IsClimbable(view, column, row);
+        }
+
+        /// <summary>
+        /// Is the player touching a climbable block? Checks the column under the player's middle,
+        /// at their middle first and then at their feet.
+        /// </summary>
+        private bool FindTouchedClimbable(out int column, out int row)
+        {
+            column = BlockGrid.CellIndex(horizontal);
+
+            row = BlockGrid.CellIndex(vertical);
+            if (IsClimbableCell(column, row))
+                return true;
+
+            row = BlockGrid.CellIndex(vertical - halfSize.y + 0.01f);
+            return IsClimbableCell(column, row);
+        }
+
+        /// <summary>
+        /// Grabs a climbable block when the player holds Up while touching one,
+        /// or holds Down while standing on top of a ladder.
+        /// </summary>
+        private bool TryStartClimbing()
+        {
+            if (velocity.y <= 0f || isGrounded)
+                jumpedOffClimbable = false;
+
+            if (!allowClimbing || climbingRegrabTimer > 0f || isDashing || jumpedOffClimbable)
+                return false;
+
+            bool upHeld = verticalMoveInput > LedgeInputThreshold;
+            bool downHeld = verticalMoveInput < -LedgeInputThreshold;
+
+            if (upHeld && FindTouchedClimbable(out int column, out int row))
+            {
+                StartClimbing(column, row, true);
+                return true;
+            }
+
+            if (downHeld && isGrounded)
+            {
+                //the cell just under the feet: standing on the top of a ladder.
+                int belowColumn = BlockGrid.CellIndex(horizontal);
+                int belowRow = BlockGrid.CellIndex(vertical - halfSize.y - 0.01f);
+
+                if (IsClimbableCell(belowColumn, belowRow))
+                {
+                    StartClimbing(belowColumn, belowRow, true);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void StartClimbing(int column, int row, bool playSound)
+        {
+            isOnClimbable = true;
+            isDroppingThrough = false;
+            velocity = Vector2.zero;
+            isGrounded = false;
+            //the ability scripts treat climbing like standing: no air jump or glide, and air uses are refilled.
+            collisionCheck.IsGrounded = true;
+            jumpBufferTimer = 0f;
+            isJumpPressed = false;
+            climbingStepTimer = 0f;
+
+            //line up with the middle of the ladder, if the player fits there.
+            if (snapToClimbableCenter && !IsBlocked(column - halfSize.x, column + halfSize.x,
+                vertical - halfSize.y, vertical + halfSize.y))
+            {
+                horizontal = column;
+            }
+
+            //move to the depth of the climbable block, so the player is drawn on it (in front of the wall it covers).
+            if (!isBehindGeometry && grid.AllowDepthPulling
+                && grid.TryGetClimbableDepth(view, column, row, Mathf.RoundToInt(depth), out int climbableDepth))
+            {
+                depth = climbableDepth;
+            }
+            isWaitingToSnapDepth = false;
+
+            if (playSound)
+                PlayPlayerSound(climbingGrabSound);
+        }
+
+        /// <summary>
+        /// Lets go of the climbable block. Gravity takes over (or the player is standing, if there is ground).
+        /// </summary>
+        private void StopClimbing()
+        {
+            isOnClimbable = false;
+            velocity = Vector2.zero;
+            UpdateGrounded();
+            //getting off a ladder is not a landing, so no landing sound.
+            wasGroundedLastFrame = isGrounded;
+        }
+
+        /// <summary>
+        /// Runs every frame instead of normal movement while on a ladder or vines.
+        /// </summary>
+        private void UpdateClimbing(float deltaTime)
+        {
+            velocity = Vector2.zero;
+            collisionCheck.IsGrounded = true;
+
+            //a dash lets go, and the dash carries on next frame.
+            if (isDashing)
+            {
+                StopClimbing();
+                ApplyTransform();
+                return;
+            }
+
+            //jumping off.
+            if (jumpBufferTimer > 0f)
+            {
+                jumpBufferTimer = 0f;
+                isOnClimbable = false;
+                jumpedOffClimbable = true;
+                climbingRegrabTimer = climbingRegrabDelay;
+                isGrounded = false;
+                collisionCheck.IsGrounded = false;
+                velocity.y = jumpForce * climbingJumpMultiplier;
+                PlayPlayerSound(jumpSound);
+                ApplyTransform();
+                return;
+            }
+
+            float horizontalBeforeMoving = horizontal;
+            float verticalBeforeMoving = vertical;
+
+            //small stick movements are ignored so the player doesn't drift.
+            float sidewaysInput = Mathf.Abs(moveInput) > 0.2f ? moveInput : 0f;
+            float upDownInput = Mathf.Abs(verticalMoveInput) > 0.2f ? verticalMoveInput : 0f;
+
+            Walk(sidewaysInput * climbingSidewaysSpeed * deltaTime);
+            MoveVertical(upDownInput * climbingSpeed * deltaTime, false);
+
+            if (!FindTouchedClimbable(out int column, out int row))
+            {
+                if (upDownInput > 0f && TryStandOnClimbableTop())
+                {
+                    //climbed off the top of a ladder: standing on it now.
+                }
+                else
+                {
+                    //climbed off the side or the bottom: let go.
+                    StopClimbing();
+                }
+
+                ApplyTransform();
+                return;
+            }
+
+            //climbed down onto the floor (or a platform): get off.
+            if (upDownInput < 0f && IsOnGroundWhileClimbing())
+            {
+                StopClimbing();
+                ApplyTransform();
+                return;
+            }
+
+            //keep the player drawn on the climbable block they are on (vines can be at different depths).
+            if (!isBehindGeometry && grid.AllowDepthPulling
+                && grid.TryGetClimbableDepth(view, column, row, Mathf.RoundToInt(depth), out int climbableDepth))
+            {
+                depth = climbableDepth;
+            }
+
+            bool movedThisFrame = horizontal != horizontalBeforeMoving || vertical != verticalBeforeMoving;
+            UpdateClimbingSteps(deltaTime, movedThisFrame);
+
+            //facing follows sideways movement while climbing.
+            if (sidewaysInput != 0f)
+                lastMoveSign = Mathf.Sign(sidewaysInput);
+
+            ApplyTransform();
+        }
+
+        /// <summary>
+        /// The player's feet just went above the top of the ladder. Puts them standing on its top.
+        /// </summary>
+        private bool TryStandOnClimbableTop()
+        {
+            int column = BlockGrid.CellIndex(horizontal);
+            float feetHeight = vertical - halfSize.y;
+
+            //the top climbable cell is the one just under the feet (or one more below after a long frame).
+            int topRow = BlockGrid.CellIndex(feetHeight - 0.01f);
+
+            for (int row = topRow; row >= topRow - 1; row--)
+            {
+                if (!IsClimbableCell(column, row) || IsClimbableCell(column, row + 1))
+                    continue;
+
+                float standingVertical = row + 0.5f + halfSize.y;
+
+                if (IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
+                    standingVertical - halfSize.y, standingVertical + halfSize.y))
+                    return false;
+
+                vertical = standingVertical;
+                StopClimbing();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Is there ground right under the player's feet (a solid block, a one-way block, or another ladder's top)?
+        /// </summary>
+        private bool IsOnGroundWhileClimbing()
+        {
+            float feetHeight = vertical - halfSize.y;
+            float probeHeight = feetHeight - groundProbeDistance;
+
+            return IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x, probeHeight, probeHeight)
+                || LandsOnOneWay(horizontal - halfSize.x, horizontal + halfSize.x, feetHeight, probeHeight, out _);
+        }
+
+        private void UpdateClimbingSteps(float deltaTime, bool isMoving)
+        {
+            if (!isMoving)
+            {
+                climbingStepTimer = 0f;
+                return;
+            }
+
+            climbingStepTimer -= deltaTime;
+
+            if (climbingStepTimer <= 0f)
+            {
+                PlayPlayerSound(climbingStepSound);
+                climbingStepTimer = climbingStepInterval;
+            }
+        }
+
+        #endregion
+
+        #region Ledge grab
+
+        /// <summary>
+        /// Looks for a ledge to grab after this frame's fall. The top of the player is their "hands".
+        /// </summary>
+        /// <param name="handsBefore">Height of the top of the player before this frame's move.</param>
+        /// <param name="handsAfter">Height of the top of the player after this frame's move.</param>
+        private bool TryGrabLedge(float handsBefore, float handsAfter)
+        {
+            if (!allowLedgeGrab || regrabTimer > 0f || isGrounded || isDashing || velocity.y > 0f)
+                return false;
+
+            float lowestTop = handsAfter;
+            float highestTop = handsBefore + ledgeGrabTolerance;
+
+            if (holdTowardWallToGrab)
+            {
+                if (Mathf.Abs(moveInput) < LedgeInputThreshold)
+                    return false;
+
+                int heldSide = moveInput > 0f ? 1 : -1;
+                return TryGrabLedgeOnSide(heldSide, lowestTop, highestTop, ledgeGrabReach);
+            }
+
+            int facingSide = lastMoveSign > 0f ? 1 : -1;
+            return TryGrabLedgeOnSide(facingSide, lowestTop, highestTop, ledgeGrabReach)
+                || TryGrabLedgeOnSide(-facingSide, lowestTop, highestTop, ledgeGrabReach);
+        }
+
+        /// <summary>
+        /// After a rotation, looks for a ledge right where the player's hands already are.
+        /// </summary>
+        private bool TryRegrabAfterRotation()
+        {
+            float ledgeTop = vertical + halfSize.y + hangHeightBelowLedge;
+            int facingSide = lastMoveSign > 0f ? 1 : -1;
+            float reach = 0.5f;
+
+            return TryGrabLedgeOnSide(facingSide, ledgeTop - 0.05f, ledgeTop + 0.05f, reach)
+                || TryGrabLedgeOnSide(-facingSide, ledgeTop - 0.05f, ledgeTop + 0.05f, reach);
+        }
+
+        private bool TryGrabLedgeOnSide(int side, float lowestTop, float highestTop, float reach)
+        {
+            //the edge of a block beside the player (solid, or the end of a one-way platform).
+            if (FindLedge(side, lowestTop, highestTop, reach, out int column, out int row))
+            {
+                StartHanging(side, column, row, false);
+                return true;
+            }
+
+            //one-way platforms don't stop the player sideways, so a jump toward one often carries the player
+            //underneath it. If the hands reach its top there, they hang right where they are.
+            if (FindOneWayOverhead(lowestTop, highestTop, out column, out row))
+            {
+                StartHanging(side, column, row, true);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Looks for a one-way block right above the player (overlapping them left to right) whose top is between
+        /// lowestTop and highestTop, with nothing on top of it.
+        /// </summary>
+        private bool FindOneWayOverhead(float lowestTop, float highestTop, out int column, out int row)
+        {
+            row = 0;
+            column = 0;
+
+            //the column under the player's middle first, then the columns under their two edges.
+            int middleColumn = BlockGrid.CellIndex(horizontal);
+            int leftColumn = BlockGrid.CellIndex(horizontal - halfSize.x + BlockGrid.EDGE_TOLERANCE);
+            int rightColumn = BlockGrid.CellIndex(horizontal + halfSize.x - BlockGrid.EDGE_TOLERANCE);
+            int[] columnsToCheck = { middleColumn, leftColumn, rightColumn };
+
+            for (int candidateRow = Mathf.FloorToInt(highestTop - 0.5f); candidateRow + 0.5f >= lowestTop; candidateRow--)
+            {
+                //the player hangs where they are, just below the top, and has to fit there.
+                float hangVertical = candidateRow + 0.5f - hangHeightBelowLedge - halfSize.y;
+
+                if (IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
+                    hangVertical - halfSize.y, hangVertical + halfSize.y))
+                    continue;
+
+                foreach (int candidateColumn in columnsToCheck)
+                {
+                    if (IsOneWayTop(candidateColumn, candidateRow) && IsCellOpen(candidateColumn, candidateRow + 1))
+                    {
+                        column = candidateColumn;
+                        row = candidateRow;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Finds a ledge next to the player on one side, whose top is between lowestTop and highestTop.
+        /// Picks the highest one. Solid blocks and one-way blocks both have ledges.
+        /// </summary>
+        private bool FindLedge(int side, float lowestTop, float highestTop, float reach, out int column, out int row)
+        {
+            float nearEdge = horizontal + side * halfSize.x;
+
+            //the column the player can reach into on that side.
+            column = BlockGrid.CellIndex(nearEdge + side * reach);
+            if (FindLedgeInColumn(side, column, lowestTop, highestTop, reach, out row))
+                return true;
+
+            //one-way blocks don't stop the player sideways, so the player can already be partway inside one.
+            //this checks the column their edge is in as well.
+            int overlappedColumn = BlockGrid.CellIndex(nearEdge - side * 0.01f);
+            if (overlappedColumn != column && FindLedgeInColumn(side, overlappedColumn, lowestTop, highestTop, reach, out row))
+            {
+                column = overlappedColumn;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool FindLedgeInColumn(int side, int column, float lowestTop, float highestTop, float reach, out int row)
+        {
+            row = 0;
+
+            float nearEdge = horizontal + side * halfSize.x;
+
+            //how far the block's side is from the player's edge. Below 0 means the player is partway inside the column.
+            float wallFace = column - side * 0.5f;
+            float gap = (wallFace - nearEdge) * side;
+
+            if (gap > reach)
+                return false;
+
+            //the player can never be inside a solid block, but can be up to their whole width inside a one-way block.
+            bool canReachSolidLedge = gap >= -BlockGrid.EDGE_TOLERANCE * 10f;
+            bool canReachOneWayLedge = gap >= -halfSize.x * 2f;
+
+            if (!canReachOneWayLedge)
+                return false;
+
+            //tops of cells are at row + 0.5. Go from the highest possible row down.
+            for (int candidateRow = Mathf.FloorToInt(highestTop - 0.5f); candidateRow + 0.5f >= lowestTop; candidateRow--)
+            {
+                bool isSolidLedge = IsCellBlocked(column, candidateRow);
+                bool isOneWayLedge = !isSolidLedge && IsOneWayTop(column, candidateRow);
+
+                if (!isSolidLedge && !isOneWayLedge)
+                    continue;
+
+                if (isSolidLedge && !canReachSolidLedge)
+                    continue;
+
+                //something on top means it isn't a ledge.
+                if (!IsCellOpen(column, candidateRow + 1))
+                    continue;
+
+                //the cell beside it, where the player hangs, has to be empty too. Otherwise this is the middle of
+                //a longer one-way platform (the player can be under one, since they pass through its sides), not its end.
+                if (!IsCellOpen(column - side, candidateRow))
+                    continue;
+
+                //the player hangs beside the block, and has to fit there.
+                float hangHorizontal = wallFace - side * halfSize.x;
+                float hangVertical = candidateRow + 0.5f - hangHeightBelowLedge - halfSize.y;
+
+                if (IsBlocked(hangHorizontal - halfSize.x, hangHorizontal + halfSize.x,
+                    hangVertical - halfSize.y, hangVertical + halfSize.y))
+                    continue;
+
+                row = candidateRow;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A ledge is a solid or one-way screen cell with nothing on top of it.
+        /// </summary>
+        private bool IsLedge(int column, int row)
+        {
+            bool hasBlock = IsCellBlocked(column, row) || IsOneWayTop(column, row);
+            return hasBlock && IsCellOpen(column, row + 1);
+        }
+
+        /// <summary>
+        /// Nothing in this screen cell: no solid block and no one-way block.
+        /// </summary>
+        private bool IsCellOpen(int column, int row)
+        {
+            return !IsCellBlocked(column, row) && !IsOneWayTop(column, row);
+        }
+
+        /// <summary>
+        /// Is this one screen cell blocked? Uses the same rules as walking (flattened view, or own layer in background mode).
+        /// </summary>
+        private bool IsCellBlocked(int column, int row)
+        {
+            //a tiny bit inside the cell, so the cells next to it don't count.
+            const float inset = 0.01f;
+            return IsBlocked(column - 0.5f + inset, column + 0.5f - inset, row - 0.5f + inset, row + 0.5f - inset);
+        }
+
+        /// <summary>
+        /// Does this screen cell have a one-way block in it? Uses the same rules as landing on one
+        /// (flattened view, or own layer in background mode). The block the player just dropped through
+        /// with Down + Jump doesn't count, so they can't grab it on the way down.
+        /// </summary>
+        private bool IsOneWayTop(int column, int row)
+        {
+            const float inset = 0.01f;
+            float top = row + 0.5f;
+
+            //asks "would feet moving from just above this cell's top to just below it land on a one-way block?"
+            return LandsOnOneWay(column - 0.5f + inset, column + 0.5f - inset, top + inset, top - inset, out _);
+        }
+
+        /// <param name="hangUnder">True: hang where the player is, under a one-way platform. False: hang beside the block's edge.</param>
+        private void StartHanging(int side, int column, int row, bool hangUnder)
+        {
+            ledgeState = LedgeState.Hanging;
+            isHangingUnderLedge = hangUnder;
+            //grabbing a ledge ends a Down + Jump drop, so the next one-way top below works normally again.
+            isDroppingThrough = false;
+            ledgeSide = side;
+            ledgeColumn = column;
+            ledgeRow = row;
+
+            if (!hangUnder)
+            {
+                float wallFace = column - side * 0.5f;
+                horizontal = wallFace - side * halfSize.x;
+            }
+            vertical = row + 0.5f - hangHeightBelowLedge - halfSize.y;
+
+            velocity = Vector2.zero;
+            isGrounded = false;
+            collisionCheck.IsGrounded = true;
+
+            jumpBufferTimer = 0f;
+            isJumpPressed = false;
+
+            upWasHeld = verticalMoveInput > LedgeInputThreshold;
+            downWasHeld = verticalMoveInput < -LedgeInputThreshold;
+            awayWasHeld = moveInput * side < -LedgeInputThreshold;
+
+            lastMoveSign = side;
+
+            if (!isBehindGeometry && grid.AllowDepthPulling
+                && grid.TryGetDepth(view, column, row, false, Mathf.RoundToInt(depth), out int ledgeDepth))
+            {
+                depth = ledgeDepth;
+            }
+            isWaitingToSnapDepth = false;
+
+            PlayPlayerSound(ledgeGrabSound);
+        }
+
+        /// <summary>
+        /// Runs every frame instead of normal movement while hanging or climbing.
+        /// </summary>
+        private void UpdateLedge(float deltaTime)
+        {
+            if (ledgeState == LedgeState.Climbing)
+            {
+                UpdateClimb(deltaTime);
+                ApplyTransform();
+                return;
+            }
+
+            velocity = Vector2.zero;
+            collisionCheck.IsGrounded = true;
+
+            if (isDashing)
+            {
+                ReleaseLedge();
+                ApplyTransform();
+                return;
+            }
+
+            if (!IsLedge(ledgeColumn, ledgeRow))
+            {
+                ReleaseLedge();
+                ApplyTransform();
+                return;
+            }
+
+            bool upHeld = verticalMoveInput > LedgeInputThreshold;
+            bool downHeld = verticalMoveInput < -LedgeInputThreshold;
+            bool awayHeld = moveInput * ledgeSide < -LedgeInputThreshold;
+
+            bool upPressed = upHeld && !upWasHeld;
+            bool downPressed = downHeld && !downWasHeld;
+            bool awayPressed = awayHeld && !awayWasHeld;
+
+            upWasHeld = upHeld;
+            downWasHeld = downHeld;
+            awayWasHeld = awayHeld;
+
+            bool jumpPressed = jumpBufferTimer > 0f;
+            jumpBufferTimer = 0f;
+
+            if (jumpPressed || (climbWithUp && upPressed))
+            {
+                TryStartClimb();
+            }
+            else if (downPressed || awayPressed)
+            {
+                ReleaseLedge();
+            }
+
+            ApplyTransform();
+        }
+
+        /// <summary>
+        /// Starts climbing up if there is room above the ledge for the player. Otherwise they keep hanging.
+        /// </summary>
+        private void TryStartClimb()
+        {
+            float ledgeTop = ledgeRow + 0.5f;
+            float wallFace = ledgeColumn - ledgeSide * 0.5f;
+
+            float endHorizontal = wallFace + ledgeSide * (halfSize.x + ClimbInset);
+            float endVertical = ledgeTop + halfSize.y;
+
+            //hanging under a one-way platform: climb straight up through it.
+            if (isHangingUnderLedge)
+                endHorizontal = horizontal;
+
+            if (IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
+                vertical - halfSize.y, endVertical + halfSize.y))
+                return;
+
+            float leftmost = Mathf.Min(horizontal, endHorizontal) - halfSize.x;
+            float rightmost = Mathf.Max(horizontal, endHorizontal) + halfSize.x;
+
+            if (IsBlocked(leftmost, rightmost, endVertical - halfSize.y + BlockGrid.EDGE_TOLERANCE, endVertical + halfSize.y))
+                return;
+
+            ledgeState = LedgeState.Climbing;
+            climbStart = new Vector2(horizontal, vertical);
+            climbEnd = new Vector2(endHorizontal, endVertical);
+            climbTimer = 0f;
+
+            PlayPlayerSound(ledgeClimbSound);
+
+            if (climbDuration <= 0f)
+                FinishClimb();
+        }
+
+        /// <summary>
+        /// Moves the player up first, then over onto the ledge.
+        /// </summary>
+        private void UpdateClimb(float deltaTime)
+        {
+            climbTimer += deltaTime;
+            float progress = Mathf.Clamp01(climbTimer / climbDuration);
+
+            const float pullUpPart = 0.6f;
+
+            if (progress < pullUpPart)
+            {
+                float pullUpProgress = Mathf.SmoothStep(0f, 1f, progress / pullUpPart);
+                horizontal = climbStart.x;
+                vertical = Mathf.Lerp(climbStart.y, climbEnd.y, pullUpProgress);
+            }
+            else
+            {
+                float stepOverProgress = Mathf.SmoothStep(0f, 1f, (progress - pullUpPart) / (1f - pullUpPart));
+                horizontal = Mathf.Lerp(climbStart.x, climbEnd.x, stepOverProgress);
+                vertical = climbEnd.y;
+            }
+
+            if (progress >= 1f)
+                FinishClimb();
+        }
+
+        private void FinishClimb()
+        {
+            horizontal = climbEnd.x;
+            vertical = climbEnd.y;
+            ledgeState = LedgeState.None;
+            velocity = Vector2.zero;
+
+            UpdateGrounded();
+            wasGroundedLastFrame = isGrounded;
+        }
+
+        /// <summary>
+        /// Lets go of the ledge and starts falling.
+        /// </summary>
+        private void ReleaseLedge()
+        {
+            ledgeState = LedgeState.None;
+            regrabTimer = regrabDelay;
+            velocity.y = 0f;
+            isGrounded = false;
+            collisionCheck.IsGrounded = false;
+        }
+
+        #endregion
 
         /// <summary>
         /// Checks the grid for a solid screen cell just below the player's feet.
@@ -573,10 +1366,23 @@ namespace Gameplay.Player
             if (isDroppingThrough)
                 previousFeet = Mathf.Min(previousFeet, dropThroughHeight - 0.5f);
 
+            bool landsOnOneWay;
             if (isBehindGeometry)
-                return grid.LandsOnOneWayAtDepth(view, minHorizontal, maxHorizontal, previousFeet, newFeet, DepthLayer, out landingHeight);
+                landsOnOneWay = grid.LandsOnOneWayAtDepth(view, minHorizontal, maxHorizontal, previousFeet, newFeet, DepthLayer, out landingHeight);
+            else
+                landsOnOneWay = grid.LandsOnOneWay(view, minHorizontal, maxHorizontal, previousFeet, newFeet, out landingHeight);
 
-            return grid.LandsOnOneWay(view, minHorizontal, maxHorizontal, previousFeet, newFeet, out landingHeight);
+            //the top of a ladder (or vines) holds the player up the same way a one-way block does.
+            bool landsOnClimbableTop = grid.LandsOnClimbableTop(view, minHorizontal, maxHorizontal, previousFeet, newFeet,
+                isBehindGeometry, DepthLayer, out float climbableTop);
+
+            if (landsOnClimbableTop && (!landsOnOneWay || climbableTop > landingHeight))
+            {
+                landingHeight = climbableTop;
+                return true;
+            }
+
+            return landsOnOneWay;
         }
 
         /// <summary>
@@ -746,8 +1552,8 @@ namespace Gameplay.Player
             float feetHeight = vertical - halfSize.y;
 
             int middleLayer = BlockGrid.CellIndex(depth);
-            int nearLayer = BlockGrid.CellIndex(depth - halfSize.x + BlockGrid.EdgeTolerance);
-            int farLayer = BlockGrid.CellIndex(depth + halfSize.x - BlockGrid.EdgeTolerance);
+            int nearLayer = BlockGrid.CellIndex(depth - halfSize.x + BlockGrid.EDGE_TOLERANCE);
+            int farLayer = BlockGrid.CellIndex(depth + halfSize.x - BlockGrid.EDGE_TOLERANCE);
 
             if (HasGroundAtDepth(leftEdge, rightEdge, feetHeight, middleLayer))
                 return middleLayer;
@@ -818,8 +1624,8 @@ namespace Gameplay.Player
 
             //look under the middle of the player first, then under the left edge, then under the right edge.
             int middleColumn = BlockGrid.CellIndex(horizontal);
-            int leftColumn = BlockGrid.CellIndex(horizontal - halfSize.x + BlockGrid.EdgeTolerance);
-            int rightColumn = BlockGrid.CellIndex(horizontal + halfSize.x - BlockGrid.EdgeTolerance);
+            int leftColumn = BlockGrid.CellIndex(horizontal - halfSize.x + BlockGrid.EDGE_TOLERANCE);
+            int rightColumn = BlockGrid.CellIndex(horizontal + halfSize.x - BlockGrid.EDGE_TOLERANCE);
 
             if (grid.TryGetDepth(view, middleColumn, row, nearestToCamera, currentDepth, out int foundDepth)
                 || grid.TryGetDepth(view, leftColumn, row, nearestToCamera, currentDepth, out foundDepth)
@@ -881,6 +1687,30 @@ namespace Gameplay.Player
         public bool IsGrounded
         {
             get { return isGrounded; }
+        }
+
+        /// <summary>
+        /// True while the player is hanging from a ledge (not while climbing up it).
+        /// </summary>
+        public bool IsHanging
+        {
+            get { return ledgeState == LedgeState.Hanging; }
+        }
+
+        /// <summary>
+        /// True while the player is climbing up onto a ledge.
+        /// </summary>
+        /// <summary>
+        /// True while the player is on a ladder or vines (a ClimbableBlock).
+        /// </summary>
+        public bool IsOnClimbable
+        {
+            get { return isOnClimbable; }
+        }
+
+        public bool IsClimbingLedge
+        {
+            get { return ledgeState == LedgeState.Climbing; }
         }
 
         /// <summary>

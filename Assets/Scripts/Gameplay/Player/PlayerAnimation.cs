@@ -22,6 +22,12 @@ namespace Gameplay.Player
         [SerializeField] private string walkingParameterName = "isWalking";
         [Tooltip("Bool parameter that is true while the player is standing on the ground.")]
         [SerializeField] private string groundedParameterName = "Grounded";
+        [Tooltip("Optional bool parameter that is true while hanging from a ledge. Leave it out of the Animator if there's no hanging animation yet.")]
+        [SerializeField] private string hangingParameterName = "isHanging";
+        [Tooltip("Optional bool parameter that is true while climbing up onto a ledge.")]
+        [SerializeField] private string climbingParameterName = "isClimbing";
+        [Tooltip("Optional bool parameter that is true while on a ladder or vines.")]
+        [SerializeField] private string onClimbableParameterName = "isOnClimbable";
 
         [Header("Walking")]
         [Tooltip("The player counts as walking when they move faster than this, in units per second. " +
@@ -38,8 +44,14 @@ namespace Gameplay.Player
         //Animator parameters are looked up by number, which is faster than by name every frame.
         private int walkingParameterId;
         private int groundedParameterId;
+        private int hangingParameterId;
+        private int climbingParameterId;
+        private int onClimbableParameterId;
+        private bool hasOnClimbableParameter;
         private bool hasWalkingParameter;
         private bool hasGroundedParameter;
+        private bool hasHangingParameter;
+        private bool hasClimbingParameter;
 
         void Awake()
         {
@@ -62,8 +74,16 @@ namespace Gameplay.Player
             groundedParameterId = Animator.StringToHash(groundedParameterName);
 
             //checking first stops the Animator from filling the Console with warnings if a parameter is missing.
-            hasWalkingParameter = HasParameter(walkingParameterName, AnimatorControllerParameterType.Bool);
-            hasGroundedParameter = HasParameter(groundedParameterName, AnimatorControllerParameterType.Bool);
+            hasWalkingParameter = HasParameter(walkingParameterName, AnimatorControllerParameterType.Bool, true);
+            hasGroundedParameter = HasParameter(groundedParameterName, AnimatorControllerParameterType.Bool, true);
+
+            //the ledge parameters are optional, so no warning when they are missing.
+            hangingParameterId = Animator.StringToHash(hangingParameterName);
+            climbingParameterId = Animator.StringToHash(climbingParameterName);
+            hasHangingParameter = HasParameter(hangingParameterName, AnimatorControllerParameterType.Bool, false);
+            hasClimbingParameter = HasParameter(climbingParameterName, AnimatorControllerParameterType.Bool, false);
+            onClimbableParameterId = Animator.StringToHash(onClimbableParameterName);
+            hasOnClimbableParameter = HasParameter(onClimbableParameterName, AnimatorControllerParameterType.Bool, false);
         }
 
         void Start()
@@ -82,6 +102,15 @@ namespace Gameplay.Player
 
             if (hasGroundedParameter)
                 animator.SetBool(groundedParameterId, isGrounded);
+
+            if (hasHangingParameter)
+                animator.SetBool(hangingParameterId, playerMovement.IsHanging);
+
+            if (hasClimbingParameter)
+                animator.SetBool(climbingParameterId, playerMovement.IsClimbingLedge);
+
+            if (hasOnClimbableParameter)
+                animator.SetBool(onClimbableParameterId, playerMovement.IsOnClimbable);
 
             UpdateFacing();
 
@@ -121,13 +150,16 @@ namespace Gameplay.Player
                 spriteRenderer.flipX = isFacingRight;
         }
 
-        private bool HasParameter(string parameterName, AnimatorControllerParameterType parameterType)
+        private bool HasParameter(string parameterName, AnimatorControllerParameterType parameterType, bool warnIfMissing)
         {
             foreach (AnimatorControllerParameter parameter in animator.parameters)
             {
                 if (parameter.name == parameterName && parameter.type == parameterType)
                     return true;
             }
+
+            if (!warnIfMissing)
+                return false;
 
             Debug.LogWarning($"PlayerAnimation: The Animator Controller has no {parameterType} parameter called '{parameterName}'. " +
                 "Add it in the Animator window, or change the name on this component.", this);

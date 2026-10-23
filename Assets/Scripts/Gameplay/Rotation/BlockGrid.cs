@@ -6,13 +6,7 @@ namespace Gameplay.Rotation
     /// <summary>
     /// Stores every solid block in the level as a cell on a 3D grid of whole numbers.
     /// Each block under this object counts as one platform cell, and its position is rounded to the nearest cell.
-    ///
-    /// Blocks can be grouped: an empty object (no Renderer and no Collider) that has children is a group,
-    /// and the blocks inside it are read too, at any depth (for example Platforms > Island1 > Cube).
-    /// Anything else is a block, and its own children are treated as part of it (decorations), not as more blocks.
-    /// Putting OneWayBlock on a group makes every block inside that group one-way.
-    /// A screen cell is solid if at least one platform block lines up behind it, no matter how deep it is.
-    ///
+    /// 
     /// Meshes under the buildings parent are background. The player is never blocked by them,
     /// and a platform block that sits behind a building is hidden, so it is not solid from that view.
     /// </summary>
@@ -22,12 +16,12 @@ namespace Gameplay.Rotation
         /// A box has to reach at least this far into a cell before it counts as overlapping it.
         /// Without this, a player standing exactly against a wall would count as being inside the wall.
         /// </summary>
-        public const float EdgeTolerance = 0.001f;
+        public const float EDGE_TOLERANCE = 0.001f;
 
-        private const int ViewCount = 4;
+        private const int VIEW_COUNT = 4;
 
         //don't exceed this number
-        private const int MaximumCellsPerBuilding = 50000;
+        private const int MAX_CELLS_PER_BUILDING = 50000;
 
         [Tooltip("Optional. Parent object of the background buildings. The player walks in front of these, " +
             "and they hide any platform block that is behind them.")]
@@ -39,27 +33,22 @@ namespace Gameplay.Rotation
 
         public bool AllowDepthPulling => allowDepthPulling;
 
-        //every solid platform block in the level, as a 3D cell.
         private readonly HashSet<Vector3Int> cells = new HashSet<Vector3Int>();
-
-        //every one-way platform block (top-only collision), as a 3D cell.
         private readonly HashSet<Vector3Int> oneWayCells = new HashSet<Vector3Int>();
-
-        //every cell covered by a background building.
+        //every climbable block (ladders, vines), as a 3D cell. These are never solid.
+        private readonly HashSet<Vector3Int> climbableCells = new HashSet<Vector3Int>();
         private readonly HashSet<Vector3Int> buildingCells = new HashSet<Vector3Int>();
+        private readonly Dictionary<Vector2Int, List<int>>[] depthsByScreenCell = new Dictionary<Vector2Int, List<int>>[VIEW_COUNT];
+        private readonly HashSet<Vector2Int>[] solidScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
 
-        //one dictionary per view. The key is a screen cell (horizontal, vertical).
-        //the value is the depths of the platform blocks (solid and one-way) that can be seen behind that screen cell, nearest first.
-        private readonly Dictionary<Vector2Int, List<int>>[] depthsByScreenCell = new Dictionary<Vector2Int, List<int>>[ViewCount];
+        private readonly HashSet<Vector2Int>[] oneWayScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
 
-        //per view: the screen cells with at least one visible solid block. These block the player from every side.
-        private readonly HashSet<Vector2Int>[] solidScreenCells = new HashSet<Vector2Int>[ViewCount];
+        //per view: the screen cells where a climbable block can be seen (and isn't hidden by a wall in front of it).
+        private readonly HashSet<Vector2Int>[] climbableScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
+        //per view: the depths of the visible climbable blocks behind each screen cell, nearest first.
+        private readonly Dictionary<Vector2Int, List<int>>[] climbableDepthsByScreenCell = new Dictionary<Vector2Int, List<int>>[VIEW_COUNT];
 
-        //per view: the screen cells with at least one visible one-way block. These only hold the player up from above.
-        private readonly HashSet<Vector2Int>[] oneWayScreenCells = new HashSet<Vector2Int>[ViewCount];
-
-        //one dictionary per view. The key is a screen cell, the value is the depth of the building nearest to the camera there.
-        private readonly Dictionary<Vector2Int, int>[] nearestBuildingDepthByScreenCell = new Dictionary<Vector2Int, int>[ViewCount];
+        private readonly Dictionary<Vector2Int, int>[] nearestBuildingDepthByScreenCell = new Dictionary<Vector2Int, int>[VIEW_COUNT];
 
         void Awake()
         {
@@ -74,16 +63,15 @@ namespace Gameplay.Rotation
         {
             cells.Clear();
             oneWayCells.Clear();
+            climbableCells.Clear();
             buildingCells.Clear();
-
             foreach (Transform child in transform)
             {
-                AddBlocksFrom(child, false);
+                AddBlocksFrom(child, false, false);
             }
 
             if (buildingsParent != null)
             {
-                //buildings can be grouped under more parents, so every mesh below the buildings parent is read.
                 foreach (MeshRenderer buildingMesh in buildingsParent.GetComponentsInChildren<MeshRenderer>())
                 {
                     if (!buildingMesh.enabled)
@@ -93,7 +81,7 @@ namespace Gameplay.Rotation
                 }
             }
 
-            for (int view = 0; view < ViewCount; view++)
+            for (int view = 0; view < VIEW_COUNT; view++)
             {
                 Vector3Int right = ViewAxes.Right(view);
                 Vector3Int forward = ViewAxes.Forward(view);
@@ -122,9 +110,21 @@ namespace Gameplay.Rotation
                 foreach (List<int> depths in screenCells.Values)
                     depths.Sort();
 
+                //climbable blocks are kept apart from the platforms: they are never stood inside or blocked by.
+                Dictionary<Vector2Int, List<int>> climbableDepths = new Dictionary<Vector2Int, List<int>>();
+                HashSet<Vector2Int> climbableCellsThisView = new HashSet<Vector2Int>();
+                AddVisiblePlatforms(climbableCells, right, forward, buildingDepthsThisView, climbableDepths, climbableCellsThisView);
+
+                foreach (List<int> depths in climbableDepths.Values)
+                    depths.Sort();
+
+                ResolveClimbableCovering(right, forward, buildingDepthsThisView, climbableDepths, solidCellsThisView, climbableCellsThisView);
+
                 depthsByScreenCell[view] = screenCells;
                 solidScreenCells[view] = solidCellsThisView;
                 oneWayScreenCells[view] = oneWayCellsThisView;
+                climbableScreenCells[view] = climbableCellsThisView;
+                climbableDepthsByScreenCell[view] = climbableDepths;
             }
         }
 
@@ -133,23 +133,23 @@ namespace Gameplay.Rotation
         /// (this method calls itself for each child). Anything that isn't a group is one block.
         /// </summary>
         /// <param name="insideOneWayGroup">True when a group above this object has OneWayBlock on it.</param>
-        private void AddBlocksFrom(Transform current, bool insideOneWayGroup)
+        /// <param name="insideClimbableGroup">True when a group above this object has ClimbableBlock on it.</param>
+        private void AddBlocksFrom(Transform current, bool insideOneWayGroup, bool insideClimbableGroup)
         {
-            //turning off an object (or a whole group) removes it from the grid.
             if (!current.gameObject.activeInHierarchy)
                 return;
 
-            //the buildings parent is allowed to sit under this object without counting as a platform.
             if (current == buildingsParent)
                 return;
 
             bool isOneWay = insideOneWayGroup || current.GetComponent<OneWayBlock>() != null;
+            bool isClimbable = insideClimbableGroup || current.GetComponent<ClimbableBlock>() != null;
 
             if (IsGroup(current))
             {
                 foreach (Transform child in current)
                 {
-                    AddBlocksFrom(child, isOneWay);
+                    AddBlocksFrom(child, isOneWay, isClimbable);
                 }
 
                 return;
@@ -157,7 +157,10 @@ namespace Gameplay.Rotation
 
             Vector3Int blockCell = Vector3Int.RoundToInt(current.position);
 
-            if (isOneWay)
+            //climbable wins: a ladder is never solid, even inside a one-way group.
+            if (isClimbable)
+                climbableCells.Add(blockCell);
+            else if (isOneWay)
                 oneWayCells.Add(blockCell);
             else
                 cells.Add(blockCell);
@@ -176,6 +179,58 @@ namespace Gameplay.Rotation
             bool hasCollider = current.GetComponent<Collider>() != null;
 
             return !hasRenderer && !hasCollider;
+        }
+
+        /// <summary>
+        /// Where a climbable block and a solid block share a screen cell, the one nearer the camera wins.
+        /// A climbable block in front covers the wall behind it, so that cell is climbable and not solid
+        /// (the player climbs up the face of the wall). A wall in front hides the climbable block.
+        /// </summary>
+        private void ResolveClimbableCovering(
+            Vector3Int right,
+            Vector3Int forward,
+            Dictionary<Vector2Int, int> buildingDepthsThisView,
+            Dictionary<Vector2Int, List<int>> climbableDepths,
+            HashSet<Vector2Int> solidCellsThisView,
+            HashSet<Vector2Int> climbableCellsThisView)
+        {
+            //the depth of the nearest visible solid block in each screen cell that also has a climbable block.
+            Dictionary<Vector2Int, int> nearestSolidDepths = new Dictionary<Vector2Int, int>();
+
+            foreach (Vector3Int cell in cells)
+            {
+                Vector2Int screenCell = new Vector2Int(Dot(cell, right), cell.y);
+
+                if (!climbableCellsThisView.Contains(screenCell))
+                    continue;
+
+                int solidDepth = Dot(cell, forward);
+
+                //hidden behind a building: it doesn't count.
+                if (buildingDepthsThisView.TryGetValue(screenCell, out int buildingDepth) && buildingDepth < solidDepth)
+                    continue;
+
+                if (!nearestSolidDepths.TryGetValue(screenCell, out int nearestSoFar) || solidDepth < nearestSoFar)
+                    nearestSolidDepths[screenCell] = solidDepth;
+            }
+
+            foreach (KeyValuePair<Vector2Int, int> pair in nearestSolidDepths)
+            {
+                Vector2Int screenCell = pair.Key;
+                int nearestClimbableDepth = climbableDepths[screenCell][0];
+
+                if (nearestClimbableDepth < pair.Value)
+                {
+                    //the climbable block is in front: the wall behind it is covered.
+                    solidCellsThisView.Remove(screenCell);
+                }
+                else
+                {
+                    //the wall is in front: the climbable block can't be reached from this view.
+                    climbableCellsThisView.Remove(screenCell);
+                    climbableDepths.Remove(screenCell);
+                }
+            }
         }
 
         static int Dot(Vector3Int a, Vector3Int b) => a.x * b.x + a.y * b.y + a.z * b.z;
@@ -219,23 +274,19 @@ namespace Gameplay.Rotation
         {
             Bounds bounds = mesh.bounds;
 
-            //cell centers are whole numbers, so round the low corner up and the high corner down.
-            int firstX = Mathf.CeilToInt(bounds.min.x - EdgeTolerance);
-            int firstY = Mathf.CeilToInt(bounds.min.y - EdgeTolerance);
-            int firstZ = Mathf.CeilToInt(bounds.min.z - EdgeTolerance);
-            int lastX = Mathf.FloorToInt(bounds.max.x + EdgeTolerance);
-            int lastY = Mathf.FloorToInt(bounds.max.y + EdgeTolerance);
-            int lastZ = Mathf.FloorToInt(bounds.max.z + EdgeTolerance);
-
-            //a mesh that is too small or too far off the grid to cover a cell center adds nothing.
+            int firstX = Mathf.CeilToInt(bounds.min.x - EDGE_TOLERANCE);
+            int firstY = Mathf.CeilToInt(bounds.min.y - EDGE_TOLERANCE);
+            int firstZ = Mathf.CeilToInt(bounds.min.z - EDGE_TOLERANCE);
+            int lastX = Mathf.FloorToInt(bounds.max.x + EDGE_TOLERANCE);
+            int lastY = Mathf.FloorToInt(bounds.max.y + EDGE_TOLERANCE);
+            int lastZ = Mathf.FloorToInt(bounds.max.z + EDGE_TOLERANCE);
             if (lastX < firstX || lastY < firstY || lastZ < firstZ)
                 return;
 
             long cellCount = (long)(lastX - firstX + 1) * (lastY - firstY + 1) * (lastZ - firstZ + 1);
-
-            if (cellCount > MaximumCellsPerBuilding)
+            if (cellCount > MAX_CELLS_PER_BUILDING)
             {
-                Debug.LogWarning($"BlockGrid: The building mesh '{mesh.name}' covers {cellCount} cells, which is over the limit of {MaximumCellsPerBuilding}. It was skipped.", mesh);
+                Debug.LogWarning($"BlockGrid: The building mesh '{mesh.name}' covers {cellCount} cells, which is over the limit of {MAX_CELLS_PER_BUILDING}. It was skipped.", mesh);
                 return;
             }
 
@@ -249,6 +300,7 @@ namespace Gameplay.Rotation
                     }
                 }
             }
+
         }
 
         /// <summary>
@@ -294,11 +346,11 @@ namespace Gameplay.Rotation
             landingHeight = 0f;
 
             //the top of row r is at r + 0.5. A top counts if newFeet < top <= previousFeet.
-            int highestRow = Mathf.FloorToInt(previousFeet + EdgeTolerance - 0.5f);
+            int highestRow = Mathf.FloorToInt(previousFeet + EDGE_TOLERANCE - 0.5f);
             int lowestRow = Mathf.FloorToInt(newFeet - 0.5f) + 1;
 
-            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
-            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
 
             //check from the highest row down, so the first top found is the one the feet reach first.
             for (int row = highestRow; row >= lowestRow; row--)
@@ -334,11 +386,10 @@ namespace Gameplay.Rotation
             float minVertical,
             float maxVertical)
         {
-            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
-            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
-            int firstRow = CellIndex(minVertical + EdgeTolerance);
-            int lastRow = CellIndex(maxVertical - EdgeTolerance);
-
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
+            int firstRow = CellIndex(minVertical + EDGE_TOLERANCE);
+            int lastRow = CellIndex(maxVertical - EDGE_TOLERANCE);
             for (int column = firstColumn; column <= lastColumn; column++)
             {
                 for (int row = firstRow; row <= lastRow; row++)
@@ -349,6 +400,7 @@ namespace Gameplay.Rotation
             }
 
             return false;
+
         }
 
         /// <summary>
@@ -363,10 +415,10 @@ namespace Gameplay.Rotation
             float maxVertical,
             int depth)
         {
-            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
-            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
-            int firstRow = CellIndex(minVertical + EdgeTolerance);
-            int lastRow = CellIndex(maxVertical - EdgeTolerance);
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
+            int firstRow = CellIndex(minVertical + EDGE_TOLERANCE);
+            int lastRow = CellIndex(maxVertical - EDGE_TOLERANCE);
 
             for (int column = firstColumn; column <= lastColumn; column++)
             {
@@ -391,10 +443,10 @@ namespace Gameplay.Rotation
             float maxVertical,
             int depth)
         {
-            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
-            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
-            int firstRow = CellIndex(minVertical + EdgeTolerance);
-            int lastRow = CellIndex(maxVertical - EdgeTolerance);
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
+            int firstRow = CellIndex(minVertical + EDGE_TOLERANCE);
+            int lastRow = CellIndex(maxVertical - EDGE_TOLERANCE);
 
             for (int column = firstColumn; column <= lastColumn; column++)
             {
@@ -422,10 +474,10 @@ namespace Gameplay.Rotation
             float maxVertical,
             int depth)
         {
-            int firstColumn = CellIndex(minHorizontal + EdgeTolerance);
-            int lastColumn = CellIndex(maxHorizontal - EdgeTolerance);
-            int firstRow = CellIndex(minVertical + EdgeTolerance);
-            int lastRow = CellIndex(maxVertical - EdgeTolerance);
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
+            int firstRow = CellIndex(minVertical + EDGE_TOLERANCE);
+            int lastRow = CellIndex(maxVertical - EDGE_TOLERANCE);
 
             for (int column = firstColumn; column <= lastColumn; column++)
             {
@@ -439,6 +491,88 @@ namespace Gameplay.Rotation
                     //the platform list is sorted, so index 0 is the visible platform nearest to the camera.
                     if (depthsByScreenCell[view].TryGetValue(screenCell, out List<int> platformDepths) && platformDepths[0] < depth)
                         return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Is there a climbable block (ladder, vines) that can be seen in this screen cell?
+        /// </summary>
+        public bool IsClimbable(int view, int column, int row)
+        {
+            return climbableScreenCells[view].Contains(new Vector2Int(column, row));
+        }
+
+        /// <summary>
+        /// Background mode version of IsClimbable: only a climbable block on exactly this depth layer counts.
+        /// </summary>
+        public bool IsClimbableAtDepth(int view, int column, int row, int depth)
+        {
+            return climbableCells.Contains(CellAt(view, column, row, depth));
+        }
+
+        /// <summary>
+        /// The depth of the climbable block in this screen cell that is closest to currentDepth.
+        /// </summary>
+        public bool TryGetClimbableDepth(int view, int column, int row, int currentDepth, out int depth)
+        {
+            depth = 0;
+
+            if (!climbableDepthsByScreenCell[view].TryGetValue(new Vector2Int(column, row), out List<int> depths))
+                return false;
+
+            depth = depths[0];
+
+            foreach (int candidateDepth in depths)
+            {
+                if (Mathf.Abs(candidateDepth - currentDepth) < Mathf.Abs(depth - currentDepth))
+                    depth = candidateDepth;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// The top of a ladder can be stood on like a one-way platform. Did the feet cross the top of a climbable
+        /// column (a climbable cell with no climbable cell above it) while moving down from previousFeet to newFeet?
+        /// </summary>
+        /// <param name="onlyThisDepth">Background mode: only climbable blocks on this depth layer count.</param>
+        public bool LandsOnClimbableTop(int view, float minHorizontal, float maxHorizontal, float previousFeet, float newFeet,
+            bool onlyThisDepth, int depth, out float landingHeight)
+        {
+            landingHeight = 0f;
+
+            int highestRow = Mathf.FloorToInt(previousFeet + EDGE_TOLERANCE - 0.5f);
+            int lowestRow = Mathf.FloorToInt(newFeet - 0.5f) + 1;
+
+            int firstColumn = CellIndex(minHorizontal + EDGE_TOLERANCE);
+            int lastColumn = CellIndex(maxHorizontal - EDGE_TOLERANCE);
+
+            for (int row = highestRow; row >= lowestRow; row--)
+            {
+                for (int column = firstColumn; column <= lastColumn; column++)
+                {
+                    bool climbableHere;
+                    bool climbableAbove;
+
+                    if (onlyThisDepth)
+                    {
+                        climbableHere = IsClimbableAtDepth(view, column, row, depth);
+                        climbableAbove = IsClimbableAtDepth(view, column, row + 1, depth);
+                    }
+                    else
+                    {
+                        climbableHere = IsClimbable(view, column, row);
+                        climbableAbove = IsClimbable(view, column, row + 1);
+                    }
+
+                    if (climbableHere && !climbableAbove)
+                    {
+                        landingHeight = row + 0.5f;
+                        return true;
+                    }
                 }
             }
 
