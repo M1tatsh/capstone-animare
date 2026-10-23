@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 9097622833567873105}
   - component: {fileID: 736027151147661151}
   - component: {fileID: 3385119922859401244}
+  - component: {fileID: 5820118415542844432}
   m_Layer: 5
   m_Name: Transformation
   m_TagString: Untagged
@@ -236,3 +237,20 @@ MonoBehaviour:
   OnPartSelected:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5820118415542844432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8372347880962500213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b3867414eeeefc439cb0bd6bbddf2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.RadialMenuFocus
+  transitionTime: 0.15
+  zoomScale: 0.85
+  vignetteColor: {r: 0, g: 0, b: 0, a: 0.65}
+  vignetteStart: 0.35
+  pixelatedVignette: 1
