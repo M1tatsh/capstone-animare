@@ -25,7 +25,7 @@ namespace Gameplay.Player
         private List<GameObject> spawnedParts = new List<GameObject>();
         private GameObject spawnedCenterPart;
         private int currentSelectedRadialPart = -1;
-        private float originalTimeScale = 1f; 
+        private float originalTimeScale = 1f;
         private float originalFixedDeltaTime;
 
         private bool isMenuOpen = false;
@@ -37,7 +37,7 @@ namespace Gameplay.Player
                 canvasTransform.gameObject.SetActive(false);
             }
 
-            
+
             originalTimeScale = Time.timeScale;
             originalFixedDeltaTime = Time.fixedDeltaTime;
         }
@@ -68,11 +68,11 @@ namespace Gameplay.Player
             StopAllCoroutines();
             SpawnRadialPart();
 
-            
+
 
             Time.timeScale = slowTimeScale;
 
-      
+
             Time.fixedDeltaTime = originalFixedDeltaTime * slowTimeScale;
 
             Cursor.visible = true;
@@ -200,6 +200,11 @@ namespace Gameplay.Player
 
                 spawnedParts.Add(spawnedRadialPart);
             }
+        }
+
+        public bool IsMenuOpen
+        {
+            get { return isMenuOpen; }
         }
     }
 }
