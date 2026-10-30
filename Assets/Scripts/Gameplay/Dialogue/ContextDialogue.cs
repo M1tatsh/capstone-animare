@@ -25,6 +25,17 @@ namespace Gameplay.Dialogue
     }
 
     /// <summary>
+    /// Which way an object faces, measured from the object itself (its blue, red arrows in the Scene view).
+    /// </summary>
+    public enum FacingDirection
+    {
+        Forward,
+        Back,
+        Right,
+        Left
+    }
+
+    /// <summary>
     /// Put this on anything the player can walk up to: a sign, a character, a lever.
     /// When the player is close, a textbox appears next to this object with the prompt.
     /// "Close" is the real 3D distance by default. Tick Ignore Depth to measure it on the flattened screen instead.
@@ -58,6 +69,17 @@ namespace Gameplay.Dialogue
         [Tooltip("Off: the real 3D distance is used. On: depth is ignored, so the prompt shows whenever the object " +
             "looks close on screen, even if it is far behind or in front of the player.")]
         [SerializeField] private bool ignoreDepth = false;
+        [Header("Viewing Angle")]
+        [Tooltip("Only show the prompt when the camera is looking at this object's front, for example a door " +
+            "that can only be seen (and used) from one side. Select the object to see its front as a yellow arrow.")]
+        [SerializeField] private bool onlyWhenFacingCamera = false;
+        [Tooltip("Which way this object's front points, measured from the object's own rotation.")]
+        [SerializeField] private FacingDirection facing = FacingDirection.Back;
+        [Tooltip("How far (in degrees) the camera can be turned away from looking straight at the front. " +
+            "45 means only the one view that looks at the front. Above 90 also includes the two side views.")]
+        [Range(1f, 180f)]
+        [SerializeField] private float facingTolerance = 45f;
+
         [Tooltip("Where the textbox points, measured from this object. The box sits just above this point.")]
         [SerializeField] private Vector3 textboxOffset = new Vector3(0f, 1f, 0f);
 
@@ -71,6 +93,49 @@ namespace Gameplay.Dialogue
         public float ShowDistance => showDistance;
         public bool IgnoreDepth => ignoreDepth;
         public Vector3 TextboxAnchor => transform.position + textboxOffset;
+
+        /// <summary>
+        /// The world direction this object's front points in (flat, ignoring up and down).
+        /// </summary>
+        public Vector3 FrontDirection
+        {
+            get
+            {
+                Vector3 direction;
+
+                if (facing == FacingDirection.Forward)
+                    direction = transform.forward;
+                else if (facing == FacingDirection.Back)
+                    direction = -transform.forward;
+                else if (facing == FacingDirection.Right)
+                    direction = transform.right;
+                else
+                    direction = -transform.right;
+
+                direction.y = 0f;
+                return direction.normalized;
+            }
+        }
+
+        /// <summary>
+        /// Can the camera see this object's front right now? Always true when Only When Facing Camera is off.
+        /// </summary>
+        public bool IsFacingCamera(Camera viewCamera)
+        {
+            if (!onlyWhenFacingCamera || viewCamera == null)
+                return true;
+
+            //the direction from the object toward the camera, flat. The camera looks along its forward,
+            //so pointing back at the camera is the opposite of that.
+            Vector3 towardCamera = -viewCamera.transform.forward;
+            towardCamera.y = 0f;
+
+            if (towardCamera.sqrMagnitude < 0.0001f)
+                return true;
+
+            float angle = Vector3.Angle(FrontDirection, towardCamera.normalized);
+            return angle <= facingTolerance;
+        }
         public bool TypeOutPages => typeOutPages;
         public SoundEffect VoiceSound => voiceSound;
         public float CharactersPerSecond => charactersPerSecond;
@@ -119,6 +184,15 @@ namespace Gameplay.Dialogue
             Gizmos.DrawWireSphere(transform.position, showDistance);
             Gizmos.DrawLine(transform.position, TextboxAnchor);
             Gizmos.DrawWireCube(TextboxAnchor, Vector3.one * 0.15f);
+
+            //the front of the object, when the prompt only shows from that side.
+            if (onlyWhenFacingCamera)
+            {
+                Gizmos.color = Color.yellow;
+                Vector3 arrowEnd = transform.position + FrontDirection * 1.5f;
+                Gizmos.DrawLine(transform.position, arrowEnd);
+                Gizmos.DrawWireSphere(arrowEnd, 0.1f);
+            }
         }
     }
 }

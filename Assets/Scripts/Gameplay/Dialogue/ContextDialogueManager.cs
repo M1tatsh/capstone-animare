@@ -111,6 +111,12 @@ namespace Gameplay.Dialogue
         /// <summary>
         /// True while a tutorial is showing above the player.
         /// </summary>
+        public bool HasSomethingToShow
+        {
+            //a prompt, dialogue or tutorial is showing (or about to). Interact belongs to the textbox then.
+            get { return activeTutorial != null || currentDialogue != null; }
+        }
+
         public bool IsShowingTutorial
         {
             get { return activeTutorial != null; }
@@ -399,7 +405,7 @@ namespace Gameplay.Dialogue
         /// </summary>
         private ContextDialogue FindDialogueToShow()
         {
-            if (IsInConversation && currentDialogue.isActiveAndEnabled && GetScreenDistance(currentDialogue) <= currentDialogue.ShowDistance)
+            if (IsInConversation && currentDialogue.isActiveAndEnabled && CanShow(currentDialogue))
                 return currentDialogue;
 
             ContextDialogue closestDialogue = null;
@@ -407,6 +413,10 @@ namespace Gameplay.Dialogue
 
             foreach (ContextDialogue dialogue in allDialogues)
             {
+                //only objects whose front the camera can see (if they ask for that).
+                if (!dialogue.IsFacingCamera(mainCamera))
+                    continue;
+
                 float distance = GetScreenDistance(dialogue);
 
                 if (distance <= dialogue.ShowDistance && distance < closestDistance)
@@ -417,6 +427,14 @@ namespace Gameplay.Dialogue
             }
 
             return closestDialogue;
+        }
+
+        /// <summary>
+        /// Close enough, and seen from the right side.
+        /// </summary>
+        private bool CanShow(ContextDialogue dialogue)
+        {
+            return dialogue.IsFacingCamera(mainCamera) && GetScreenDistance(dialogue) <= dialogue.ShowDistance;
         }
 
         /// <summary>

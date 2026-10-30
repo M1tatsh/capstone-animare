@@ -34,6 +34,18 @@ namespace Gameplay.Player
         [SerializeField] private SoundEffect crowSound;
         [SerializeField] private SoundEffect antSound;
 
+        //Josh: which forms the player has. Locked forms can't be picked from the radial menu.
+        //The SaveManager saves and loads these, and FormUnlock unlocks them during play.
+        [Header("Unlocked Forms")]
+        [SerializeField] private bool foxUnlocked = true;
+        [SerializeField] private bool rabbitUnlocked = true;
+        [SerializeField] private bool crowUnlocked = true;
+
+        /// <summary>
+        /// Runs when a form is unlocked (for a sound, or to update the radial menu).
+        /// </summary>
+        public event System.Action<PlayerForm> FormUnlocked;
+
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
         private GlideAbility glideAbility;
@@ -125,6 +137,12 @@ namespace Gameplay.Player
 
             //Josh: only a real change plays a sound, so picking the form you're already in (or the
             //starting Reaper form when the scene loads) stays quiet.
+            if (!IsFormUnlocked(form))
+            {
+                return;
+            }
+
+            //Josh: bool check to stop edge cases where player is already in the form.
             bool formChanged = form != currentForm;
 
             currentForm = form;
@@ -181,6 +199,10 @@ namespace Gameplay.Player
         }
 
         //Josh: plays the sound for the form the player just changed into.
+        /// <summary>
+        /// Plays the sound effect for transforming into the given form. Does nothing if the sound is empty.
+        /// </summary>
+        /// <param name="form">PlayerForm associated with target sound.</param>
         private void PlayTransformationSound(PlayerForm form)
         {
             SoundEffect sound = null;
@@ -217,6 +239,65 @@ namespace Gameplay.Player
             }
         }
 
+        
+
+        //Josh: unlocking forms.
+
+        /// <summary>
+        /// Checks if the given form is unlocked to manage
+        /// </summary>
+        public bool IsFormUnlocked(PlayerForm form)
+        {
+            if (form == PlayerForm.Fox)
+            {
+                return foxUnlocked;
+            }
+
+            if (form == PlayerForm.Rabbit)
+            {
+                return rabbitUnlocked;
+            }
+
+            if (form == PlayerForm.Crow)
+            {
+                return crowUnlocked;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Unlocks (or locks) a form.
+        /// </summary>
+        public void SetFormUnlocked(PlayerForm form, bool unlocked)
+        {
+            bool wasUnlocked = IsFormUnlocked(form);
+
+            if (form == PlayerForm.Fox)
+            {
+                foxUnlocked = unlocked;
+            }
+            else if (form == PlayerForm.Rabbit)
+            {
+                rabbitUnlocked = unlocked;
+            }
+            else if (form == PlayerForm.Crow)
+            {
+                crowUnlocked = unlocked;
+            }
+
+            //default to reaper if current form gets locked somehow.
+            if (!IsFormUnlocked(currentForm))
+            {
+                SetForm(PlayerForm.Reaper);
+            }
+
+            if (unlocked && !wasUnlocked)
+            {
+                FormUnlocked?.Invoke(form);
+            }
+        }
+        
         public PlayerForm CurrentForm
         {
             get { return currentForm; }

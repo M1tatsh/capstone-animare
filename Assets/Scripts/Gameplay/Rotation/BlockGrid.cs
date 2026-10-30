@@ -33,20 +33,24 @@ namespace Gameplay.Rotation
 
         public bool AllowDepthPulling => allowDepthPulling;
 
-        public bool SmallPassagesOpen { get; set; }
+        /// <summary>
+        /// Parent object of the background buildings (can be null)
+        /// </summary>
+        public Transform BuildingsParent => buildingsParent;
 
         private readonly HashSet<Vector3Int> cells = new HashSet<Vector3Int>();
         private readonly HashSet<Vector3Int> oneWayCells = new HashSet<Vector3Int>();
-        private readonly HashSet<Vector3Int> smallPassageCells = new HashSet<Vector3Int>();
         //every climbable block (ladders, vines), as a 3D cell. These are never solid.
         private readonly HashSet<Vector3Int> climbableCells = new HashSet<Vector3Int>();
+
+        //the blocks the player can pick up, by the 3D cell they sit in. Blocks being carried are left out.
+        private readonly Dictionary<Vector3Int, HoldableBlock> holdableBlocks = new Dictionary<Vector3Int, HoldableBlock>();
+
         private readonly HashSet<Vector3Int> buildingCells = new HashSet<Vector3Int>();
         private readonly Dictionary<Vector2Int, List<int>>[] depthsByScreenCell = new Dictionary<Vector2Int, List<int>>[VIEW_COUNT];
         private readonly HashSet<Vector2Int>[] solidScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
 
         private readonly HashSet<Vector2Int>[] oneWayScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
-
-        private readonly HashSet<Vector2Int>[] smallPassageScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
 
         //per view: the screen cells where a climbable block can be seen (and isn't hidden by a wall in front of it).
         private readonly HashSet<Vector2Int>[] climbableScreenCells = new HashSet<Vector2Int>[VIEW_COUNT];
@@ -68,12 +72,12 @@ namespace Gameplay.Rotation
         {
             cells.Clear();
             oneWayCells.Clear();
-            smallPassageCells.Clear();
             climbableCells.Clear();
+            holdableBlocks.Clear();
             buildingCells.Clear();
             foreach (Transform child in transform)
             {
-                AddBlocksFrom(child, false, false, false);
+                AddBlocksFrom(child, false, false);
             }
 
             if (buildingsParent != null)
@@ -109,11 +113,9 @@ namespace Gameplay.Rotation
                 Dictionary<Vector2Int, List<int>> screenCells = new Dictionary<Vector2Int, List<int>>();
                 HashSet<Vector2Int> solidCellsThisView = new HashSet<Vector2Int>();
                 HashSet<Vector2Int> oneWayCellsThisView = new HashSet<Vector2Int>();
-                HashSet<Vector2Int> smallPassageCellsThisView = new HashSet<Vector2Int>();
 
                 AddVisiblePlatforms(cells, right, forward, buildingDepthsThisView, screenCells, solidCellsThisView);
                 AddVisiblePlatforms(oneWayCells, right, forward, buildingDepthsThisView, screenCells, oneWayCellsThisView);
-                AddVisiblePlatforms(smallPassageCells, right, forward, buildingDepthsThisView, screenCells, smallPassageCellsThisView);
 
                 foreach (List<int> depths in screenCells.Values)
                     depths.Sort();
@@ -131,7 +133,6 @@ namespace Gameplay.Rotation
                 depthsByScreenCell[view] = screenCells;
                 solidScreenCells[view] = solidCellsThisView;
                 oneWayScreenCells[view] = oneWayCellsThisView;
-                smallPassageScreenCells[view] = smallPassageCellsThisView;
                 climbableScreenCells[view] = climbableCellsThisView;
                 climbableDepthsByScreenCell[view] = climbableDepths;
             }
@@ -143,7 +144,7 @@ namespace Gameplay.Rotation
         /// </summary>
         /// <param name="insideOneWayGroup">True when a group above this object has OneWayBlock on it.</param>
         /// <param name="insideClimbableGroup">True when a group above this object has ClimbableBlock on it.</param>
-        private void AddBlocksFrom(Transform current, bool insideOneWayGroup, bool insideClimbableGroup, bool insideSmallPassageGroup)
+        private void AddBlocksFrom(Transform current, bool insideOneWayGroup, bool insideClimbableGroup)
         {
             if (!current.gameObject.activeInHierarchy)
                 return;
@@ -153,13 +154,12 @@ namespace Gameplay.Rotation
 
             bool isOneWay = insideOneWayGroup || current.GetComponent<OneWayBlock>() != null;
             bool isClimbable = insideClimbableGroup || current.GetComponent<ClimbableBlock>() != null;
-            bool isSmallPassage = insideSmallPassageGroup || current.GetComponent<SmallPassageBlock>() != null;
 
             if (IsGroup(current))
             {
                 foreach (Transform child in current)
                 {
-                    AddBlocksFrom(child, isOneWay, isClimbable, isSmallPassage);
+                    AddBlocksFrom(child, isOneWay, isClimbable);
                 }
 
                 return;
@@ -167,11 +167,22 @@ namespace Gameplay.Rotation
 
             Vector3Int blockCell = Vector3Int.RoundToInt(current.position);
 
+
+
+            HoldableBlock holdable = current.GetComponent<HoldableBlock>();
+            if (holdable != null)
+            {
+                if (holdable.IsHeld)
+                    return;
+
+                holdableBlocks[blockCell] = holdable;
+                cells.Add(blockCell);
+                return;
+            }
+
             //climbable wins: a ladder is never solid, even inside a one-way group.
             if (isClimbable)
                 climbableCells.Add(blockCell);
-            else if (isSmallPassage)
-                smallPassageCells.Add(blockCell);
             else if (isOneWay)
                 oneWayCells.Add(blockCell);
             else
@@ -330,12 +341,7 @@ namespace Gameplay.Rotation
         public bool IsSolid(int view, int column, int row)
         {
             //one-way blocks are not solid: the player only collides with their top (see LandsOnOneWay).
-            Vector2Int screenCell = new Vector2Int(column, row);
-
-            if (solidScreenCells[view].Contains(screenCell))
-                return true;
-
-            return !SmallPassagesOpen && smallPassageScreenCells[view].Contains(screenCell);
+            return solidScreenCells[view].Contains(new Vector2Int(column, row));
         }
 
         /// <summary>
@@ -441,9 +447,7 @@ namespace Gameplay.Rotation
             {
                 for (int row = firstRow; row <= lastRow; row++)
                 {
-                    Vector3Int cell = CellAt(view, column, row, depth);
-
-                    if (cells.Contains(cell) || (!SmallPassagesOpen && smallPassageCells.Contains(cell)))
+                    if (cells.Contains(CellAt(view, column, row, depth)))
                         return true;
                 }
             }
@@ -504,7 +508,7 @@ namespace Gameplay.Rotation
                 {
                     Vector2Int screenCell = new Vector2Int(column, row);
 
-a                     if (nearestBuildingDepthByScreenCell[view].TryGetValue(screenCell, out int buildingDepth) && buildingDepth < depth)
+                    if (nearestBuildingDepthByScreenCell[view].TryGetValue(screenCell, out int buildingDepth) && buildingDepth < depth)
                         return true;
 
                     //the platform list is sorted, so index 0 is the visible platform nearest to the camera.
@@ -514,6 +518,30 @@ a                     if (nearestBuildingDepthByScreenCell[view].TryGetValue(scr
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// The holdable block the camera sees in this screen cell (the block nearest the camera there), if it is one.
+        /// </summary>
+        public bool TryGetHoldableAt(int view, int column, int row, out HoldableBlock holdable)
+        {
+            holdable = null;
+
+            if (!depthsByScreenCell[view].TryGetValue(new Vector2Int(column, row), out List<int> depths))
+                return false;
+
+
+            return holdableBlocks.TryGetValue(CellAt(view, column, row, depths[0]), out holdable);
+        }
+
+        /// <summary>
+        /// Checks a 3D cell if it's occupied by a platform block.
+        /// </summary>
+        public bool HasBlockAt(Vector3Int cell)
+        {
+            return cells.Contains(cell) 
+            || oneWayCells.Contains(cell) 
+            || climbableCells.Contains(cell);
         }
 
         /// <summary>
