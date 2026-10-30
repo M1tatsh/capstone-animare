@@ -504,7 +504,7 @@ namespace Gameplay.Rotation
                 {
                     Vector2Int screenCell = new Vector2Int(column, row);
 
-                    if (nearestBuildingDepthByScreenCell[view].TryGetValue(screenCell, out int buildingDepth) && buildingDepth < depth)
+a                     if (nearestBuildingDepthByScreenCell[view].TryGetValue(screenCell, out int buildingDepth) && buildingDepth < depth)
                         return true;
 
                     //the platform list is sorted, so index 0 is the visible platform nearest to the camera.
