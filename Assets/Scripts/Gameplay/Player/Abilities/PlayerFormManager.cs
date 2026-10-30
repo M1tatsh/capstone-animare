@@ -8,7 +8,8 @@ namespace Gameplay.Player
         Reaper,
         Fox,
         Rabbit,
-        Crow
+        Crow,
+        Ant
     }
 
     [RequireComponent(typeof(CollisionCheck))]
@@ -17,11 +18,13 @@ namespace Gameplay.Player
         [SerializeField] private int foxSlot = 1;
         [SerializeField] private int rabbitSlot = 2;
         [SerializeField] private int crowSlot = 3;
+        [SerializeField] private int antSlot = 4;
 
         [SerializeField] private GameObject reaperModel;
         [SerializeField] private GameObject foxModel;
         [SerializeField] private GameObject rabbitModel;
         [SerializeField] private GameObject crowModel;
+        [SerializeField] private GameObject antModel;
 
         //Josh: one sound for changing into each form. Leave any of them empty for no sound.
         [Header("Transformation Sounds")]
@@ -29,10 +32,12 @@ namespace Gameplay.Player
         [SerializeField] private SoundEffect foxSound;
         [SerializeField] private SoundEffect rabbitSound;
         [SerializeField] private SoundEffect crowSound;
+        [SerializeField] private SoundEffect antSound;
 
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
         private GlideAbility glideAbility;
+        private ShrinkAbility shrinkAbility;
         private CollisionCheck collisionCheck;
         private PlayerMovement playerMovement;
         private RadialSelection radialSelection;
@@ -43,6 +48,7 @@ namespace Gameplay.Player
             dashAbility = GetComponent<DashAbility>();
             doubleJumpAbility = GetComponent<DoubleJumpAbility>();
             glideAbility = GetComponent<GlideAbility>();
+            shrinkAbility = GetComponent<ShrinkAbility>();
             collisionCheck = GetComponent<CollisionCheck>();
             playerMovement = GetComponent<PlayerMovement>();
         }
@@ -104,10 +110,19 @@ namespace Gameplay.Player
             {
                 SetForm(PlayerForm.Crow);
             }
+            else if (slot == antSlot)
+            {
+                SetForm(PlayerForm.Ant);
+            }
         }
 
         public void SetForm(PlayerForm form)
         {
+            if (currentForm == PlayerForm.Ant && form != PlayerForm.Ant && shrinkAbility != null && !shrinkAbility.TryGrow())
+            {
+                return;
+            }
+
             //Josh: only a real change plays a sound, so picking the form you're already in (or the
             //starting Reaper form when the scene loads) stays quiet.
             bool formChanged = form != currentForm;
@@ -129,6 +144,11 @@ namespace Gameplay.Player
                 glideAbility.enabled = form == PlayerForm.Crow;
             }
 
+            if (shrinkAbility != null)
+            {
+                shrinkAbility.enabled = form == PlayerForm.Ant;
+            }
+
             if (reaperModel != null)
             {
                 reaperModel.SetActive(form == PlayerForm.Reaper);
@@ -147,6 +167,11 @@ namespace Gameplay.Player
             if (crowModel != null)
             {
                 crowModel.SetActive(form == PlayerForm.Crow);
+            }
+
+            if (antModel != null)
+            {
+                antModel.SetActive(form == PlayerForm.Ant);
             }
 
             if (formChanged)
@@ -175,6 +200,10 @@ namespace Gameplay.Player
             else if (form == PlayerForm.Crow)
             {
                 sound = crowSound;
+            }
+            else if (form == PlayerForm.Ant)
+            {
+                sound = antSound;
             }
 
             //through playermovement so it gets muffled behind buildings like the other player sounds.

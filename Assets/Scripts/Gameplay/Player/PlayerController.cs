@@ -21,6 +21,7 @@ namespace Gameplay.Player
         private DashAbility dashAbility;
         private DoubleJumpAbility doubleJumpAbility;
         private GlideAbility glideAbility;
+        private ShrinkAbility shrinkAbility;
         private ViewRotator viewRotator;
         private ContextDialogueManager dialogueManager;
         #endregion
@@ -31,6 +32,7 @@ namespace Gameplay.Player
             dashAbility = GetComponent<DashAbility>();
             doubleJumpAbility = GetComponent<DoubleJumpAbility>();
             glideAbility = GetComponent<GlideAbility>();
+            shrinkAbility = GetComponent<ShrinkAbility>();
 
             radialSelection = FindAnyObjectByType<RadialSelection>();
             viewRotator = FindAnyObjectByType<ViewRotator>();
@@ -108,6 +110,11 @@ namespace Gameplay.Player
             if (button.isPressed && dashAbility != null)
             {
                 dashAbility.TryDash(move.x);
+            }
+
+            if (button.isPressed && shrinkAbility != null)
+            {
+                shrinkAbility.TryToggle();
             }
         }
 

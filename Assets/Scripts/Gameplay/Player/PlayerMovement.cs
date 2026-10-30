@@ -58,6 +58,9 @@ namespace Gameplay.Player
         [SerializeField] private float jumpBufferTime = 0.4f;
         private float lastMoveSign = 1f;
         private Vector3 spawnWorldPosition;
+        private Vector2 baseHalfSize;
+        private Vector3 baseScale;
+        private float sizeScale = 1f;
 
         //bools
         private bool isJumpPressed = false;
@@ -172,6 +175,8 @@ namespace Gameplay.Player
         {
             rb = GetComponent<Rigidbody>();
             collisionCheck = GetComponent<CollisionCheck>();
+            baseHalfSize = halfSize;
+            baseScale = transform.localScale;
 
             if (grid == null)
                 grid = FindAnyObjectByType<BlockGrid>();
@@ -351,6 +356,44 @@ namespace Gameplay.Player
         {
             if (!isFrozen)
                 jumpBufferTimer = jumpBufferTime;
+        }
+
+        public bool TrySetSizeScale(float newScale)
+        {
+            if (isFrozen || grid == null || ledgeState != LedgeState.None || isOnClimbable)
+            {
+                return false;
+            }
+
+            Vector2 newHalfSize = baseHalfSize * newScale;
+            float feetHeight = vertical - halfSize.y;
+            float newVertical = feetHeight + newHalfSize.y;
+            float widthChange = Mathf.Max(0f, newHalfSize.x - halfSize.x);
+            bool wereSmallPassagesOpen = grid.SmallPassagesOpen;
+
+            grid.SmallPassagesOpen = newScale < 1f;
+
+            foreach (float offset in new[] { 0f, widthChange, -widthChange })
+            {
+                float newHorizontal = horizontal + offset;
+
+                if (!IsBlocked(newHorizontal - newHalfSize.x, newHorizontal + newHalfSize.x,
+                    newVertical - newHalfSize.y, newVertical + newHalfSize.y))
+                {
+                    horizontal = newHorizontal;
+                    vertical = newVertical;
+                    halfSize = newHalfSize;
+                    sizeScale = newScale;
+                    transform.localScale = baseScale * newScale;
+
+                    UpdateGrounded();
+                    ApplyTransform();
+                    return true;
+                }
+            }
+
+            grid.SmallPassagesOpen = wereSmallPassagesOpen;
+            return false;
         }
 
         /// <summary>
@@ -1687,6 +1730,11 @@ namespace Gameplay.Player
         public bool IsGrounded
         {
             get { return isGrounded; }
+        }
+
+        public float SizeScale
+        {
+            get { return sizeScale; }
         }
 
         /// <summary>

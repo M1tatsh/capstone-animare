@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3056699561048409861}
   - component: {fileID: 5268039652391618661}
   - component: {fileID: 9170334029621550505}
+  - component: {fileID: 5842663316448527360}
   m_Layer: 0
   m_Name: ItemPickup
   m_TagString: Untagged
@@ -70,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 10b1dcbec4f158a4f8dc842d3c0c7d21, type: 2}
+  - {fileID: 2100000, guid: 0c053a28a6e745fd8e7ec59b8b741842, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -189,3 +190,34 @@ MonoBehaviour:
     ignoreDepth: 0
     muffleWithDistance: 0
     farthestMuffleCutoffFrequency: 1000
+--- !u!114 &5842663316448527360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828695441076069725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be5f7c9c45b049f5bf8f4e2f81ab174c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Environment.GodrayGlow
+  rayMaterial: {fileID: 2100000, guid: ce89bbb1560342f28f3ce99dbda4ab71, type: 2}
+  rayCount: 8
+  rayLength: 2
+  rayWidth: 0.3
+  lengthRange: {x: 0.6, y: 1.2}
+  widthRange: {x: 0.8, y: 1.2}
+  spinSpeedRange: {x: 10, y: 30}
+  alphaRange: {x: 0.1, y: 1}
+  pulseSpeedRange: {x: 0.3, y: 1}
+  textureWidthUsed: 0.34
+  rayMesh: {fileID: 0}
+  meshRotation: {x: 90, y: 0, z: 0}
+  flareMaterial: {fileID: 2100000, guid: f45d9ac6ae36406f9bd0c06cd9057c61, type: 2}
+  flareSize: 1.25
+  flareAlphaRange: {x: 0.7, y: 1}
+  flarePulseSpeed: 1.5
+  flareScalePulse: 0.1
+  depthOffset: 0.45
+  flareDepthOffset: 0.4

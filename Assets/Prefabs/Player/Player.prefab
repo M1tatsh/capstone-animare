@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 417637772631498720}
   - component: {fileID: 1210778331805400983}
   - component: {fileID: 604689127515413120}
+  - component: {fileID: 7787581057099762274}
   - component: {fileID: -9149280644360051109}
   - component: {fileID: 5545633500534809922}
   m_Layer: 9
@@ -252,6 +253,15 @@ MonoBehaviour:
   climbWithUp: 1
   ledgeGrabSound: {fileID: 0}
   ledgeClimbSound: {fileID: 0}
+  allowClimbing: 1
+  climbingSpeed: 3
+  climbingSidewaysSpeed: 2.5
+  climbingJumpMultiplier: 0.8
+  snapToClimbableCenter: 1
+  climbingRegrabDelay: 0.2
+  climbingGrabSound: {fileID: 0}
+  climbingStepSound: {fileID: 0}
+  climbingStepInterval: 0.25
   grid: {fileID: 0}
 --- !u!114 &-1401167691037079110
 MonoBehaviour:
@@ -302,14 +312,17 @@ MonoBehaviour:
   foxSlot: 1
   rabbitSlot: 2
   crowSlot: 3
+  antSlot: 4
   reaperModel: {fileID: 0}
   foxModel: {fileID: 0}
   rabbitModel: {fileID: 0}
   crowModel: {fileID: 0}
+  antModel: {fileID: 0}
   reaperSound: {fileID: 0}
   foxSound: {fileID: 11400000, guid: b699c8b485c5d4c47b20d0af77cb7893, type: 2}
   rabbitSound: {fileID: 11400000, guid: 8a8f8417cea5a6e4382e963b1285905b, type: 2}
   crowSound: {fileID: 0}
+  antSound: {fileID: 0}
 --- !u!114 &417637772631498720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,6 +370,22 @@ MonoBehaviour:
   glideFallSpeed: 1.5
   glideAcceleration: 40
   glideStartSound: {fileID: 0}
+--- !u!114 &7787581057099762274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9ed046aa764464fb324317cf8d6126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.ShrinkAbility
+  shrinkScale: 0.2
+  shrunkJumpScale: 0.5
+  shrinkSound: {fileID: 0}
+  growSound: {fileID: 0}
 --- !u!95 &-9149280644360051109
 Animator:
   serializedVersion: 7
@@ -397,6 +426,7 @@ MonoBehaviour:
   groundedParameterName: Grounded
   hangingParameterName: isHanging
   climbingParameterName: isClimbing
+  onClimbableParameterName: isOnClimbable
   minimumWalkSpeed: 0.1
   spriteFacesRight: 0
 --- !u!1 &3817237226668949842
