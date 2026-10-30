@@ -5,6 +5,7 @@
         <ui:Image source="project://database/Assets/Art/Other/Animare%20Logo.png?fileID=2800000&amp;guid=0c07b8bb3e468824d8dda1cf74d6779a&amp;type=3#Animare Logo" class="floating"/>
         <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; align-items: flex-start; justify-content: flex-start; opacity: 1; right: auto; left: auto; margin-left: 151px;">
             <ui:Button text="Start" name="StartButton" class="menuButton floating"/>
+            <ui:Button text="Continue" name="ContinueButton" class="menuButton floating"/>
             <ui:Button text="Quit" name="QuitButton" class="menuButton floating"/>
         </ui:VisualElement>
     </ui:VisualElement>

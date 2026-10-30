@@ -243,7 +243,7 @@ MonoBehaviour:
   dropThroughSound: {fileID: 0}
   muffleSoundsBehindBuildings: 1
   behindBuildingMuffleCutoff: 1200
-  allowLedgeGrab: 1
+  allowLedgeGrab: 0
   holdTowardWallToGrab: 0
   ledgeGrabTolerance: 0.25
   ledgeGrabReach: 0.15
@@ -262,6 +262,16 @@ MonoBehaviour:
   climbingGrabSound: {fileID: 0}
   climbingStepSound: {fileID: 0}
   climbingStepInterval: 0.25
+  allowCarrying: 1
+  carrySpeedMultiplier: 0.5
+  carryJumpMultiplier: 0.6
+  pickUpReach: 0.3
+  liftDuration: 0.15
+  maximumBlockFall: 20
+  blockFallTimePerUnit: 0.06
+  pickUpSound: {fileID: 0}
+  putDownSound: {fileID: 0}
+  carryBlockedSound: {fileID: 0}
   grid: {fileID: 0}
 --- !u!114 &-1401167691037079110
 MonoBehaviour:
@@ -323,6 +333,9 @@ MonoBehaviour:
   rabbitSound: {fileID: 11400000, guid: 8a8f8417cea5a6e4382e963b1285905b, type: 2}
   crowSound: {fileID: 0}
   antSound: {fileID: 0}
+  foxUnlocked: 1
+  rabbitUnlocked: 1
+  crowUnlocked: 1
 --- !u!114 &417637772631498720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +440,7 @@ MonoBehaviour:
   hangingParameterName: isHanging
   climbingParameterName: isClimbing
   onClimbableParameterName: isOnClimbable
+  carryingParameterName: isCarrying
   minimumWalkSpeed: 0.1
   spriteFacesRight: 0
 --- !u!1 &3817237226668949842
