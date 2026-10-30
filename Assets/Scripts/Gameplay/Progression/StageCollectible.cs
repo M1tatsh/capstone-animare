@@ -1,6 +1,8 @@
+using System.Globalization;
 using DG.Tweening;
 using Gameplay.Player;
 using Gameplay.Rotation;
+using Gameplay.Save;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -25,6 +27,9 @@ namespace Gameplay.Progression
         [SerializeField] private float pickupDuration = 0.25f;
         [Tooltip("Runs when the player picks this up (for a sound or particle effect).")]
         [SerializeField] private UnityEvent onCollected = new UnityEvent();
+        [Tooltip("Optional. The name this item is saved under. Leave empty to make one from the scene, " +
+            "its place in the Hierarchy and its position (only set this if two items would get the same name).")]
+        [SerializeField] private string saveIdOverride = "";
 
         //half the size of the box used to check whether a building hides this collectible.
         private const float HiddenCheckHalfSize = 0.25f;
@@ -34,9 +39,62 @@ namespace Gameplay.Progression
         private BlockGrid grid;
         private ViewRotator viewRotator;
         private bool isCollected;
+        private bool wasAlreadyCollected;
+        private string saveId;
+
+        /// <summary>
+        /// Save File ID String
+        /// </summary>
+        public string SaveId => saveId;
+
+        void Awake()
+        {
+            saveId = string.IsNullOrEmpty(saveIdOverride) ? MakeSaveId() : saveIdOverride;
+
+            if (SaveManager.IsCollected(saveId))
+            {
+                
+                isCollected = true;
+                wasAlreadyCollected = true;
+
+
+                StageProgress progress = FindAnyObjectByType<StageProgress>();
+
+                if (progress != null)
+                    progress.AddAlreadyCollected();
+            }
+        }
+
+        /// <summary>
+        /// Naming convention: Scene Name + Hierarchy Path + @position <br/>
+        /// "LVL1_WIP/Collectibles/MemoryShard@(3.0, 2.0, 1.0)" like so
+        /// </summary>
+        private string MakeSaveId()
+        {
+            string hierarchyPath = transform.name;
+            Transform parent = transform.parent;
+
+            while (parent != null)
+            {
+                hierarchyPath = parent.name + "/" + hierarchyPath;
+                parent = parent.parent;
+            }
+
+            Vector3 position = transform.position;
+            string positionText = string.Format(CultureInfo.InvariantCulture, "({0:0.0}, {1:0.0}, {2:0.0})",
+                position.x, position.y, position.z);
+
+            return gameObject.scene.name + "/" + hierarchyPath + "@" + positionText;
+        }
 
         void Start()
         {
+            if (wasAlreadyCollected)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             stageProgress = FindAnyObjectByType<StageProgress>();
             playerMovement = FindAnyObjectByType<PlayerMovement>();
             grid = FindAnyObjectByType<BlockGrid>();
@@ -101,6 +159,7 @@ namespace Gameplay.Progression
         private void Collect()
         {
             isCollected = true;
+            SaveManager.MarkCollected(saveId);
 
             if (stageProgress != null)
                 stageProgress.AddCollected();

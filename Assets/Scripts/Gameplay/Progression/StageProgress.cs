@@ -6,7 +6,6 @@ namespace Gameplay.Progression
     /// <summary>
     /// Counts the collectibles the player has picked up in this stage (one per scene).
     /// When enough are collected, the stage counts as unlocked, and exit doors open.
-    /// Progress is not saved: reloading the scene starts the count again.
     /// </summary>
     public class StageProgress : MonoBehaviour
     {
@@ -61,6 +60,14 @@ namespace Gameplay.Progression
             //a stage with nothing to collect is unlocked from the start.
             if (IsUnlocked)
                 onUnlocked.Invoke();
+        }
+
+        /// <summary>
+        /// Counter for progress saving
+        /// </summary>
+        public void AddAlreadyCollected()
+        {
+            collectedCount++;
         }
 
         /// <summary>

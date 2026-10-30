@@ -28665,6 +28665,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1271787272}
   - component: {fileID: 1271787273}
+  - component: {fileID: 1271787274}
   m_Layer: 0
   m_Name: Platforms
   m_TagString: Untagged
@@ -28894,6 +28895,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Rotation.BlockGrid
   buildingsParent: {fileID: 1407523581}
   allowDepthPulling: 1
+--- !u!114 &1271787274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271787271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20aa853b33e449b41969b595ce20653f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Environment.BuildingDimmer
+  buildingsParent: {fileID: 0}
+  dimAmount: 0.5
+  dimColor: {r: 0.55, g: 0.6, b: 0.72, a: 1}
+  hazeAmount: 0.15
+  hazeColor: {r: 0.45, g: 0.5, b: 0.6, a: 1}
+  fadeDuration: 0.5
 --- !u!1001 &1277242667
 PrefabInstance:
   m_ObjectHideFlags: 0

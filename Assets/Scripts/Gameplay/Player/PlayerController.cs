@@ -72,6 +72,20 @@ namespace Gameplay.Player
         /// <param name="button">bool that is assigned true/false when user is pressing/releasing the input.</param>
         public void OnJump(InputValue button)
         {
+            //carrying a heavy block logic
+            if (playerMovement.IsCarrying)
+            {
+                playerMovement.IsJumpPressed = button.isPressed;
+
+                if (button.isPressed)
+                    playerMovement.RequestJump();
+                else
+                    playerMovement.OnJumpReleased();
+
+
+                return;
+            }
+
             bool wasGliding = glideAbility != null && glideAbility.IsGliding;
 
             if (glideAbility != null)
@@ -105,6 +119,11 @@ namespace Gameplay.Player
 
         public void OnDash(InputValue button)
         {
+            if (playerMovement.IsCarrying)
+            {
+                return;
+            }
+
             if (button.isPressed && dashAbility != null)
             {
                 dashAbility.TryDash(move.x);
@@ -146,7 +165,29 @@ namespace Gameplay.Player
         /// </summary>
         public void OnInteract(InputValue button)
         {
-            if (button.isPressed && dialogueManager != null)
+            if (!button.isPressed)
+            {
+                return;
+            }
+
+            if (playerMovement.IsCarrying)
+            {
+                playerMovement.TryPlaceBlock();
+                return;
+            }
+
+            if (dialogueManager != null && dialogueManager.HasSomethingToShow)
+            {
+                dialogueManager.Interact();
+                return;
+            }
+
+            if (playerMovement.TryPickUpBlock())
+            {
+                return;
+            }
+
+            if (dialogueManager != null)
             {
                 dialogueManager.Interact();
             }

@@ -17788,6 +17788,7 @@ MonoBehaviour:
   - text: Press Q and E to rotate the screen.
     image: {fileID: 21300000, guid: 8ef245060b12cf14a9e65cbf0c7eafda, type: 3}
     advanceWithAction: {fileID: -6284515522536399496, guid: 41cc5cdb547c27c48aac175026022067, type: 3}
+    voiceSound: {fileID: 0}
   textboxOffset: {x: 0, y: 1, z: 0}
   startDelay: 0.5
   tutorialName: Rotation Tutorial
@@ -20444,8 +20445,14 @@ MonoBehaviour:
   promptText: '[F] Enter the doorway'
   promptImage: {fileID: 21300000, guid: c83e8b36e40c2ce41bd07e6499f4e9b4, type: 3}
   pages: []
+  typeOutPages: 1
+  voiceSound: {fileID: 0}
+  charactersPerSecond: 0
   showDistance: 2
   ignoreDepth: 0
+  onlyWhenFacingCamera: 1
+  facing: 3
+  facingTolerance: 45
   textboxOffset: {x: 0, y: 1, z: 0}
   onInteract:
     m_PersistentCalls:

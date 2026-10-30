@@ -1,4 +1,5 @@
 using Data.Audio;
+using DG.Tweening;
 using Gameplay.Rotation;
 using UnityEngine;
 
@@ -132,6 +133,34 @@ namespace Gameplay.Player
         private float climbingRegrabTimer;
         private float climbingStepTimer;
 
+        //holdable blocks (HoldableBlock) pick one up with Interact, carry it over your head, put it down in front.
+        [Header("Carrying Blocks")]
+        [Tooltip("Lets the player pick up blocks marked with HoldableBlock.")]
+        [SerializeField] private bool allowCarrying = true;
+        [Tooltip("Walking speed while carrying a block, as a fraction of normal speed. Blocks are heavy.")]
+        [Range(0.1f, 1f)]
+        [SerializeField] private float carrySpeedMultiplier = 0.5f;
+        [Tooltip("Jump strength while carrying a block, as a fraction of a normal jump. 0 means no jumping at all.")]
+        [Range(0f, 1f)]
+        [SerializeField] private float carryJumpMultiplier = 0.6f;
+        [Tooltip("How close the block has to be to the front of the player to be picked up.")]
+        [SerializeField] private float pickUpReach = 0.3f;
+        [Tooltip("Seconds the block takes to lift up over the player's head.")]
+        [SerializeField] private float liftDuration = 0.15f;
+        [Tooltip("A block put down over a drop falls this many blocks at most. Any further and it goes back to where it started.")]
+        [SerializeField] private int maximumBlockFall = 20;
+        [Tooltip("Seconds a put-down block takes to fall one block.")]
+        [SerializeField] private float blockFallTimePerUnit = 0.06f;
+        [SerializeField] private SoundEffect pickUpSound;
+        [SerializeField] private SoundEffect putDownSound;
+        [Tooltip("Played when the block can't be picked up or put down there.")]
+        [SerializeField] private SoundEffect carryBlockedSound;
+
+        private HoldableBlock carriedBlock;
+        //0 to 1 while the block rises from where it was to above the player's head.
+        private float liftProgress;
+        private Vector3 liftStartPosition;
+
         private enum LedgeState
         {
             None,
@@ -229,6 +258,16 @@ namespace Gameplay.Player
 
             float deltaTime = Mathf.Min(Time.deltaTime, MaximumDeltaTime);
 
+            if (carriedBlock != null)
+            {
+                if (liftProgress < 1f)
+                    liftProgress = liftDuration > 0f ? Mathf.Min(1f, liftProgress + deltaTime / liftDuration) : 1f;
+
+
+
+                isDashing = false;
+            }
+
             //hanging from or climbing up a ledge replaces normal movement until it is over.
             if (ledgeState != LedgeState.None)
             {
@@ -255,7 +294,11 @@ namespace Gameplay.Player
 
             if (!isDashing)
             {
-                velocity.x = Mathf.Clamp(moveInput * moveSpeed, -maxMoveSpeed, maxMoveSpeed);
+                //carrying a block slows the player down.
+                float speedMultiplier = carriedBlock != null ? carrySpeedMultiplier : 1f;
+
+                velocity.x = Mathf.Clamp(moveInput * moveSpeed * speedMultiplier,
+                    -maxMoveSpeed * speedMultiplier, maxMoveSpeed * speedMultiplier);
             }
 
             ApplyGravity(deltaTime);
@@ -269,9 +312,10 @@ namespace Gameplay.Player
                 StartDropThrough();
             }
 
+
             if (isGrounded && jumpBufferTimer > 0f && !isDashing)
             {
-                Jump(jumpForce);
+                Jump(carriedBlock != null ? jumpForce * carryJumpMultiplier : jumpForce);
                 isJumpPressed = false;
             }
 
@@ -387,8 +431,9 @@ namespace Gameplay.Player
 
             float newHorizontal = horizontal + distance;
 
+            //a carried block makes the player one block taller, so it can't be walked into walls.
             if (IsBlocked(newHorizontal - halfSize.x, newHorizontal + halfSize.x,
-                vertical - halfSize.y, vertical + halfSize.y))
+                vertical - halfSize.y, vertical + halfSize.y + CarriedHeight))
             {
                 if (distance > 0)
                 {
@@ -428,14 +473,14 @@ namespace Gameplay.Player
             float feetBeforeMoving = vertical - halfSize.y;
 
             if (IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x,
-                newVertical - halfSize.y, newVertical + halfSize.y))
+                newVertical - halfSize.y, newVertical + halfSize.y + CarriedHeight))
             {   
-                //head went into a solid row
+                //head (or the carried block on top of it) went into a solid row
                 if (distance > 0)
                 {
                     
-                    int blockedRow = BlockGrid.CellIndex(newVertical + halfSize.y - BlockGrid.EDGE_TOLERANCE);
-                    newVertical = blockedRow - 0.5f - halfSize.y;
+                    int blockedRow = BlockGrid.CellIndex(newVertical + halfSize.y + CarriedHeight - BlockGrid.EDGE_TOLERANCE);
+                    newVertical = blockedRow - 0.5f - halfSize.y - CarriedHeight;
                 }
                 //feet went into a solid row
                 else
@@ -558,12 +603,30 @@ namespace Gameplay.Player
         {
             transform.position = WorldPosition();
             transform.rotation = Quaternion.Euler(0, 90f * view, 0);
+
+            //carried block positional logic
+            if (carriedBlock != null)
+            {
+                Vector3 overHead = transform.position + Vector3.up * (halfSize.y + 0.5f);
+                carriedBlock.transform.position = Vector3.Lerp(liftStartPosition, overHead, Mathf.SmoothStep(0f, 1f, liftProgress));
+            }
         }
 
         /// <summary>
         /// Rotations are never refused. If something ends up in front of the player, they go into background mode instead.
         /// </summary>
-        public bool CanRotateTo(int newView) => true;
+        public bool CanRotateTo(int newView)
+        {
+            if (carriedBlock == null)
+                return true;
+
+            //carrying a block: only turn if the block above the player's head would fit in the new view.
+            Vector3 world = WorldPosition();
+            float newHorizontal = Vector3.Dot(world, (Vector3)ViewAxes.Right(newView));
+            float headHeight = vertical + halfSize.y;
+
+            return !grid.Blocked(newView, newHorizontal - halfSize.x, newHorizontal + halfSize.x, headHeight, headHeight + CarriedHeight);
+        }
 
         public void CommitRotation(int newView)
         {
@@ -657,6 +720,187 @@ namespace Gameplay.Player
             }
         }
 
+        #region Carrying blocks
+
+        /// <summary>
+        /// How much taller the player is because of the block on their head (0 when not carrying).
+        /// </summary>
+        private float CarriedHeight => carriedBlock != null ? 1f : 0f;
+
+        /// <summary>
+        /// The direction the player is facing 
+        /// 
+        /// 1 = right side of the screen, -1 = left side.
+        /// </summary>
+        private int FacingSide => lastMoveSign > 0f ? 1 : -1;
+
+        /// <summary>
+        /// Called by PlayerController on Interact.
+        /// </summary>
+        /// <returns>True if a block was picked up.</returns>
+        public bool TryPickUpBlock()
+        {
+            if (!allowCarrying 
+                || carriedBlock != null 
+                || !isGrounded 
+                || isFrozen 
+                || isBehindGeometry
+                || ledgeState != LedgeState.None 
+                || isOnClimbable) 
+                return false;
+
+            int side = FacingSide;
+            
+            float frontEdge = horizontal + side * halfSize.x;
+
+            //the column the player is facing, just past the front of their body.
+            int column = BlockGrid.CellIndex(frontEdge + side * pickUpReach);
+            float blockFace = column - side * 0.5f;
+            float gap = (blockFace - frontEdge) * side;
+            if (gap < -BlockGrid.EDGE_TOLERANCE * 10f || gap > pickUpReach)
+                return false;
+
+
+            //the row the player's body is in (blocks at the player's feet level, like in Fez).
+            int row = BlockGrid.CellIndex(vertical);
+            if (!grid.TryGetHoldableAt(view, column, row, out HoldableBlock block))
+                return false;
+
+            //something resting on top of the block, or no room over the player's head to carry it.
+            float headHeight = vertical + halfSize.y;
+            bool somethingOnTop = !IsCellOpen(column, row + 1);
+            bool noRoomOverHead = IsBlocked(horizontal - halfSize.x, horizontal + halfSize.x, headHeight, headHeight + 1f);
+
+
+            if (somethingOnTop || noRoomOverHead)
+            {
+                PlayPlayerSound(carryBlockedSound);
+                return true;
+            }
+
+            carriedBlock = block;
+            liftStartPosition = block.transform.position;
+            liftProgress = 0f;
+
+            block.MarkPickedUp();
+            grid.Rebuild();
+
+            PlayPlayerSound(pickUpSound);
+            ApplyTransform();
+            return true;
+        }
+
+        /// <summary>
+        /// Puts the carried block down one block in front of the player. It falls until it lands on something.
+        /// Called by PlayerController on Interact.
+        /// </summary>
+        /// <returns>True if the block was put down.</returns>
+        public bool TryPlaceBlock()
+        {
+            if (carriedBlock == null)
+                return false;
+
+            if (!isGrounded 
+                || isFrozen 
+                || isBehindGeometry 
+                || liftProgress < 1f)
+            {
+                PlayPlayerSound(carryBlockedSound);
+                return false;
+            }
+
+            int side = FacingSide;
+            float frontEdge = horizontal + side * halfSize.x;
+
+            //the first column fully in front of the player's body.
+            int column = side > 0
+                ? Mathf.CeilToInt(frontEdge + 0.5f - BlockGrid.EDGE_TOLERANCE)
+                : Mathf.FloorToInt(frontEdge - 0.5f + BlockGrid.EDGE_TOLERANCE);
+
+            int row = BlockGrid.CellIndex(vertical);
+
+            if (!IsCellOpen(column, row) || IsClimbableCell(column, row))
+            {
+                PlayPlayerSound(carryBlockedSound);
+                return false;
+            }
+
+            //fall down the column until there is something to land on.
+            int landingRow = row;
+            bool foundGround = false;
+
+            for (int fallen = 0; fallen <= maximumBlockFall; fallen++)
+            {
+                int rowBelow = landingRow - 1;
+
+                if (IsCellBlocked(column, rowBelow) || IsOneWayTop(column, rowBelow))
+                {
+                    foundGround = true;
+                    break;
+                }
+
+                landingRow--;
+            }
+
+            HoldableBlock block = carriedBlock;
+            Vector3 startPosition = block.transform.position;
+            Vector3 finalPosition;
+
+            if (foundGround)
+            {
+                int blockDepth = FindPlacedBlockDepth(column, landingRow);
+                finalPosition = (Vector3)(ViewAxes.Right(view) * column + Vector3Int.up * landingRow + ViewAxes.Forward(view) * blockDepth);
+            }
+            else
+            {
+                //it would fall out of the level: send it back to where it started.
+                finalPosition = block.SpawnPosition;
+            }
+
+            //the grid reads blocks where they are, so put the block at its final spot before rebuilding.
+            carriedBlock = null;
+            block.transform.position = finalPosition;
+            block.MarkPlaced();
+            grid.Rebuild();
+
+            if (foundGround)
+            {
+                //then show it moving there: out in front of the player and falling down.
+                int rowsFallen = row - landingRow;
+                float fallDuration = 0.1f + rowsFallen * blockFallTimePerUnit;
+
+                block.transform.position = startPosition;
+                block.transform.DOMove(finalPosition, fallDuration).SetEase(Ease.InQuad).SetTarget(block.transform);
+            }
+
+            PlayPlayerSound(putDownSound);
+            return true;
+        }
+
+        /// <summary>
+        /// The depth a put-down block goes to is the same depth as the block it lands on (so it really rests on it in 3D) 
+        /// 
+        /// uses player's own depth if there is no valid block.
+        /// </summary>
+        private int FindPlacedBlockDepth(int column, int landingRow)
+        {
+            int playerLayer = DepthLayer;
+
+            if (grid.AllowDepthPulling && grid.TryGetDepth(view, column, landingRow - 1, false, playerLayer, out int groundDepth))
+            {
+                Vector3Int onGround = ViewAxes.Right(view) * column 
+                + Vector3Int.up * landingRow 
+                + ViewAxes.Forward(view) * groundDepth;
+                
+                if (!grid.HasBlockAt(onGround))
+                    return groundDepth;
+            }
+
+            return playerLayer;
+        }
+
+        #endregion
+
         #region Climbing (ladders and vines)
 
         /// <summary>
@@ -692,6 +936,10 @@ namespace Gameplay.Player
         /// </summary>
         private bool TryStartClimbing()
         {
+            //hands are full while carrying a block.
+            if (carriedBlock != null)
+                return false;
+
             if (velocity.y <= 0f || isGrounded)
                 jumpedOffClimbable = false;
 
@@ -918,6 +1166,10 @@ namespace Gameplay.Player
         /// <param name="handsAfter">Height of the top of the player after this frame's move.</param>
         private bool TryGrabLedge(float handsBefore, float handsAfter)
         {
+            //hands are full while carrying a block.
+            if (carriedBlock != null)
+                return false;
+
             if (!allowLedgeGrab || regrabTimer > 0f || isGrounded || isDashing || velocity.y > 0f)
                 return false;
 
@@ -1703,6 +1955,22 @@ namespace Gameplay.Player
         /// <summary>
         /// True while the player is on a ladder or vines (a ClimbableBlock).
         /// </summary>
+        /// <summary>
+        /// True while the player is carrying a holdable block.
+        /// </summary>
+        public bool IsCarrying
+        {
+            get { return carriedBlock != null; }
+        }
+
+        /// <summary>
+        /// The block being carried, or null.
+        /// </summary>
+        public HoldableBlock CarriedBlock
+        {
+            get { return carriedBlock; }
+        }
+
         public bool IsOnClimbable
         {
             get { return isOnClimbable; }

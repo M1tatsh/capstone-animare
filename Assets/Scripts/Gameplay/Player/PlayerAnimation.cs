@@ -28,6 +28,8 @@ namespace Gameplay.Player
         [SerializeField] private string climbingParameterName = "isClimbing";
         [Tooltip("Optional bool parameter that is true while on a ladder or vines.")]
         [SerializeField] private string onClimbableParameterName = "isOnClimbable";
+        [Tooltip("Optional bool parameter that is true while carrying a block.")]
+        [SerializeField] private string carryingParameterName = "isCarrying";
 
         [Header("Walking")]
         [Tooltip("The player counts as walking when they move faster than this, in units per second. " +
@@ -47,6 +49,8 @@ namespace Gameplay.Player
         private int hangingParameterId;
         private int climbingParameterId;
         private int onClimbableParameterId;
+        private int carryingParameterId;
+        private bool hasCarryingParameter;
         private bool hasOnClimbableParameter;
         private bool hasWalkingParameter;
         private bool hasGroundedParameter;
@@ -84,6 +88,8 @@ namespace Gameplay.Player
             hasClimbingParameter = HasParameter(climbingParameterName, AnimatorControllerParameterType.Bool, false);
             onClimbableParameterId = Animator.StringToHash(onClimbableParameterName);
             hasOnClimbableParameter = HasParameter(onClimbableParameterName, AnimatorControllerParameterType.Bool, false);
+            carryingParameterId = Animator.StringToHash(carryingParameterName);
+            hasCarryingParameter = HasParameter(carryingParameterName, AnimatorControllerParameterType.Bool, false);
         }
 
         void Start()
@@ -111,6 +117,9 @@ namespace Gameplay.Player
 
             if (hasOnClimbableParameter)
                 animator.SetBool(onClimbableParameterId, playerMovement.IsOnClimbable);
+
+            if (hasCarryingParameter)
+                animator.SetBool(carryingParameterId, playerMovement.IsCarrying);
 
             UpdateFacing();
 

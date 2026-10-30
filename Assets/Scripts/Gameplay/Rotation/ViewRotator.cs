@@ -218,6 +218,27 @@ namespace Gameplay.Rotation
             pivotMoveTween = null;
         }
 
+        /// <summary>
+        /// Jumps straight to a view (0 to 3) with no turning animation, for example when loading a save.
+        /// </summary>
+        public void SnapToView(int newView)
+        {
+            if (pivot == null || player == null)
+                return;
+
+
+            DOTween.Kill(this);
+
+            view = ((newView % 4) + 4) % 4;
+            pivot.rotation = Quaternion.Euler(0, 90f * view, 0);
+
+            player.CommitRotation(view);
+            player.SetFrozen(false);
+            
+            IsRotating = false;
+            RotateDir = 0;
+        }
+
         void Rotate(int direction)
         {
             //wrap to 0 once view reaches 4
