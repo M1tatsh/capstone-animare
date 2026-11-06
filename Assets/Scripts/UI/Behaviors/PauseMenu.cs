@@ -117,7 +117,7 @@ namespace UI.Behaviors
                 enabled = false;
                 return;
             }
-            
+
             resumeButton.clicked += Resume;
 
             if (checkpointButton != null)
@@ -225,7 +225,7 @@ namespace UI.Behaviors
         }
 
         /// <summary>
-        /// Manual respawn at last checkpoint using the menu.
+        /// Manual respawn at last checkpoint.
         /// </summary>
         private void BackToCheckpoint()
         {
