@@ -26,7 +26,6 @@ namespace Data.Save
             {
                 string json = JsonUtility.ToJson(data, true);
 
-                //write to a temporary file first, then swap it in, so a crash halfway can't ruin the old save.
                 string temporaryPath = FilePath + ".tmp";
                 File.WriteAllText(temporaryPath, json);
 

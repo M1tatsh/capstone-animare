@@ -1,4 +1,5 @@
 using Data.Audio;
+using Data.Scene;
 using DG.Tweening;
 using Gameplay.Rotation;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace Gameplay.Player
         [SerializeField] private float groundProbeDistance = 0.05f;
         [Tooltip("If the player falls below this height they are put back where they started.")]
         [SerializeField] private float respawnBelowHeight = -30f;
+        [Tooltip("Seconds the screen takes to fade to black (and the same again to fade back) when the player respawns.")]
+        [SerializeField] private float respawnFadeDuration = 0.3f;
         private float horizontal, vertical, depth;
         private int view = 0;
         static readonly int[] ColumnOffsets = { 0, 1, -1, 2, -2 };
@@ -59,6 +62,12 @@ namespace Gameplay.Player
         [SerializeField] private float jumpBufferTime = 0.4f;
         private float lastMoveSign = 1f;
         private Vector3 spawnWorldPosition;
+        
+        //for logging purposes
+        private int respawnView = -1;
+        private Vector3 lastGroundedPosition;
+
+        private bool isRespawning;
         private Vector2 baseHalfSize;
         private Vector3 baseScale;
         private float sizeScale = 1f;
@@ -378,14 +387,88 @@ namespace Gameplay.Player
                 TryEnterBackgroundMode();
             }
 
+            if (isGrounded)
+                lastGroundedPosition = WorldPosition();
+
             if (vertical < respawnBelowHeight)
             {
-                TeleportTo(spawnWorldPosition);
+                
+                if (!isRespawning)
+                    FellOutOfLevel?.Invoke(this, WorldPosition(), lastGroundedPosition);
+
+                Respawn();
                 return;
             }
 
             ApplyTransform();
         }
+
+        #region Respawning
+
+        /// <summary>
+        /// Where the player goes back to after falling out of the level or returning to checkpoint through the menu.
+        /// </summary>
+        /// <param name="cameraView">The view to turn the camera back to on respawn. -1 for current view.</param>
+        public void SetRespawnPoint(Vector3 worldPosition, int cameraView)
+        {
+            spawnWorldPosition = worldPosition;
+            respawnView = cameraView;
+        }
+
+        public Vector3 RespawnPoint => spawnWorldPosition;
+
+        /// <summary>
+        /// Record falls for PlaytestLogger.
+        /// </summary>
+        public static event System.Action<PlayerMovement, Vector3, Vector3> FellOutOfLevel;
+
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            FellOutOfLevel = null;
+        }
+
+        /// <summary>
+        /// Runs after the player has been put back at the respawn point.
+        /// </summary>
+        public event System.Action Respawned;
+
+        /// <summary>
+        /// Respawns player at last respawn point with a screen fade.
+        /// </summary>
+        public void Respawn()
+        {
+            if (isRespawning)
+                return;
+
+            isRespawning = true;
+            SetFrozen(true);
+
+            ScreenFader.FadeOutAndIn(MoveToRespawnPoint, respawnFadeDuration, respawnFadeDuration, Color.black);
+        }
+
+        /// <summary>
+        /// Back-end respawn logic.
+        /// </summary>
+        private void MoveToRespawnPoint()
+        {
+            if (respawnView >= 0 && respawnView != view)
+            {
+                ViewRotator viewRotator = FindAnyObjectByType<ViewRotator>();
+                if (viewRotator != null)
+                    viewRotator.SnapToView(respawnView);
+            }
+
+            TeleportTo(spawnWorldPosition);
+            SetFrozen(false);
+            isRespawning = false;
+
+            Respawned?.Invoke();
+
+        }
+
+        #endregion
 
         public void SetFrozen(bool frozen)
         {

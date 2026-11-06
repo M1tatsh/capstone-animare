@@ -1,0 +1,15 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="PauseMenu.uss"/>
+    <ui:VisualElement name="PauseLayer" class="pause-layer">
+        <ui:VisualElement name="PausePanel" class="pause-panel">
+            <ui:Label text="Paused" name="PauseTitle" class="pause-title"/>
+            <ui:Button text="Resume" name="ResumeButton" class="pause-button"/>
+            <ui:Button text="Back to Checkpoint" name="CheckpointButton" class="pause-button"/>
+            <ui:Button text="Restart Level" name="RestartButton" class="pause-button"/>
+            <ui:Slider label="Music" low-value="0" high-value="1" value="1" name="MusicSlider" class="pause-slider"/>
+            <ui:Slider label="Sound" low-value="0" high-value="1" value="1" name="SoundSlider" class="pause-slider"/>
+            <ui:Button text="Quit to Title" name="TitleButton" class="pause-button"/>
+            <ui:Button text="Quit Game" name="QuitButton" class="pause-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -13,6 +13,14 @@ namespace Data.Scene
             Started?.Invoke();
         }
 
+        /// <summary>
+        /// Called to ensure the level behind the title screen gets reset.
+        /// </summary>
+        public static void ReturnToTitle()
+        {
+            HasStarted = false;
+        }
+
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset() 
         { 

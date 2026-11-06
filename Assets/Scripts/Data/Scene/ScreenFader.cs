@@ -45,6 +45,38 @@ namespace Data.Scene
             fader.StartCoroutine(fader.Transition(sceneName, mode, fadeOutDuration, fadeInDuration, fadeColor));
         }
 
+        /// <summary>
+        /// Used for respawning.
+        /// </summary>
+        public static void FadeOutAndIn(System.Action whileHidden, float fadeOutDuration, float fadeInDuration, Color fadeColor)
+        {
+            ScreenFader fader = GetOrCreateInstance();
+
+            if (fader.isTransitioning)
+            {
+                whileHidden?.Invoke();
+                return;
+            }
+
+            fader.StartCoroutine(fader.FadeTransition(whileHidden, fadeOutDuration, fadeInDuration, fadeColor));
+
+        }
+
+        private IEnumerator FadeTransition(System.Action whileHidden, float fadeOutDuration, float fadeInDuration, Color fadeColor)
+        {
+            isTransitioning = true;
+            fadeOverlay.style.backgroundColor = fadeColor;
+
+            yield return FadeTo(1f, fadeOutDuration).SetUpdate(true).WaitForCompletion();
+
+            whileHidden?.Invoke();
+
+            yield return null;
+            yield return FadeTo(0f, fadeInDuration).SetUpdate(true).WaitForCompletion();
+
+            isTransitioning = false;
+        }
+
         private static ScreenFader GetOrCreateInstance()
         {
             if (instance != null)
@@ -108,7 +140,7 @@ namespace Data.Scene
             if (playerMovement != null)
                 playerMovement.SetFrozen(true);
 
-            //lets the game fade even while paused (using time.timescale).
+
             yield return FadeTo(1f, fadeOutDuration).SetUpdate(true).WaitForCompletion();
 
             AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName, mode);
@@ -121,6 +153,7 @@ namespace Data.Scene
             {
                 yield return loading;
             }
+
 
             if (playerMovement != null)
                 playerMovement.SetFrozen(false);
@@ -146,7 +179,7 @@ namespace Data.Scene
             overlayOpacity = opacity;
             fadeOverlay.style.opacity = opacity;
 
-            //only take part in drawing while something is showing.
+
             fadeOverlay.style.display = opacity > 0f ? DisplayStyle.Flex : DisplayStyle.None;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Data.Playtest;
 using UnityEngine;
 
 namespace Data.Save
@@ -31,5 +32,8 @@ namespace Data.Save
 
         [Header("Collected items, in every level")]
         public List<string> collectedItemIds = new List<string>();
+
+        [Header("Playtest statistics (time, rotations, falls)")]
+        public PlayStats playStats = new PlayStats();
     }
 }

@@ -24,12 +24,11 @@ namespace Gameplay.Save
             if (!saveWhenSceneStarts)
                 yield break;
 
-            while (!GameFlow.HasStarted)
-                yield return null;
 
-            //this is to wait a bit for the player to spawn.
-            yield return null;
-            yield return null;
+            yield return new WaitUntil(() => FindAnyObjectByType<TitleMenuBehavior>() == null);
+
+            //wait for the player to spawn.
+            yield return new WaitUntil(() => FindAnyObjectByType<Gameplay.Player.PlayerMovement>() != null);
             yield return null;
 
             SaveManager.SaveGame();

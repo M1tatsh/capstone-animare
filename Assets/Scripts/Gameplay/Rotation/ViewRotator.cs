@@ -239,6 +239,18 @@ namespace Gameplay.Rotation
             RotateDir = 0;
         }
 
+        /// <summary>
+        /// Used by the PlaytestLogger to count rotations.
+        /// </summary>
+        public static event System.Action<int> ViewRotated;
+
+        //static events keep their listeners between play sessions in the editor, so clear them.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            ViewRotated = null;
+        }
+
         void Rotate(int direction)
         {
             //wrap to 0 once view reaches 4
@@ -265,6 +277,8 @@ namespace Gameplay.Rotation
                  {
                      view = nextView;
                      player.CommitRotation(nextView);
+                     ViewRotated?.Invoke(nextView);
+                     
                      player.SetFrozen(false);
                      IsRotating = false;
                      RotateDir = 0;

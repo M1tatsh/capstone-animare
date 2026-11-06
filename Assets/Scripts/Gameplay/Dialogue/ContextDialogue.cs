@@ -25,7 +25,7 @@ namespace Gameplay.Dialogue
     }
 
     /// <summary>
-    /// Which way an object faces, measured from the object itself (its blue, red arrows in the Scene view).
+    /// FacingDirection for determining when the prompt can show based on camera orientation.
     /// </summary>
     public enum FacingDirection
     {
@@ -36,13 +36,12 @@ namespace Gameplay.Dialogue
     }
 
     /// <summary>
-    /// Put this on anything the player can walk up to: a sign, a character, a lever.
+    /// Put this on anything to show a dialogue box above it.
     /// When the player is close, a textbox appears next to this object with the prompt.
-    /// "Close" is the real 3D distance by default. Tick Ignore Depth to measure it on the flattened screen instead.
-    /// Pressing Interact runs On Interact and, if there are pages, shows them one at a time.
     /// </summary>
     public class ContextDialogue : MonoBehaviour
     {
+        #region variables
         [Header("Prompt")]
         [Tooltip("Shown while the player is close. Leave empty (and no image) to show nothing until they interact.")]
         [TextArea(1, 3)]
@@ -82,6 +81,7 @@ namespace Gameplay.Dialogue
 
         [Tooltip("Where the textbox points, measured from this object. The box sits just above this point.")]
         [SerializeField] private Vector3 textboxOffset = new Vector3(0f, 1f, 0f);
+        #endregion
 
         [Header("Events")]
         [Tooltip("Runs when the player presses Interact while the prompt is showing (not while paging through dialogue).")]
@@ -125,8 +125,7 @@ namespace Gameplay.Dialogue
             if (!onlyWhenFacingCamera || viewCamera == null)
                 return true;
 
-            //the direction from the object toward the camera, flat. The camera looks along its forward,
-            //so pointing back at the camera is the opposite of that.
+            
             Vector3 towardCamera = -viewCamera.transform.forward;
             towardCamera.y = 0f;
 
@@ -177,7 +176,6 @@ namespace Gameplay.Dialogue
             onInteract.Invoke();
         }
 
-        //shows the range and the textbox point in the Scene view when this object is selected.
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
@@ -185,7 +183,6 @@ namespace Gameplay.Dialogue
             Gizmos.DrawLine(transform.position, TextboxAnchor);
             Gizmos.DrawWireCube(TextboxAnchor, Vector3.one * 0.15f);
 
-            //the front of the object, when the prompt only shows from that side.
             if (onlyWhenFacingCamera)
             {
                 Gizmos.color = Color.yellow;

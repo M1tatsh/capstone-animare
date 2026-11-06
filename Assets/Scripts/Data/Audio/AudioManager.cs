@@ -18,6 +18,10 @@ namespace Data.Audio
 
         private static AudioManager instance;
 
+
+        private const string MusicVolumeKey = "MusicVolume";
+        private const string SoundEffectsVolumeKey = "SoundEffectsVolume";
+
         private AudioManagerSettings settings;
 
         //sound effects: a pool of players, reused so new ones don't have to be created for every sound.
@@ -110,7 +114,13 @@ namespace Data.Audio
         public static float SoundEffectsVolume
         {
             get { return GetOrCreateInstance().soundEffectsVolume; }
-            set { GetOrCreateInstance().soundEffectsVolume = Mathf.Clamp01(value); }
+            set
+            {
+                GetOrCreateInstance().soundEffectsVolume = Mathf.Clamp01(value);
+
+
+                PlayerPrefs.SetFloat(SoundEffectsVolumeKey, Mathf.Clamp01(value));
+            }
         }
 
         #endregion
@@ -153,6 +163,7 @@ namespace Data.Audio
             {
                 AudioManager manager = GetOrCreateInstance();
                 manager.musicVolume = Mathf.Clamp01(value);
+                PlayerPrefs.SetFloat(MusicVolumeKey, manager.musicVolume);
 
                 //change the playing song right away (unless it is in the middle of a fade).
                 AudioSource activePlayer = manager.musicPlayers[manager.activeMusicPlayerIndex];
@@ -194,6 +205,9 @@ namespace Data.Audio
 
         private void SetUp()
         {
+            musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
+            soundEffectsVolume = PlayerPrefs.GetFloat(SoundEffectsVolumeKey, 1f);
+
             //optional settings asset at Assets/Resources/AudioManagerSettings.
             settings = Resources.Load<AudioManagerSettings>("AudioManagerSettings");
 

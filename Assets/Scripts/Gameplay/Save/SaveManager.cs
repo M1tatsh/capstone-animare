@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 namespace Gameplay.Save
 {
     /// <summary>
-    /// Saves and loads the game: the level the player is in, where they are standing (and which way the camera faces),<br/>
+    /// Saves and loads the game (the level the player is in, where they are standing)<br/>
     /// the items they have collected in every level, and the animal forms they have unlocked.<br/>
     /// Nothing needs to be placed in a scene: call the static methods from anywhere.
     /// </summary>
@@ -23,6 +23,9 @@ namespace Gameplay.Save
         private static SaveManager instance;
 
         private static readonly HashSet<string> collectedItemIds = new HashSet<string>();
+
+        //the collected list as it was when the current level was loaded, for "Restart Level".
+        private static readonly HashSet<string> collectedAtLevelStart = new HashSet<string>();
 
         //the save being loaded, waiting for its level to finish loading.
         private SaveData pendingLoad;
@@ -44,6 +47,12 @@ namespace Gameplay.Save
         static void ResetStatics()
         {
             collectedItemIds.Clear();
+            collectedAtLevelStart.Clear();
+
+            //remember what was collected each time a level loads.
+            SceneManager.sceneLoaded -= TakeLevelStartSnapshot;
+            SceneManager.sceneLoaded += TakeLevelStartSnapshot;
+
             instance = null;
             GameLoaded = null;
             GameSaved = null;
@@ -52,16 +61,27 @@ namespace Gameplay.Save
         #region Collected items
 
         /// <summary>
-        /// Has this item been collected (this session, or in the loaded save)? StageCollectible asks this when a level loads.
+        /// StageCollectible asks this when a level loads.
         /// </summary>
         public static bool IsCollected(string itemId)
         {
             return !string.IsNullOrEmpty(itemId) && collectedItemIds.Contains(itemId);
         }
 
-        /// <summary>
-        /// Remembers that an item was collected. Called by StageCollectible.
-        /// </summary>
+        private static void TakeLevelStartSnapshot(Scene scene, LoadSceneMode mode)
+        {
+            collectedAtLevelStart.Clear();
+            collectedAtLevelStart.UnionWith(collectedItemIds);
+        }
+
+
+        public static void RestoreLevelStartProgress()
+        {
+            collectedItemIds.Clear();
+            collectedItemIds.UnionWith(collectedAtLevelStart);
+        }
+
+
         public static void MarkCollected(string itemId)
         {
             if (!string.IsNullOrEmpty(itemId))
@@ -107,6 +127,10 @@ namespace Gameplay.Save
             }
 
             data.collectedItemIds.AddRange(collectedItemIds);
+
+
+
+            data.playStats = Data.Playtest.PlaytestLogger.CurrentStats ?? new Data.Playtest.PlayStats();
 
             if (!SaveFile.Write(data))
                 return false;
@@ -156,6 +180,8 @@ namespace Gameplay.Save
 
 
             collectedItemIds.Clear();
+            Data.Playtest.PlaytestLogger.ContinueFromSave(data.playStats);
+
             foreach (string itemId in data.collectedItemIds)
                 collectedItemIds.Add(itemId);
 
@@ -202,7 +228,7 @@ namespace Gameplay.Save
         /// </summary>
         private IEnumerator ApplyLoadedSave(SaveData data)
         {
-            //the player is spawned in Awake and sets itself up in Start, so wait for those to finish.
+            
             yield return null;
             yield return null;
 
@@ -220,6 +246,9 @@ namespace Gameplay.Save
                 viewRotator.SnapToView(data.cameraView);
 
             player.TeleportTo(data.playerPosition);
+
+
+            player.SetRespawnPoint(data.playerPosition, data.cameraView);
 
             PlayerFormManager formManager = player.GetComponent<PlayerFormManager>();
             if (formManager != null)
