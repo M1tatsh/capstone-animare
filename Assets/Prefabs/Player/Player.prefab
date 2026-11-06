@@ -127,7 +127,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -234,6 +234,7 @@ MonoBehaviour:
   halfSize: {x: 0.25, y: 0.5}
   groundProbeDistance: 0.05
   respawnBelowHeight: -30
+  respawnFadeDuration: 0.3
   dropInputThreshold: 0.5
   jumpBufferTime: 0.4
   jumpSound: {fileID: 11400000, guid: d7b7954154017b94a963716de7bcd2ed, type: 2}
@@ -444,6 +445,32 @@ MonoBehaviour:
   carryingParameterName: isCarrying
   minimumWalkSpeed: 0.1
   spriteFacesRight: 0
+--- !u!114 &4473623094835143168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3719121380565931121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f33c278068e4d93ae73a42ac788b03c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.VFX.TransformationBurst
+  flashMaterial: {fileID: 2100000, guid: 87523dcad72e49a894b2c6bb4e3998ef, type: 2}
+  flashSize: 2
+  flashDuration: 0.3
+  flashHeight: 0.25
+  smokeMaterial: {fileID: 2100000, guid: 6562353650ac476697f6a26a968ce48d, type: 2}
+  smokeCount: 10
+  smokeSizeRange: {x: 0.4, y: 0.8}
+  smokeGrowth: 1.8
+  smokeSpeedRange: {x: 1.5, y: 4}
+  smokeLifetimeRange: {x: 0.5, y: 0.9}
+  smokeSpreadAngle: 110
+  smokeDrag: 3
+  smokeSpinRange: {x: -90, y: 90}
+  depthOffset: -0.5
 --- !u!1 &3817237226668949842
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,29 +739,3 @@ MonoBehaviour:
   surfaceProbeDepth: 0.1
   emitWhileDashing: 1
   colorTint: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &4473623094835143168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3719121380565931121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f33c278068e4d93ae73a42ac788b03c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.VFX.TransformationBurst
-  flashMaterial: {fileID: 2100000, guid: 87523dcad72e49a894b2c6bb4e3998ef, type: 2}
-  flashSize: 2
-  flashDuration: 0.3
-  flashHeight: 0.25
-  smokeMaterial: {fileID: 2100000, guid: 6562353650ac476697f6a26a968ce48d, type: 2}
-  smokeCount: 10
-  smokeSizeRange: {x: 0.4, y: 0.8}
-  smokeGrowth: 1.8
-  smokeSpeedRange: {x: 1.5, y: 4}
-  smokeLifetimeRange: {x: 0.5, y: 0.9}
-  smokeSpreadAngle: 110
-  smokeDrag: 3
-  smokeSpinRange: {x: -90, y: 90}
-  depthOffset: -0.5
