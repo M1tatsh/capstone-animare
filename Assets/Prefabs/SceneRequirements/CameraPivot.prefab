@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 9105426311985488535}
   - component: {fileID: 7777013536811255722}
   - component: {fileID: -9015354648752631972}
+  - component: {fileID: 5921737960037653504}
   m_Layer: 0
   m_Name: CameraPivot
   m_TagString: Untagged
@@ -358,3 +359,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5921737960037653504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7197489591105531964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30a6a85dc6784356a59cf481f0ad728d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.VFX.RotationSpeedLines
+  lineCount: 14
+  lineColor: {r: 1, g: 1, b: 1, a: 0.55}
+  lengthRange: {x: 0.15, y: 0.45}
+  thicknessRange: {x: 1, y: 3}
+  speedRange: {x: 2.5, y: 5}
+  alphaRange: {x: 0.3, y: 1}
+  pixelSize: 2
+  peakAngularSpeed: 250
+  fadeSpeed: 8
+  invertDirection: 0
+  sortingOrder: 20
