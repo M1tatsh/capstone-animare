@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf720769cbc04e40aa9de4fe9825a63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleMenuBehavior
-  gameplaySceneName: LVL1_InsideRoom
+  gameplaySceneName: Tutorial_0
   fadeDuration: 1
 --- !u!114 &502182198
 MonoBehaviour:
