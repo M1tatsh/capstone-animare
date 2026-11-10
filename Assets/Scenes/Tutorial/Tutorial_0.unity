@@ -16730,7 +16730,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5154548055557079826, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
-      insertIndex: -1
+      insertIndex: 4
       addedObject: {fileID: 2065024040}
   m_SourcePrefab: {fileID: 100100000, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
 --- !u!1 &2065024039 stripped
@@ -16750,8 +16750,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483dba5518be8ca4fa0158d8b58e71d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Behaviors.TitleCameraShot
-  titleCameraPoint: {fileID: 170532590}
+  startPoint: {fileID: 0}
   titleOrthographicSize: 0
+  useOnTitleScreen: 1
+  useOnSceneStart: 0
+  returnAfterSeconds: 0
+  returnWithTutorial: {fileID: 0}
+  returnOnTutorialPage: -1
+  skipIfTutorialAlreadySeen: 1
+  freezePlayerWhileHolding: 1
   moveDuration: 2
   moveDelay: 0
   moveEase: 10

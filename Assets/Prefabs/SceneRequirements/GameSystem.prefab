@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8349637228735193640}
   - component: {fileID: 7972535850152651067}
   - component: {fileID: 3844503372455355066}
+  - component: {fileID: 7308742354810664879}
   m_Layer: 0
   m_Name: GameSystem
   m_TagString: Untagged
@@ -84,6 +85,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Save.SaveGameTrigger
   saveWhenSceneStarts: 1
   enableTestKeys: 1
+--- !u!114 &7308742354810664879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154548055557079826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48db4c1a46c774d45845d024ba7d36b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Rotation.CameraLookAround
+  maximumOffset: {x: 8, y: 5}
+  panSpeed: 6
+  panSmoothTime: 0.12
+  returnDuration: 0.35
+  returnEase: 9
+  onlyWhenGrounded: 1
 --- !u!1 &6427492403239879830
 GameObject:
   m_ObjectHideFlags: 0

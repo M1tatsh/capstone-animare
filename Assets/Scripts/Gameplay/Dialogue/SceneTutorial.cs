@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Gameplay.Player;
 using UnityEngine;
 
 namespace Gameplay.Dialogue
@@ -27,7 +28,22 @@ namespace Gameplay.Dialogue
         [Tooltip("For testing: show the tutorial every time the scene loads, even if it was seen before.")]
         [SerializeField] private bool showEveryTime = false;
 
+        [SerializeField] private bool pauseGameplayUntilFinished = false;
+
+        private static int pausingTutorialCount;
+        public static bool IsPausingGameplay => pausingTutorialCount > 0;
+
+        private PlayerMovement pausedPlayer;
+        private bool isPausingGameplay;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            pausingTutorialCount = 0;
+        }
+
         public int PageCount => pages.Count;
+        public bool ShowsEveryTime => showEveryTime;
         public Vector3 TextboxOffset => textboxOffset;
 
         //the PlayerPrefs key, for example "TutorialSeen_LVL_ROTATION".
@@ -58,6 +74,9 @@ namespace Gameplay.Dialogue
 
             yield return new WaitForSeconds(startDelay);
 
+            while (Gameplay.Rotation.LevelFlyover.IsPlaying)
+                yield return null;
+
             ContextDialogueManager dialogueManager = FindAnyObjectByType<ContextDialogueManager>();
 
             if (dialogueManager == null)
@@ -67,6 +86,49 @@ namespace Gameplay.Dialogue
             }
 
             dialogueManager.ShowTutorial(this);
+
+            if (!pauseGameplayUntilFinished)
+                yield break;
+
+            PauseGameplay();
+
+            while (dialogueManager != null && dialogueManager.ActiveTutorial == this)
+                yield return null;
+
+            ResumeGameplay();
+        }
+
+        void OnDisable()
+        {
+            ResumeGameplay();
+        }
+
+        private void PauseGameplay()
+        {
+            if (isPausingGameplay)
+                return;
+
+            isPausingGameplay = true;
+            pausingTutorialCount++;
+
+            pausedPlayer = FindAnyObjectByType<PlayerMovement>();
+
+            if (pausedPlayer != null)
+                pausedPlayer.SetFrozen(true);
+        }
+
+        private void ResumeGameplay()
+        {
+            if (!isPausingGameplay)
+                return;
+
+            isPausingGameplay = false;
+            pausingTutorialCount = Mathf.Max(0, pausingTutorialCount - 1);
+
+            if (pausedPlayer != null && !IsPausingGameplay)
+                pausedPlayer.SetFrozen(false);
+
+            pausedPlayer = null;
         }
 
         /// <summary>

@@ -45,6 +45,14 @@ namespace Gameplay.Rotation
         //every climbable block (ladders, vines), as a 3D cell. These are never solid.
         private readonly HashSet<Vector3Int> climbableCells = new HashSet<Vector3Int>();
 
+        private readonly HashSet<Vector3Int> viewDependentWallCells = new HashSet<Vector3Int>();
+        private readonly HashSet<Vector3Int> wallCellsSolidLookingAlongX = new HashSet<Vector3Int>();
+        private readonly HashSet<Vector3Int> wallCellsSolidLookingAlongZ = new HashSet<Vector3Int>();
+        private readonly HashSet<Vector3Int> wallCellsIgnoredWhenFaceOn = new HashSet<Vector3Int>();
+        private List<Vector3Int> wallCellsBeingCollected;
+        private readonly Dictionary<Vector3Int, PassageFloor> passageFloorCells = new Dictionary<Vector3Int, PassageFloor>();
+        private PassageFloor passageFloorBeingAdded;
+
         //the blocks the player can pick up, by the 3D cell they sit in. Blocks being carried are left out.
         private readonly Dictionary<Vector3Int, HoldableBlock> holdableBlocks = new Dictionary<Vector3Int, HoldableBlock>();
 
@@ -77,6 +85,13 @@ namespace Gameplay.Rotation
             oneWayCells.Clear();
             smallPassageCells.Clear();
             climbableCells.Clear();
+            viewDependentWallCells.Clear();
+            wallCellsSolidLookingAlongX.Clear();
+            wallCellsSolidLookingAlongZ.Clear();
+            wallCellsIgnoredWhenFaceOn.Clear();
+            wallCellsBeingCollected = null;
+            passageFloorCells.Clear();
+            passageFloorBeingAdded = null;
             holdableBlocks.Clear();
             buildingCells.Clear();
             foreach (Transform child in transform)
@@ -112,6 +127,24 @@ namespace Gameplay.Rotation
                         buildingDepthsThisView[buildingScreenCell] = buildingDepth;
                 }
 
+                bool cameraLooksAlongX = forward.x != 0;
+                HashSet<Vector3Int> wallCellsSolidThisView = cameraLooksAlongX ? wallCellsSolidLookingAlongX : wallCellsSolidLookingAlongZ;
+
+                foreach (Vector3Int wallCell in viewDependentWallCells)
+                {
+                    if (wallCellsSolidThisView.Contains(wallCell))
+                        continue;
+
+                    if (wallCellsIgnoredWhenFaceOn.Contains(wallCell))
+                        continue;
+
+                    Vector2Int wallScreenCell = new Vector2Int(Dot(wallCell, right), wallCell.y);
+                    int wallDepth = Dot(wallCell, forward);
+
+                    if (!buildingDepthsThisView.TryGetValue(wallScreenCell, out int nearestDepthSoFar) || wallDepth < nearestDepthSoFar)
+                        buildingDepthsThisView[wallScreenCell] = wallDepth;
+                }
+
                 nearestBuildingDepthByScreenCell[view] = buildingDepthsThisView;
 
                 Dictionary<Vector2Int, List<int>> screenCells = new Dictionary<Vector2Int, List<int>>();
@@ -120,6 +153,7 @@ namespace Gameplay.Rotation
                 HashSet<Vector2Int> smallPassageCellsThisView = new HashSet<Vector2Int>();
 
                 AddVisiblePlatforms(cells, right, forward, buildingDepthsThisView, screenCells, solidCellsThisView);
+                AddVisiblePlatforms(wallCellsSolidThisView, right, forward, buildingDepthsThisView, screenCells, solidCellsThisView);
                 AddVisiblePlatforms(oneWayCells, right, forward, buildingDepthsThisView, screenCells, oneWayCellsThisView);
                 AddVisiblePlatforms(smallPassageCells, right, forward, buildingDepthsThisView, screenCells, smallPassageCellsThisView);
 
@@ -160,6 +194,25 @@ namespace Gameplay.Rotation
             if (current == buildingsParent)
                 return;
 
+            ViewDependentWall viewDependentWall = current.GetComponent<ViewDependentWall>();
+            if (wallCellsBeingCollected == null && viewDependentWall != null)
+            {
+                wallCellsBeingCollected = new List<Vector3Int>();
+                AddBlocksFrom(current, insideOneWayGroup, insideClimbableGroup, insideSmallPassageGroup);
+                AddViewDependentWall(wallCellsBeingCollected, viewDependentWall.IgnoredWhenFaceOn);
+                wallCellsBeingCollected = null;
+                return;
+            }
+
+            PassageFloor passageFloor = current.GetComponent<PassageFloor>();
+            if (passageFloor != null && passageFloorBeingAdded == null)
+            {
+                passageFloorBeingAdded = passageFloor;
+                AddBlocksFrom(current, insideOneWayGroup, insideClimbableGroup, insideSmallPassageGroup);
+                passageFloorBeingAdded = null;
+                return;
+            }
+
             bool isOneWay = insideOneWayGroup || current.GetComponent<OneWayBlock>() != null;
             bool isClimbable = insideClimbableGroup || current.GetComponent<ClimbableBlock>() != null;
             bool isSmallPassage = insideSmallPassageGroup || current.GetComponent<SmallPassageBlock>() != null;
@@ -189,6 +242,9 @@ namespace Gameplay.Rotation
                 return;
             }
 
+            if (passageFloorBeingAdded != null)
+                passageFloorCells[blockCell] = passageFloorBeingAdded;
+
             //climbable wins: a ladder is never solid, even inside a one-way group.
             if (isClimbable)
                 climbableCells.Add(blockCell);
@@ -196,8 +252,48 @@ namespace Gameplay.Rotation
                 smallPassageCells.Add(blockCell);
             else if (isOneWay)
                 oneWayCells.Add(blockCell);
+            else if (wallCellsBeingCollected != null)
+                wallCellsBeingCollected.Add(blockCell);
             else
                 cells.Add(blockCell);
+        }
+
+        private void AddViewDependentWall(List<Vector3Int> wallCells, bool ignoredWhenFaceOn)
+        {
+            if (wallCells.Count == 0)
+                return;
+
+            int minimumX = wallCells[0].x;
+            int maximumX = wallCells[0].x;
+            int minimumZ = wallCells[0].z;
+            int maximumZ = wallCells[0].z;
+
+            foreach (Vector3Int wallCell in wallCells)
+            {
+                minimumX = Mathf.Min(minimumX, wallCell.x);
+                maximumX = Mathf.Max(maximumX, wallCell.x);
+                minimumZ = Mathf.Min(minimumZ, wallCell.z);
+                maximumZ = Mathf.Max(maximumZ, wallCell.z);
+            }
+
+            int widthAlongX = maximumX - minimumX + 1;
+            int widthAlongZ = maximumZ - minimumZ + 1;
+            bool solidLookingAlongX = widthAlongX >= widthAlongZ;
+            bool solidLookingAlongZ = widthAlongZ >= widthAlongX;
+
+            foreach (Vector3Int wallCell in wallCells)
+            {
+                viewDependentWallCells.Add(wallCell);
+
+                if (solidLookingAlongX)
+                    wallCellsSolidLookingAlongX.Add(wallCell);
+
+                if (solidLookingAlongZ)
+                    wallCellsSolidLookingAlongZ.Add(wallCell);
+
+                if (ignoredWhenFaceOn)
+                    wallCellsIgnoredWhenFaceOn.Add(wallCell);
+            }
         }
 
         /// <summary>
@@ -465,7 +561,7 @@ namespace Gameplay.Rotation
                 {
                     Vector3Int cell = CellAt(view, column, row, depth);
 
-                    if (cells.Contains(cell) || (!SmallPassagesOpen && smallPassageCells.Contains(cell)))
+                    if (cells.Contains(cell) || viewDependentWallCells.Contains(cell) || (!SmallPassagesOpen && smallPassageCells.Contains(cell)))
                         return true;
                 }
             }
@@ -559,7 +655,8 @@ namespace Gameplay.Rotation
         {
             return cells.Contains(cell) 
             || oneWayCells.Contains(cell) 
-            || climbableCells.Contains(cell);
+            || climbableCells.Contains(cell)
+            || viewDependentWallCells.Contains(cell);
         }
 
         /// <summary>
@@ -666,6 +763,9 @@ namespace Gameplay.Rotation
             if (!depthsByScreenCell[view].TryGetValue(new Vector2Int(column, row), out List<int> depths))
                 return false;
 
+            if (TryGetPassageFloorDepth(view, column, row, depths, currentDepth, out depth))
+                return true;
+
             //index 0 -> nearest to the camera.
             depth = depths[0];
 
@@ -680,6 +780,29 @@ namespace Gameplay.Rotation
             }
 
             return true;
+        }
+
+        private bool TryGetPassageFloorDepth(int view, int column, int row, List<int> depths, int currentDepth, out int depth)
+        {
+            depth = 0;
+            bool foundPassageFloor = false;
+
+            foreach (int candidateDepth in depths)
+            {
+                if (!passageFloorCells.TryGetValue(CellAt(view, column, row, candidateDepth), out PassageFloor passageFloor))
+                    continue;
+
+                if (passageFloor == null || !passageFloor.PullsInView(view))
+                    continue;
+
+                if (!foundPassageFloor || Mathf.Abs(candidateDepth - currentDepth) < Mathf.Abs(depth - currentDepth))
+                {
+                    depth = candidateDepth;
+                    foundPassageFloor = true;
+                }
+            }
+
+            return foundPassageFloor;
         }
     }
 }

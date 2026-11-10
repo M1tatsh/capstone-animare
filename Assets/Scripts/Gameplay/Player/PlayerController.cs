@@ -23,6 +23,7 @@ namespace Gameplay.Player
         private GlideAbility glideAbility;
         private ShrinkAbility shrinkAbility;
         private ViewRotator viewRotator;
+        private CameraLookAround cameraLookAround;
         private ContextDialogueManager dialogueManager;
         #endregion
 
@@ -36,6 +37,7 @@ namespace Gameplay.Player
 
             radialSelection = FindAnyObjectByType<RadialSelection>();
             viewRotator = FindAnyObjectByType<ViewRotator>();
+            cameraLookAround = FindAnyObjectByType<CameraLookAround>();
             //optional: scenes without contextual dialogue simply have no manager.
             dialogueManager = FindAnyObjectByType<ContextDialogueManager>();
 
@@ -61,6 +63,13 @@ namespace Gameplay.Player
         public void OnMove(InputValue value)
         {
             move = value.Get<Vector2>();
+
+            if (IsLookingAround)
+            {
+                cameraLookAround.SetLookInput(move);
+                return;
+            }
+
             playerMovement.SetMoveInput(move.x);
             playerMovement.SetVerticalMoveInput(move.y);
             //Debug.Log($"PlayerController | X:{move.x} Y:{move.y}");
@@ -74,6 +83,16 @@ namespace Gameplay.Player
         /// <param name="button">bool that is assigned true/false when user is pressing/releasing the input.</param>
         public void OnJump(InputValue button)
         {
+            if (button.isPressed && IsLookingAround)
+            {
+                return;
+            }
+
+            if (button.isPressed && SceneTutorial.IsPausingGameplay)
+            {
+                return;
+            }
+
             //carrying a heavy block logic
             if (playerMovement.IsCarrying)
             {
@@ -121,6 +140,16 @@ namespace Gameplay.Player
 
         public void OnDash(InputValue button)
         {
+            if (IsLookingAround)
+            {
+                return;
+            }
+
+            if (SceneTutorial.IsPausingGameplay)
+            {
+                return;
+            }
+
             if (playerMovement.IsCarrying)
             {
                 return;
@@ -141,8 +170,52 @@ namespace Gameplay.Player
         /// Handles menu transformation based on the specified input value.
         /// </summary>
         /// <param name="value">The input value that triggers the menu transformation.</param>
+        public void OnLookAround(InputValue button)
+        {
+            if (cameraLookAround == null)
+            {
+                return;
+            }
+
+            if (button.isPressed)
+            {
+                if (SceneTutorial.IsPausingGameplay)
+                {
+                    return;
+                }
+
+                if (cameraLookAround.TryStartLooking())
+                {
+                    playerMovement.SetMoveInput(0f);
+                    playerMovement.SetVerticalMoveInput(0f);
+                    cameraLookAround.SetLookInput(move);
+                }
+
+                return;
+            }
+
+            if (cameraLookAround.IsLooking)
+            {
+                cameraLookAround.StopLooking();
+                playerMovement.SetMoveInput(move.x);
+                playerMovement.SetVerticalMoveInput(move.y);
+            }
+        }
+
+        private bool IsLookingAround => cameraLookAround != null && cameraLookAround.IsLooking;
+
         public void OnTransformMenu(InputValue value)
         {
+            if (value.isPressed && IsLookingAround)
+            {
+                return;
+            }
+
+            if (value.isPressed && SceneTutorial.IsPausingGameplay)
+            {
+                return;
+            }
+
             //Debug.Log($"OnTransformMenu called! isPressed: {value.isPressed}");
 
             if (radialSelection != null)
@@ -155,7 +228,12 @@ namespace Gameplay.Player
         /// </summary>
         public void OnRotateCamera(InputValue value)
         {
-            if (viewRotator == null)
+            if (viewRotator == null || IsLookingAround)
+            {
+                return;
+            }
+
+            if (SceneTutorial.IsPausingGameplay)
             {
                 return;
             }
@@ -172,6 +250,11 @@ namespace Gameplay.Player
         /// </summary>
         public void OnInteract(InputValue button)
         {
+            if (IsLookingAround)
+            {
+                return;
+            }
+
             if (!button.isPressed)
             {
                 return;

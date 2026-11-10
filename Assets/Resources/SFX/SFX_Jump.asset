@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c559ed6bb61b94f41917f5f8c0ce536b, type: 3}
-  m_Name: SFX_JumpLong
+  m_Name: SFX_Jump
   m_EditorClassIdentifier: Assembly-CSharp::Data.Audio.SoundEffect
   clips:
-  - {fileID: 8300000, guid: 279a7bd059c867b49ae0f181d00fa528, type: 3}
+  - {fileID: 8300000, guid: 82c68a2b2010b594a8212d19d8959423, type: 3}
   volume: 1
-  pitchRange: {x: 0.99, y: 1.01}
+  pitchRange: {x: 0.9, y: 1.1}
   minimumTimeBetweenPlays: 0.05
   mixerGroupOverride: {fileID: 0}

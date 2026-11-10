@@ -105,7 +105,7 @@ namespace Data.Audio
             if (useHearingRange)
                 AudioManager.PlaySoundEffectAt(soundEffectToPlay, transform.position, hearingRange, options);
             else
-                AudioManager.PlaySoundEffect(soundEffectToPlay, options);
+                AudioManager.PlayWorldSoundEffect(soundEffectToPlay, options);
         }
 
         private void StartLoop()
@@ -168,7 +168,8 @@ namespace Data.Audio
                 distanceCutoffFrequency = hearingRange.GetMuffleCutoffFrequency(closeness);
             }
 
-            loopPlayer.volume = soundEffect.volume * options.volumeMultiplier * distanceVolume * AudioManager.SoundEffectsVolume;
+            loopPlayer.volume = soundEffect.volume * options.volumeMultiplier * distanceVolume
+                * AudioManager.SoundEffectsVolume * AudioManager.WorldSoundsVolume;
 
             //muffling: whichever is more muffled, the options or the distance.
             float cutoffFrequency = SoundHearingRange.UnmuffledCutoffFrequency;

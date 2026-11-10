@@ -5484,6 +5484,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3011301742442462490, guid: efaf876dc3a98d448be470ea78f01e1f, type: 3}
   m_PrefabInstance: {fileID: 350457785}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &364483077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 364483078}
+  m_Layer: 0
+  m_Name: InitialCameraPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &364483078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364483077}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11, y: 2, z: -14}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &367011779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10212,7 +10243,7 @@ MonoBehaviour:
     image: {fileID: 21300000, guid: c83e8b36e40c2ce41bd07e6499f4e9b4, type: 3}
     advanceWithAction: {fileID: -6130356163714354010, guid: 41cc5cdb547c27c48aac175026022067, type: 3}
     voiceSound: {fileID: 0}
-  textboxOffset: {x: 0, y: 1, z: 0}
+  textboxOffset: {x: 16.5, y: 2, z: 0}
   startDelay: 0.5
   tutorialName: Pickup Tutorial
   showEveryTime: 1
@@ -26130,8 +26161,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5154548055557079826, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2065024039}
   m_SourcePrefab: {fileID: 100100000, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
+--- !u!1 &2065024038 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5154548055557079826, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
+  m_PrefabInstance: {fileID: 2065024037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2065024039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065024038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483dba5518be8ca4fa0158d8b58e71d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Behaviors.DynamicCameraShot
+  startPoint: {fileID: 364483078}
+  initialOrthographicSize: 0
+  useOnTitleScreen: 0
+  useOnSceneStart: 1
+  returnAfterSeconds: 0
+  returnWithTutorial: {fileID: 763183340}
+  returnOnTutorialPage: -1
+  skipIfTutorialAlreadySeen: 1
+  freezePlayerWhileHolding: 1
+  moveDuration: 2
+  moveDelay: 0
+  moveEase: 10
+  freezePlayerWhileMoving: 1
 --- !u!1001 &2071212833
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26738,3 +26802,4 @@ SceneRoots:
   - {fileID: 566391371}
   - {fileID: 2113115261}
   - {fileID: 604287011}
+  - {fileID: 364483078}

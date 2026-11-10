@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 736027151147661151}
   - component: {fileID: 3385119922859401244}
   - component: {fileID: 5820118415542844432}
+  - component: {fileID: 8686714403335023952}
   m_Layer: 5
   m_Name: Transformation
   m_TagString: Untagged
@@ -254,3 +255,24 @@ MonoBehaviour:
   vignetteColor: {r: 0, g: 0, b: 0, a: 0.65}
   vignetteStart: 0.35
   pixelatedVignette: 1
+--- !u!114 &8686714403335023952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8372347880962500213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1cf81f88d001744986637bb84c98747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.RadialMenuIcons
+  centerIcon: {fileID: 0}
+  sliceIcons: []
+  iconDistance: 150
+  iconSize: {x: 72, y: 72}
+  centerIconSize: {x: 64, y: 64}
+  preserveAspect: 1
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  lockedColor: {r: 0.35, g: 0.35, b: 0.35, a: 0.6}
+  selectedScale: 1.25

@@ -117,6 +117,9 @@ namespace Gameplay.Dialogue
             get { return activeTutorial != null || currentDialogue != null; }
         }
 
+        public SceneTutorial ActiveTutorial => activeTutorial;
+        public int CurrentPageIndex => pageIndex;
+
         public bool IsShowingTutorial
         {
             get { return activeTutorial != null; }

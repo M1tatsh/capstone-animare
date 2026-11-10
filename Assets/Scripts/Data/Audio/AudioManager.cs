@@ -18,6 +18,43 @@ namespace Data.Audio
 
         private static AudioManager instance;
 
+        private const string WorldSoundsFadeId = "AudioManagerWorldSoundsFade";
+        private static float worldSoundsVolume = 1f;
+
+        public static float WorldSoundsVolume => worldSoundsVolume;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetWorldSounds()
+        {
+            worldSoundsVolume = 1f;
+        }
+
+        public static void SetWorldSoundsMuted(bool muted, float fadeDuration = 0f)
+        {
+            DOTween.Kill(WorldSoundsFadeId);
+
+            float targetVolume = muted ? 0f : 1f;
+
+            if (fadeDuration <= 0f)
+            {
+                worldSoundsVolume = targetVolume;
+                return;
+            }
+
+            DOTween.To(() => worldSoundsVolume, value => worldSoundsVolume = value, targetVolume, fadeDuration)
+                .SetUpdate(true)
+                .SetId(WorldSoundsFadeId);
+        }
+
+        public static bool PlayWorldSoundEffect(SoundEffect soundEffect, SoundPlayOptions options)
+        {
+            if (soundEffect == null || worldSoundsVolume <= 0f)
+                return false;
+
+            return GetOrCreateInstance().PlaySoundEffectInternal(soundEffect, options ?? SoundPlayOptions.Default,
+                worldSoundsVolume, UnmuffledCutoffFrequency);
+        }
+
 
         private const string MusicVolumeKey = "MusicVolume";
         private const string SoundEffectsVolumeKey = "SoundEffectsVolume";
@@ -69,11 +106,11 @@ namespace Data.Audio
         public static bool PlaySoundEffectAt(SoundEffect soundEffect, Vector3 soundPosition,
             SoundHearingRange hearingRange, SoundPlayOptions options = null)
         {
-            if (soundEffect == null)
+            if (soundEffect == null || worldSoundsVolume <= 0f)
                 return false;
 
             if (hearingRange == null || Listener == null)
-                return PlaySoundEffect(soundEffect, options);
+                return PlayWorldSoundEffect(soundEffect, options);
 
             float distance = hearingRange.GetDistance(soundPosition, Listener.position);
             float closeness = hearingRange.GetCloseness(distance);
@@ -83,7 +120,7 @@ namespace Data.Audio
                 return false;
 
             return GetOrCreateInstance().PlaySoundEffectInternal(soundEffect, options ?? SoundPlayOptions.Default,
-                hearingRange.GetVolumeMultiplier(closeness), hearingRange.GetMuffleCutoffFrequency(closeness));
+                hearingRange.GetVolumeMultiplier(closeness) * worldSoundsVolume, hearingRange.GetMuffleCutoffFrequency(closeness));
         }
 
         /// <summary>

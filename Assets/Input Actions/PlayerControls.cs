@@ -147,6 +147,15 @@ namespace Gameplay.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LookAround"",
+                    ""type"": ""Button"",
+                    ""id"": ""ca3f5196-09a0-4fd4-9b83-ffd1259b9368"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -369,6 +378,39 @@ namespace Gameplay.Input
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4c13195-1298-4568-ac15-3896e8380407"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""LookAround"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fdb3915a-6939-4767-8c78-67ffa906e951"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""LookAround"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92f49bb9-5d96-42b2-9083-f28eaef84b3b"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""LookAround"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -416,6 +458,7 @@ namespace Gameplay.Input
             m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
             m_Gameplay_RotateCamera = m_Gameplay.FindAction("RotateCamera", throwIfNotFound: true);
             m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
+            m_Gameplay_LookAround = m_Gameplay.FindAction("LookAround", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -502,6 +545,7 @@ namespace Gameplay.Input
         private readonly InputAction m_Gameplay_Dash;
         private readonly InputAction m_Gameplay_RotateCamera;
         private readonly InputAction m_Gameplay_Interact;
+        private readonly InputAction m_Gameplay_LookAround;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -537,6 +581,10 @@ namespace Gameplay.Input
             /// Provides access to the underlying input action "Gameplay/Interact".
             /// </summary>
             public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/LookAround".
+            /// </summary>
+            public InputAction @LookAround => m_Wrapper.m_Gameplay_LookAround;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -581,6 +629,9 @@ namespace Gameplay.Input
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @LookAround.started += instance.OnLookAround;
+                @LookAround.performed += instance.OnLookAround;
+                @LookAround.canceled += instance.OnLookAround;
             }
 
             /// <summary>
@@ -610,6 +661,9 @@ namespace Gameplay.Input
                 @Interact.started -= instance.OnInteract;
                 @Interact.performed -= instance.OnInteract;
                 @Interact.canceled -= instance.OnInteract;
+                @LookAround.started -= instance.OnLookAround;
+                @LookAround.performed -= instance.OnLookAround;
+                @LookAround.canceled -= instance.OnLookAround;
             }
 
             /// <summary>
@@ -718,6 +772,13 @@ namespace Gameplay.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnInteract(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "LookAround" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLookAround(InputAction.CallbackContext context);
         }
     }
 }

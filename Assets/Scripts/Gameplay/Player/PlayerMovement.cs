@@ -477,6 +477,10 @@ namespace Gameplay.Player
             {
                 jumpBufferTimer = 0f;
             }
+            else if (Mathf.Abs(moveInput) > 0.1f)
+            {
+                lastMoveSign = Mathf.Sign(moveInput);
+            }
         }
 
         public void RequestJump()
@@ -534,6 +538,9 @@ namespace Gameplay.Player
         public void SetMoveInput(float input)
         {
             moveInput = Mathf.Clamp(input, -1f, 1f);
+
+            if (isFrozen)
+                return;
 
             if (Mathf.Abs(moveInput) > 0.1f)
             {
@@ -1892,6 +1899,8 @@ namespace Gameplay.Player
                 vertical - halfSize.y, vertical + halfSize.y, depthLayer))
                 return;
 
+            depthLayer = FindBackgroundLayerWithFloor(depthLayer);
+
             //stay in normal mode if the player's body would be inside a block on their own layer.
             if (IsInsideBlockAtDepth(depthLayer))
                 return;
@@ -1901,6 +1910,48 @@ namespace Gameplay.Player
             depth = depthLayer;
 
             UpdateGrounded();
+        }
+
+        private int FindBackgroundLayerWithFloor(int preferredLayer)
+        {
+            float leftEdge = horizontal - halfSize.x;
+            float rightEdge = horizontal + halfSize.x;
+            float feetHeight = vertical - halfSize.y;
+
+            if (HasFloorBelowAtDepth(leftEdge, rightEdge, feetHeight, preferredLayer))
+                return preferredLayer;
+
+            foreach (int offset in LayerOffsets)
+            {
+                int candidateLayer = preferredLayer + offset;
+
+                if (IsInsideBlockAtDepth(candidateLayer))
+                    continue;
+
+                if (HasFloorBelowAtDepth(leftEdge, rightEdge, feetHeight, candidateLayer))
+                    return candidateLayer;
+            }
+
+            return preferredLayer;
+        }
+
+        private bool HasFloorBelowAtDepth(float leftEdge, float rightEdge, float feetHeight, int depthLayer)
+        {
+            int highestRow = BlockGrid.CellIndex(feetHeight - groundProbeDistance);
+            int lowestRow = BlockGrid.CellIndex(respawnBelowHeight);
+
+            for (int row = highestRow; row >= lowestRow; row--)
+            {
+                float rowTop = row + 0.5f;
+
+                if (grid.BlockedAtDepth(view, leftEdge, rightEdge, row, row, depthLayer)
+                    || grid.LandsOnOneWayAtDepth(view, leftEdge, rightEdge, rowTop, rowTop - groundProbeDistance, depthLayer, out _))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

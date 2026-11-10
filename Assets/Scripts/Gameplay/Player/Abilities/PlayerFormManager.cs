@@ -40,6 +40,7 @@ namespace Gameplay.Player
         [SerializeField] private bool foxUnlocked = true;
         [SerializeField] private bool rabbitUnlocked = true;
         [SerializeField] private bool crowUnlocked = true;
+        [SerializeField] private bool antUnlocked = true;
 
         /// <summary>
         /// Runs when a form is unlocked (for a sound, or to update the radial menu).
@@ -249,19 +250,13 @@ namespace Gameplay.Player
         public bool IsFormUnlocked(PlayerForm form)
         {
             if (form == PlayerForm.Fox)
-            {
                 return foxUnlocked;
-            }
-
             if (form == PlayerForm.Rabbit)
-            {
                 return rabbitUnlocked;
-            }
-
             if (form == PlayerForm.Crow)
-            {
                 return crowUnlocked;
-            }
+            if (form == PlayerForm.Ant)
+                return antUnlocked;
 
             return true;
         }
@@ -274,17 +269,13 @@ namespace Gameplay.Player
             bool wasUnlocked = IsFormUnlocked(form);
 
             if (form == PlayerForm.Fox)
-            {
                 foxUnlocked = unlocked;
-            }
             else if (form == PlayerForm.Rabbit)
-            {
                 rabbitUnlocked = unlocked;
-            }
             else if (form == PlayerForm.Crow)
-            {
                 crowUnlocked = unlocked;
-            }
+            else if (form == PlayerForm.Ant)
+                antUnlocked = unlocked;
 
             //default to reaper if current form gets locked somehow.
             if (!IsFormUnlocked(currentForm))
