@@ -1,0 +1,17 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="CutsceneTextbox.uss"/>
+    <ui:VisualElement name="CutsceneLayer" picking-mode="Ignore" class="cutscene-layer">
+        <ui:VisualElement name="CutsceneFrame" picking-mode="Ignore" class="cutscene-frame"/>
+        <ui:VisualElement name="CutsceneTextbox" picking-mode="Ignore" class="cutscene-textbox">
+            <ui:VisualElement name="CutscenePortrait" picking-mode="Ignore" class="cutscene-portrait"/>
+            <ui:VisualElement name="CutsceneTextColumn" picking-mode="Ignore" class="cutscene-text-column">
+                <ui:Label name="CutsceneSpeaker" text="Speaker" picking-mode="Ignore" class="cutscene-speaker"/>
+                <ui:Label name="CutsceneText" text="Cutscene dialogue goes here." picking-mode="Ignore" class="cutscene-text"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="CutsceneAdvance" picking-mode="Ignore" class="cutscene-advance">
+                <ui:VisualElement name="CutsceneAdvanceIcon" picking-mode="Ignore" class="cutscene-advance-icon"/>
+                <ui:Label name="CutsceneHint" text="[F] Next" picking-mode="Ignore" class="cutscene-hint"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

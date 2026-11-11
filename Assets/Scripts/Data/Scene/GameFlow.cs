@@ -5,7 +5,13 @@ namespace Data.Scene
     public static class GameFlow
     {
         public static event Action Started;
+        public static event Action<float> StartPressed;
         public static bool HasStarted { get; private set; }
+
+        public static void PressStart(float titleFadeDuration)
+        {
+            StartPressed?.Invoke(titleFadeDuration);
+        }
 
         public static void Begin()
         {
@@ -26,6 +32,7 @@ namespace Data.Scene
         { 
             HasStarted = false; 
             Started = null;     
+            StartPressed = null;
         }
     }
 }

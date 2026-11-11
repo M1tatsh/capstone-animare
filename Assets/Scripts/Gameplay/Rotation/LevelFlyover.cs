@@ -42,6 +42,7 @@ namespace Gameplay.Rotation
         [SerializeField] private float playerAppearDelay = 0.2f;
         [SerializeField] private float playerAppearDuration = 0.35f;
         [SerializeField] private Ease playerAppearEase = Ease.OutBack;
+        [SerializeField] private SoundEffect playerAppearSound;
         [SerializeField] private UnityEvent onPlayerAppeared = new UnityEvent();
 
         [Header("Sound")]
@@ -194,6 +195,7 @@ namespace Gameplay.Rotation
                 yield return new WaitForSeconds(playerAppearDelay);
 
             ShowHiddenRenderers();
+            AudioManager.PlaySoundEffect(playerAppearSound);
 
             if (hiddenPlayerTransform != null && playerAppearDuration > 0f)
             {

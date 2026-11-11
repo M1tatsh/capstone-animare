@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Gameplay.Player;
+using UI.Behaviors;
 using UnityEngine;
 
 namespace Gameplay.Dialogue
@@ -29,18 +29,6 @@ namespace Gameplay.Dialogue
         [SerializeField] private bool showEveryTime = false;
 
         [SerializeField] private bool pauseGameplayUntilFinished = false;
-
-        private static int pausingTutorialCount;
-        public static bool IsPausingGameplay => pausingTutorialCount > 0;
-
-        private PlayerMovement pausedPlayer;
-        private bool isPausingGameplay;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStaticState()
-        {
-            pausingTutorialCount = 0;
-        }
 
         public int PageCount => pages.Count;
         public bool ShowsEveryTime => showEveryTime;
@@ -74,7 +62,9 @@ namespace Gameplay.Dialogue
 
             yield return new WaitForSeconds(startDelay);
 
-            while (Gameplay.Rotation.LevelFlyover.IsPlaying)
+            DynamicCameraShot[] cameraShots = FindObjectsByType<DynamicCameraShot>();
+
+            while (Gameplay.Rotation.LevelFlyover.IsPlaying || CutsceneDialogueManager.IsPlaying || IsCameraShotPlaying(cameraShots))
                 yield return null;
 
             ContextDialogueManager dialogueManager = FindAnyObjectByType<ContextDialogueManager>();
@@ -90,45 +80,31 @@ namespace Gameplay.Dialogue
             if (!pauseGameplayUntilFinished)
                 yield break;
 
-            PauseGameplay();
+            GameplayPause.Pause(this);
 
             while (dialogueManager != null && dialogueManager.ActiveTutorial == this)
                 yield return null;
 
-            ResumeGameplay();
+            GameplayPause.Resume(this);
         }
 
         void OnDisable()
         {
-            ResumeGameplay();
+            GameplayPause.Resume(this);
         }
 
-        private void PauseGameplay()
+        private bool IsCameraShotPlaying(DynamicCameraShot[] cameraShots)
         {
-            if (isPausingGameplay)
-                return;
+            foreach (DynamicCameraShot cameraShot in cameraShots)
+            {
+                if (cameraShot == null || cameraShot.ReturnWithTutorial == this)
+                    continue;
 
-            isPausingGameplay = true;
-            pausingTutorialCount++;
+                if (cameraShot.IsHoldingShot || cameraShot.IsMoving)
+                    return true;
+            }
 
-            pausedPlayer = FindAnyObjectByType<PlayerMovement>();
-
-            if (pausedPlayer != null)
-                pausedPlayer.SetFrozen(true);
-        }
-
-        private void ResumeGameplay()
-        {
-            if (!isPausingGameplay)
-                return;
-
-            isPausingGameplay = false;
-            pausingTutorialCount = Mathf.Max(0, pausingTutorialCount - 1);
-
-            if (pausedPlayer != null && !IsPausingGameplay)
-                pausedPlayer.SetFrozen(false);
-
-            pausedPlayer = null;
+            return false;
         }
 
         /// <summary>

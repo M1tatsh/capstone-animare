@@ -49,6 +49,7 @@ namespace UI.Behaviors
 
         public bool IsMoving => moveSequence != null && moveSequence.IsActive();
         public bool IsHoldingShot => isHoldingTitleShot;
+        public SceneTutorial ReturnWithTutorial => returnWithTutorial;
         #endregion
 
         IEnumerator Start()

@@ -1,0 +1,1223 @@
+fileFormatVersion: 2
+guid: ff40c43cf7fc3694dbbf39a67e3c6634
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d2e403bd5b645745a1398ec5cf02298
+      internalID: -1392922530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_1
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb788703554b0c2489cbd304f2916742
+      internalID: -54354986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_2
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba4e69da8200ad54a90d7141fa22db61
+      internalID: 198588770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_3
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f40c9a571c2bde4c936aafcde9309e6
+      internalID: 912873459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_4
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 387e8043ae756d1489a17cc5d0f06b7c
+      internalID: 459825200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_5
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49b9c2f31b4923c448f7e5ee4502de53
+      internalID: 619622885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_6
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20aeda4bf42bca7468e69e53fcadbfa0
+      internalID: -1683203036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_7
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45912408fc2900b498d2aa2d77b36705
+      internalID: 1730670905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_8
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51af230e909f9884db94179c6c43fd6d
+      internalID: -1849030137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_9
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00a0b0994d8d5e248841e950fb2e1677
+      internalID: -697235101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_10
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2fbf80b23819b1a4c8e41da61459fe27
+      internalID: -1374310108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_11
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afc78bb463ba8be459c0ca45da48b144
+      internalID: -1340494976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_12
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23a2519111536384c8c2fe9cda88762f
+      internalID: -831154790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_13
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 970f9ced6d0c8db40bf6ce9fd04e7042
+      internalID: 1360328758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_14
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d313e4a833ad4464e9e358a70a7af114
+      internalID: 649386156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_15
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8087fdf978d2bcf43b2738ae7dea2460
+      internalID: 216270599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_16
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76f8f06326781af49b8f116398044971
+      internalID: 2035389061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_17
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5839140c38e47bd4b9900a8caf028879
+      internalID: 896159287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_18
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8aa9fcee2e44e9f47837e55d2bb9f1cd
+      internalID: -279992429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_19
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1b2101c1c4773944b018f1c2f53f10f
+      internalID: -401853551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_20
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8e67b2688f531c4e8ffd1bf71f23907
+      internalID: -1568636582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_21
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 928f3a6bcc56594449f0653c13187875
+      internalID: -1237401876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_22
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46c28881cc097c043831a56009e6a267
+      internalID: -1873043921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_23
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c862b063ef69154d88c8c9daabdd473
+      internalID: -1038645553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_24
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8708bd3013cd4cf499630a49029121ee
+      internalID: 1802217660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_25
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 018f425e20c3234439cbb54328e1ccb4
+      internalID: -1799221273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_26
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f36f0b1f4e1189f4aa4ae68dd5077fee
+      internalID: 498707600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_27
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10efdc3fa83458f47acbf9c5d60d12a3
+      internalID: 1423764001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_28
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a72a382810a47484b9f451e4fe38e249
+      internalID: -195373069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_29
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7763b1f593f7b724e94758f859b5dbf1
+      internalID: -1997413103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_30
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 762516d07b2eff943a20a6f8fb39b8d4
+      internalID: 32398092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_31
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e14ee23fecf3cf3429df0bc78781fc9f
+      internalID: 549622410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_32
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 059b1636637f9b144ae2e56309b274d0
+      internalID: -1293952174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_33
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbb160686f11868469b86c237d7d98a3
+      internalID: 976732284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_34
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f4a0cb51381a294c8d168da64e61a4b
+      internalID: -300975791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_35
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88728d1209365d14683e8f3425019260
+      internalID: 1319165012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_36
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bda603825a8c3a144bfa6f1bb69a33f9
+      internalID: 1027755237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_37
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03530fe174a6f1641806a05b40a1ff86
+      internalID: 1484060998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_38
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 063608575f2aec34fad5bd55f3f1af0a
+      internalID: 815449881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_39
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee742e66ab671244b899a8088dfc45ad
+      internalID: -730629741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_40
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26393444c3717af4090ec959b9d33524
+      internalID: 1111068829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_41
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8cd47fe31509f04294840bdcc7a196b
+      internalID: 1784689366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_42
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c5be4e9e0514b7429a6b66cd801fa31
+      internalID: 1523473895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_43
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8d23e43aeb84e545a0364095ab3a7e9
+      internalID: -1884682032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_44
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4287bce3014b9e438d054cbdf236ac5
+      internalID: -1837386101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_45
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9824c396821075d42997b5128a4326b7
+      internalID: -1778598009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_46
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f754a3d9ec0a0a441a1e4f59d5099644
+      internalID: -1412281211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LoadingEllipsisHoppers1_47
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 0
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e43d85d7059def34f9e58fb95a666cf6
+      internalID: -645839848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a01867dcca1659a4b92432ef05a201cf
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":48.0,"y":1.0},"gridSpriteSize":{"x":7.0,"y":15.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      LoadingEllipsisHoppers1_0: -1392922530
+      LoadingEllipsisHoppers1_1: -54354986
+      LoadingEllipsisHoppers1_10: -1374310108
+      LoadingEllipsisHoppers1_11: -1340494976
+      LoadingEllipsisHoppers1_12: -831154790
+      LoadingEllipsisHoppers1_13: 1360328758
+      LoadingEllipsisHoppers1_14: 649386156
+      LoadingEllipsisHoppers1_15: 216270599
+      LoadingEllipsisHoppers1_16: 2035389061
+      LoadingEllipsisHoppers1_17: 896159287
+      LoadingEllipsisHoppers1_18: -279992429
+      LoadingEllipsisHoppers1_19: -401853551
+      LoadingEllipsisHoppers1_2: 198588770
+      LoadingEllipsisHoppers1_20: -1568636582
+      LoadingEllipsisHoppers1_21: -1237401876
+      LoadingEllipsisHoppers1_22: -1873043921
+      LoadingEllipsisHoppers1_23: -1038645553
+      LoadingEllipsisHoppers1_24: 1802217660
+      LoadingEllipsisHoppers1_25: -1799221273
+      LoadingEllipsisHoppers1_26: 498707600
+      LoadingEllipsisHoppers1_27: 1423764001
+      LoadingEllipsisHoppers1_28: -195373069
+      LoadingEllipsisHoppers1_29: -1997413103
+      LoadingEllipsisHoppers1_3: 912873459
+      LoadingEllipsisHoppers1_30: 32398092
+      LoadingEllipsisHoppers1_31: 549622410
+      LoadingEllipsisHoppers1_32: -1293952174
+      LoadingEllipsisHoppers1_33: 976732284
+      LoadingEllipsisHoppers1_34: -300975791
+      LoadingEllipsisHoppers1_35: 1319165012
+      LoadingEllipsisHoppers1_36: 1027755237
+      LoadingEllipsisHoppers1_37: 1484060998
+      LoadingEllipsisHoppers1_38: 815449881
+      LoadingEllipsisHoppers1_39: -730629741
+      LoadingEllipsisHoppers1_4: 459825200
+      LoadingEllipsisHoppers1_40: 1111068829
+      LoadingEllipsisHoppers1_41: 1784689366
+      LoadingEllipsisHoppers1_42: 1523473895
+      LoadingEllipsisHoppers1_43: -1884682032
+      LoadingEllipsisHoppers1_44: -1837386101
+      LoadingEllipsisHoppers1_45: -1778598009
+      LoadingEllipsisHoppers1_46: -1412281211
+      LoadingEllipsisHoppers1_47: -645839848
+      LoadingEllipsisHoppers1_5: 619622885
+      LoadingEllipsisHoppers1_6: -1683203036
+      LoadingEllipsisHoppers1_7: 1730670905
+      LoadingEllipsisHoppers1_8: -1849030137
+      LoadingEllipsisHoppers1_9: -697235101
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

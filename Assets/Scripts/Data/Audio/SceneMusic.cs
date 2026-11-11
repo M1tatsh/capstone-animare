@@ -1,3 +1,4 @@
+using Data.Scene;
 using UnityEngine;
 
 namespace Data.Audio
@@ -15,12 +16,37 @@ namespace Data.Audio
         [Tooltip("Seconds to fade from the previous song. Below 0 uses the Audio Manager Settings default.")]
         [SerializeField] private float fadeDuration = -1f;
 
+        [Header("Title Screen")]
+        [SerializeField] private bool onlyPlayOnTitleScreen = false;
+        [SerializeField] private float titleFadeOutDuration = -1f;
+
         void Start()
         {
+            if (onlyPlayOnTitleScreen)
+            {
+                if (GameFlow.HasStarted)
+                    return;
+
+                GameFlow.StartPressed += OnStartPressed;
+            }
+
             if (song != null)
                 AudioManager.PlayMusic(song, songVolume, fadeDuration);
             else
                 AudioManager.StopMusic(fadeDuration);
+        }
+
+        void OnDestroy()
+        {
+            GameFlow.StartPressed -= OnStartPressed;
+        }
+
+        private void OnStartPressed(float titleFadeDuration)
+        {
+            GameFlow.StartPressed -= OnStartPressed;
+
+            float musicFadeDuration = titleFadeOutDuration >= 0f ? titleFadeOutDuration : titleFadeDuration;
+            AudioManager.StopMusic(musicFadeDuration);
         }
     }
 }

@@ -55,6 +55,7 @@ public class TitleMenuBehavior : MonoBehaviour
     private void OnStartButtonClicked(ClickEvent clickEvent)
     {
         startButton.SetEnabled(false);
+        GameFlow.PressStart(fadeDuration);
 
         DOTween.To(() => root.resolvedStyle.opacity,
                    v => root.style.opacity = v,

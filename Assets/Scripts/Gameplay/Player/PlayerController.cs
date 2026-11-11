@@ -88,7 +88,7 @@ namespace Gameplay.Player
                 return;
             }
 
-            if (button.isPressed && SceneTutorial.IsPausingGameplay)
+            if (button.isPressed && GameplayPause.IsPaused)
             {
                 return;
             }
@@ -145,7 +145,7 @@ namespace Gameplay.Player
                 return;
             }
 
-            if (SceneTutorial.IsPausingGameplay)
+            if (GameplayPause.IsPaused)
             {
                 return;
             }
@@ -179,7 +179,7 @@ namespace Gameplay.Player
 
             if (button.isPressed)
             {
-                if (SceneTutorial.IsPausingGameplay)
+                if (GameplayPause.IsPaused)
                 {
                     return;
                 }
@@ -211,7 +211,7 @@ namespace Gameplay.Player
                 return;
             }
 
-            if (value.isPressed && SceneTutorial.IsPausingGameplay)
+            if (value.isPressed && GameplayPause.IsPaused)
             {
                 return;
             }
@@ -233,7 +233,7 @@ namespace Gameplay.Player
                 return;
             }
 
-            if (SceneTutorial.IsPausingGameplay)
+            if (GameplayPause.IsPaused)
             {
                 return;
             }
@@ -256,6 +256,11 @@ namespace Gameplay.Player
             }
 
             if (!button.isPressed)
+            {
+                return;
+            }
+
+            if (CutsceneDialogueManager.IsPlaying)
             {
                 return;
             }

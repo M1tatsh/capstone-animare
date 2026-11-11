@@ -70,6 +70,7 @@ namespace Gameplay.Dialogue
         private int pageShownFrame = -1;
 
         private bool isVisible;
+        private bool isHiddenForCutscene;
         private float textboxOpacity;
         private Tween fadeTween;
 
@@ -210,6 +211,23 @@ namespace Gameplay.Dialogue
             //wait for the UI Document to be switched on (and find the new textbox each time it is).
             if (!HasTextbox && !TryFindTextbox())
                 return;
+
+            if (CutsceneDialogueManager.IsPlaying)
+            {
+                if (!isHiddenForCutscene)
+                {
+                    isHiddenForCutscene = true;
+                    FadeTextbox(false);
+                }
+
+                return;
+            }
+
+            if (isHiddenForCutscene)
+            {
+                isHiddenForCutscene = false;
+                ShowCurrentContent();
+            }
 
             //real time, so typing speed doesn't change if the game is slowed down (for example by the form menu).
             UpdateTyping(Time.unscaledDeltaTime);
