@@ -12210,6 +12210,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Transformation
       objectReference: {fileID: 0}
+    - target: {fileID: 8372347880962500213, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8841976944974529454, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
       propertyPath: m_Pivot.x
       value: 0
