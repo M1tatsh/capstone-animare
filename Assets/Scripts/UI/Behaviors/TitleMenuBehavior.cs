@@ -1,7 +1,9 @@
+using Data.Playtest;
 using Data.Scene;
 using DG.Tweening;
 using Gameplay.Save;
 using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -14,6 +16,7 @@ public class TitleMenuBehavior : MonoBehaviour
     private Button quitButton;
     
     private Button continueButton;
+    private Button openLogsButton;
     private VisualElement titleLogo;
 
     [SerializeField] private string gameplaySceneName = "";
@@ -39,6 +42,10 @@ public class TitleMenuBehavior : MonoBehaviour
             continueButton.SetEnabled(false);
             continueButton.style.display = SaveManager.HasSave ? DisplayStyle.Flex : DisplayStyle.None;
         }
+
+        openLogsButton = root.Q<Button>("OpenLogsButton");
+        if (openLogsButton != null)
+            openLogsButton.RegisterCallback<ClickEvent>(OnOpenLogsButtonClicked);
 
         var op = SceneManager.LoadSceneAsync(gameplaySceneName, LoadSceneMode.Additive);
         yield return op;
@@ -78,6 +85,13 @@ public class TitleMenuBehavior : MonoBehaviour
             startButton.SetEnabled(true);
             continueButton.SetEnabled(true);
         }
+    }
+
+    private void OnOpenLogsButtonClicked(ClickEvent clickEvent)
+    {
+        string folderPath = CSVDataLogger.FolderPath;
+        Directory.CreateDirectory(folderPath);
+        Application.OpenURL(new System.Uri(folderPath).AbsoluteUri);
     }
 
     private void OnQuitButtonClicked(ClickEvent clickEvent)

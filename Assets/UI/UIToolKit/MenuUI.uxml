@@ -7,6 +7,7 @@
             <ui:Button text="Start" name="StartButton" class="menuButton floating"/>
             <ui:Button text="Continue" name="ContinueButton" class="menuButton floating"/>
             <ui:Button text="Quit" name="QuitButton" class="menuButton floating"/>
+            <ui:Button text="Open Playtest Logs" name="OpenLogsButton" class="menuButton floating" style="width: auto; height: 44px; font-size: 28px; padding-left: 16px; padding-right: 16px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
