@@ -37,6 +37,8 @@ namespace Gameplay.Player
 
         private RectTransform iconContainer;
         private Image centerImage;
+        private List<Vector2> sliceIconPositions = new List<Vector2>();
+        private List<Transform> sliceTransforms = new List<Transform>();
         private readonly List<Image> sliceImages = new List<Image>();
         private int builtSliceCount = -1;
 
@@ -59,6 +61,7 @@ namespace Gameplay.Player
             if (formManager == null)
                 formManager = FindAnyObjectByType<PlayerFormManager>();
 
+            FindSliceTransforms();
             UpdateIcons(FindHoveredSlot());
         }
 
@@ -68,6 +71,7 @@ namespace Gameplay.Player
                 Destroy(iconContainer.gameObject);
 
             sliceImages.Clear();
+            sliceIconPositions.Clear();
 
             GameObject containerObject = new GameObject("RadialIcons", typeof(RectTransform));
 
@@ -91,6 +95,7 @@ namespace Gameplay.Player
 
                 Sprite sprite = sliceIndex < sliceIcons.Count ? sliceIcons[sliceIndex].icon : null;
                 sliceImages.Add(CreateIconImage("SliceIcon" + (sliceIndex + 1), sprite, iconSize, position));
+                sliceIconPositions.Add(position);
             }
             builtSliceCount = sliceCount;
         }
@@ -112,6 +117,37 @@ namespace Gameplay.Player
             image.enabled = sprite != null;
 
             return image;
+        }
+
+        private void FindSliceTransforms()
+        {
+            sliceTransforms.Clear();
+            Transform canvasTransform = radialSelection.canvasTransform;
+            for (int childIndex = 0; childIndex < canvasTransform.childCount; childIndex++)
+            {
+                Transform child = canvasTransform.GetChild(childIndex);
+
+                if (child == iconContainer)
+                    continue;
+
+                Image childImage = child.GetComponent<Image>();
+
+                if (childImage != null && childImage.type == Image.Type.Filled)
+                    sliceTransforms.Add(child);
+            }
+
+            int extraTransforms = sliceTransforms.Count - radialSelection.numberOfRadialPart;
+
+            if (extraTransforms > 0)
+                sliceTransforms.RemoveRange(0, extraTransforms);
+        }
+
+        private float GetSliceScale(int sliceIndex)
+        {
+            if (sliceIndex >= sliceTransforms.Count || sliceTransforms[sliceIndex] == null)
+                return 1f;
+
+            return sliceTransforms[sliceIndex].localScale.x;
         }
 
         private int FindHoveredSlot()
@@ -155,6 +191,9 @@ namespace Gameplay.Player
 
                 image.color = isLocked ? lockedColor : normalColor;
                 image.rectTransform.localScale = Vector3.one * (isHovered && !isLocked ? selectedScale : 1f);
+
+                if (sliceIndex < sliceIconPositions.Count)
+                    image.rectTransform.anchoredPosition = sliceIconPositions[sliceIndex] * GetSliceScale(sliceIndex);
             }
         }
 
