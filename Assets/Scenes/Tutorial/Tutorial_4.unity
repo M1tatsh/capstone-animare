@@ -16271,7 +16271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d45edc65b196d454aa081a69ff585077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NextSceneObject
-  nextScene: Cutscene_0
+  nextScene: Tutorial_5
   useFade: 1
   fadeOutDuration: 0.5
   fadeInDuration: 0.5

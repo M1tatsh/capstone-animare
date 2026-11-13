@@ -268,11 +268,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Player.RadialMenuIcons
   centerIcon: {fileID: 0}
-  sliceIcons: []
-  iconDistance: 150
-  iconSize: {x: 72, y: 72}
+  sliceIcons:
+  - icon: {fileID: 21300000, guid: 1fe6f00058298144b9c46f7bb620a8d4, type: 3}
+    form: 1
+  - icon: {fileID: 21300000, guid: 672a9a3b8e34d2d4784b15dbec8d801e, type: 3}
+    form: 2
+  - icon: {fileID: 21300000, guid: 3baeadcb3b0866841ba4d58792dc51bf, type: 3}
+    form: 3
+  - icon: {fileID: 21300000, guid: 81e1591aefccc334cbb87ad3ba5ee4ef, type: 3}
+    form: 4
+  - icon: {fileID: 0}
+    form: 1
+  - icon: {fileID: 0}
+    form: 1
+  iconDistance: 410
+  iconSize: {x: 100, y: 100}
   centerIconSize: {x: 64, y: 64}
   preserveAspect: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  lockedColor: {r: 0.35, g: 0.35, b: 0.35, a: 0.6}
+  lockedColor: {r: 0, g: 0, b: 0, a: 1}
   selectedScale: 1.25
