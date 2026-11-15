@@ -6852,6 +6852,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8918972045182421341, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
+      propertyPath: nextScene
+      value: Cutscene_1
+      objectReference: {fileID: 0}
     - target: {fileID: 9065607887865519972, guid: 304c232148fb7544f8d3a5f428ba448a, type: 3}
       propertyPath: m_Name
       value: DoorWay

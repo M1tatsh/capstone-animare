@@ -337,7 +337,8 @@ MonoBehaviour:
   antSound: {fileID: 0}
   foxUnlocked: 1
   rabbitUnlocked: 1
-  crowUnlocked: 1
+  crowUnlocked: 0
+  antUnlocked: 0
 --- !u!114 &417637772631498720
 MonoBehaviour:
   m_ObjectHideFlags: 0

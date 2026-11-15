@@ -29,6 +29,7 @@ namespace Gameplay.Save
 
         //the save being loaded, waiting for its level to finish loading.
         private SaveData pendingLoad;
+        private SaveData saveUnderTitle;
 
         /// <summary>
         /// Runs after a save has been loaded and the player put back in place.
@@ -191,6 +192,45 @@ namespace Gameplay.Save
             GetOrCreateInstance().pendingLoad = data;
             ScreenFader.LoadSceneWithFade(data.sceneName, LoadSceneMode.Single, LoadFadeDuration, LoadFadeDuration, Color.black);
             return true;
+        }
+
+        public static bool LoadSaveUnderTitle(out string sceneName)
+        {
+            sceneName = "";
+            SaveData data = SaveFile.Read();
+
+            if (data == null || string.IsNullOrEmpty(data.sceneName))
+                return false;
+
+            collectedItemIds.Clear();
+
+            foreach (string itemId in data.collectedItemIds)
+                collectedItemIds.Add(itemId);
+
+            SaveManager manager = GetOrCreateInstance();
+            manager.pendingLoad = data;
+            manager.saveUnderTitle = data;
+
+            sceneName = data.sceneName;
+            return true;
+        }
+
+        public static void ContinueSaveUnderTitle()
+        {
+            if (instance == null || instance.saveUnderTitle == null)
+                return;
+
+            Data.Playtest.PlaytestLogger.ContinueFromSave(instance.saveUnderTitle.playStats);
+            instance.saveUnderTitle = null;
+        }
+
+        public static void CancelSaveUnderTitle()
+        {
+            if (instance == null)
+                return;
+
+            instance.pendingLoad = null;
+            instance.saveUnderTitle = null;
         }
 
         private static SaveManager GetOrCreateInstance()
