@@ -19195,6 +19195,10 @@ PrefabInstance:
       propertyPath: onlyPlayOnTitleScreen
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4331584745531629508, guid: 6503a39cd7d5687489166467cee9c2e1, type: 3}
+      propertyPath: fadeOutIfNextSceneHasNoMusic
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4632764298406569856, guid: 6503a39cd7d5687489166467cee9c2e1, type: 3}
       propertyPath: m_Name
       value: BGM

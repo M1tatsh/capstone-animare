@@ -11066,55 +11066,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3011301742442462490, guid: efaf876dc3a98d448be470ea78f01e1f, type: 3}
   m_PrefabInstance: {fileID: 1056797269}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1057630151
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1057630153}
-  - component: {fileID: 1057630152}
-  m_Layer: 0
-  m_Name: BGM
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1057630152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1057630151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbc9a20e9a1b70f429da626b32df974e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Data.Audio.SceneMusic
-  song: {fileID: 8300000, guid: 10965df8127f3204d9dd40a36c488313, type: 3}
-  songVolume: 0.5
-  fadeDuration: -1
-  onlyPlayOnTitleScreen: 0
-  titleFadeOutDuration: -1
---- !u!4 &1057630153
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1057630151}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.67944, y: -103.53713, z: 3.50114}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1379735930}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1068779902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13451,7 +13402,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1057630153}
   - {fileID: 702572469}
   - {fileID: 1518855266}
   - {fileID: 777092711}

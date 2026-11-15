@@ -43,10 +43,10 @@ PlayerSettings:
   - logo: {fileID: 21300000, guid: ce5cb259119ed0f4bbda92491e6c0940, type: 3}
     duration: 4
   - logo: {fileID: 10404, guid: 0000000000000000f000000000000000, type: 0}
-    duration: 4
+    duration: 2
   m_VirtualRealitySplashScreen: {fileID: 0}
-  defaultScreenWidth: 1024
-  defaultScreenHeight: 768
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
@@ -147,7 +147,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.1.0
+  bundleVersion: 0.2.0
   preloadedAssets:
   - {fileID: 11400000, guid: f45452502e5984241a4bf625199d966c, type: 2}
   - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
