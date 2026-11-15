@@ -12,7 +12,7 @@ public class SceneLoadGate : MonoBehaviour
 
     void Awake()
     {
-        if (GameFlow.HasStarted) return;
+        if (GameFlow.HasStarted || !GameFlow.IsTitleShowing) return;
         foreach (var obj in disabledUntilStart) obj.enabled = false;
         WaitForStart();
     }
@@ -26,7 +26,7 @@ public class SceneLoadGate : MonoBehaviour
     /// </summary>
     public void DisableUntilStart(Behaviour behaviour)
     {
-        if (GameFlow.HasStarted || behaviour == null) return;
+        if (GameFlow.HasStarted || !GameFlow.IsTitleShowing || behaviour == null) return;
 
         behaviour.enabled = false;
         runtimeDisabledUntilStart.Add(behaviour);

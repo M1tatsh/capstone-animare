@@ -42,6 +42,11 @@ public class TitleMenuBehavior : MonoBehaviour
     private readonly List<EventSystem> switchedOffEventSystems = new List<EventSystem>();
 
 
+    void Awake()
+    {
+        GameFlow.SetTitleShowing(true);
+    }
+
     IEnumerator Start()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
@@ -88,6 +93,8 @@ public class TitleMenuBehavior : MonoBehaviour
                 yield return null;
                 yield return null;
                 yield return null;
+
+                Gameplay.GameplayPause.Pause(this);
             }
             else
             {
@@ -121,6 +128,8 @@ public class TitleMenuBehavior : MonoBehaviour
     {
         DOTween.Kill(this);
         StopMufflingSceneMusic(0f);
+        Gameplay.GameplayPause.Resume(this);
+        GameFlow.SetTitleShowing(false);
     }
 
     private void StopMufflingSceneMusic(float fadeOutDuration)
@@ -250,6 +259,7 @@ public class TitleMenuBehavior : MonoBehaviour
 
     void CloseTitle()
     {
+        Gameplay.GameplayPause.Resume(this);
         GameFlow.Begin();
 
         List<EventSystem> eventSystemsToSwitchOn = new List<EventSystem>(switchedOffEventSystems);

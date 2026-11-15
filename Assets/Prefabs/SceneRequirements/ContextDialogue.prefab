@@ -72,3 +72,8 @@ MonoBehaviour:
   fadeEase: 6
   nextPageHint: '[F] Next'
   lastPageHint: '[F] Close'
+  charactersPerSecond: 40
+  defaultTypingSound: {fileID: 11400000, guid: 4e5ff08cf509dc74ba6faf6302a1ff8a, type: 2}
+  lettersPerSound: 2
+  punctuationPause: 0.15
+  typeOutTutorials: 1

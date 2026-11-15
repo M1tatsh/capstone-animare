@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Data.Scene;
 using UI.Behaviors;
 using UnityEngine;
 
@@ -59,6 +60,9 @@ namespace Gameplay.Dialogue
         {
             if (pages.Count == 0 || (HasBeenSeen && !showEveryTime))
                 yield break;
+
+            while (GameFlow.IsTitleShowing)
+                yield return null;
 
             yield return new WaitForSeconds(startDelay);
 

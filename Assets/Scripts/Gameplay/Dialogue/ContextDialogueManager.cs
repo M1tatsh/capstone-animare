@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Data.Audio;
+using Data.Scene;
 using DG.Tweening;
 using Gameplay.Player;
 using Gameplay.Rotation;
@@ -70,7 +71,7 @@ namespace Gameplay.Dialogue
         private int pageShownFrame = -1;
 
         private bool isVisible;
-        private bool isHiddenForCutscene;
+        private bool isHiddenForTitleOrCutscene;
         private float textboxOpacity;
         private Tween fadeTween;
 
@@ -212,20 +213,20 @@ namespace Gameplay.Dialogue
             if (!HasTextbox && !TryFindTextbox())
                 return;
 
-            if (CutsceneDialogueManager.IsPlaying)
+            if (CutsceneDialogueManager.IsPlaying || GameFlow.IsTitleShowing)
             {
-                if (!isHiddenForCutscene)
+                if (!isHiddenForTitleOrCutscene)
                 {
-                    isHiddenForCutscene = true;
+                    isHiddenForTitleOrCutscene = true;
                     FadeTextbox(false);
                 }
 
                 return;
             }
 
-            if (isHiddenForCutscene)
+            if (isHiddenForTitleOrCutscene)
             {
-                isHiddenForCutscene = false;
+                isHiddenForTitleOrCutscene = false;
                 ShowCurrentContent();
             }
 

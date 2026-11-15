@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Data.Scene;
 using Gameplay.Rotation;
 using UnityEngine;
 using UnityEngine.Events;
@@ -44,6 +45,9 @@ namespace Gameplay.Dialogue
         {
             if (!playOnSceneStart)
                 yield break;
+
+            while (GameFlow.IsTitleShowing)
+                yield return null;
 
             yield return new WaitForSeconds(startDelay);
 

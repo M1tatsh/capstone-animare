@@ -1,3 +1,4 @@
+using Data.Scene;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Gameplay.Rotation;
@@ -260,7 +261,7 @@ namespace Gameplay.Player
                 return;
             }
 
-            if (CutsceneDialogueManager.IsPlaying)
+            if (CutsceneDialogueManager.IsPlaying || GameFlow.IsTitleShowing)
             {
                 return;
             }

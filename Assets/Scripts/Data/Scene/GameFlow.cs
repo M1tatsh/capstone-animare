@@ -7,6 +7,12 @@ namespace Data.Scene
         public static event Action Started;
         public static event Action<float> StartPressed;
         public static bool HasStarted { get; private set; }
+        public static bool IsTitleShowing { get; private set; }
+
+        public static void SetTitleShowing(bool isShowing)
+        {
+            IsTitleShowing = isShowing;
+        }
 
         public static void PressStart(float titleFadeDuration)
         {
@@ -31,6 +37,7 @@ namespace Data.Scene
         static void Reset() 
         { 
             HasStarted = false; 
+            IsTitleShowing = false;
             Started = null;     
             StartPressed = null;
         }

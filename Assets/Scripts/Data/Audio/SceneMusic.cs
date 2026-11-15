@@ -1,5 +1,6 @@
 using Data.Scene;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Data.Audio
 {
@@ -20,6 +21,46 @@ namespace Data.Audio
         [SerializeField] private bool onlyPlayOnTitleScreen = false;
         [SerializeField] private float titleFadeOutDuration = -1f;
 
+        [Header("Leaving This Scene")]
+        [SerializeField] private bool fadeOutIfNextSceneHasNoMusic = false;
+        [SerializeField] private float leavingFadeDuration = -1f;
+
+        private static bool stopMusicIfNextSceneHasNone;
+        private static float stopMusicFadeDuration = -1f;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            stopMusicIfNextSceneHasNone = false;
+            stopMusicFadeDuration = -1f;
+
+            SceneManager.sceneLoaded -= OnAnySceneLoaded;
+            SceneManager.sceneLoaded += OnAnySceneLoaded;
+        }
+
+        private static void OnAnySceneLoaded(UnityEngine.SceneManagement.Scene loadedScene, LoadSceneMode loadMode)
+        {
+            if (!stopMusicIfNextSceneHasNone || loadMode != LoadSceneMode.Single)
+                return;
+
+            if (SceneHasMusic(loadedScene))
+                return;
+
+            stopMusicIfNextSceneHasNone = false;
+            AudioManager.StopMusic(stopMusicFadeDuration);
+        }
+
+        private static bool SceneHasMusic(UnityEngine.SceneManagement.Scene scene)
+        {
+            foreach (GameObject rootObject in scene.GetRootGameObjects())
+            {
+                if (rootObject.GetComponentInChildren<SceneMusic>(true) != null)
+                    return true;
+            }
+
+            return false;
+        }
+
         void Start()
         {
             if (onlyPlayOnTitleScreen)
@@ -29,6 +70,9 @@ namespace Data.Audio
 
                 GameFlow.StartPressed += OnStartPressed;
             }
+
+            stopMusicIfNextSceneHasNone = fadeOutIfNextSceneHasNoMusic;
+            stopMusicFadeDuration = leavingFadeDuration;
 
             if (song != null)
                 AudioManager.PlayMusic(song, songVolume, fadeDuration);
