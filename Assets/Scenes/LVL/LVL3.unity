@@ -26362,34 +26362,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Transformation
       objectReference: {fileID: 0}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: centerIcon
-      value: 
-      objectReference: {fileID: 21300000, guid: 06620e74d85db244db9daef928b105f9, type: 3}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: iconDistance
-      value: 410
-      objectReference: {fileID: 0}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: sliceIcons.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: sliceIcons.Array.data[0].form
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: sliceIcons.Array.data[0].icon
-      value: 
-      objectReference: {fileID: 21300000, guid: 06620e74d85db244db9daef928b105f9, type: 3}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: sliceIcons.Array.data[1].form
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8686714403335023952, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
-      propertyPath: sliceIcons.Array.data[1].icon
-      value: 
-      objectReference: {fileID: 21300000, guid: 06620e74d85db244db9daef928b105f9, type: 3}
     - target: {fileID: 8841976944974529454, guid: 4d6fd412df2c2b446942bfa113df1fed, type: 3}
       propertyPath: m_Pivot.x
       value: 0
