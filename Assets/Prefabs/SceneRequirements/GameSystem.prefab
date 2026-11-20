@@ -97,6 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48db4c1a46c774d45845d024ba7d36b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Rotation.CameraLookAround
+  lookControl: 0
+  mouseDeadZone: 0.1
+  showCursorWhileLooking: 1
   maximumOffset: {x: 8, y: 5}
   panSpeed: 6
   panSmoothTime: 0.12
@@ -212,5 +215,5 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  titleSceneName: LVLTITLE_WIP
+  titleSceneName: TitleMenu
   fadeDuration: 0.5

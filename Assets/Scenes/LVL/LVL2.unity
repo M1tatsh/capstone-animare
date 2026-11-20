@@ -22029,7 +22029,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7972535850152651067, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
       propertyPath: requiredCount
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8349637228735193640, guid: 6e75ac219a5f8cc4089005fc9a67a2d0, type: 3}
       propertyPath: pivot

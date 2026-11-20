@@ -2113,6 +2113,8 @@ namespace Gameplay.Player
             set { isGliding = value; }
         }
 
+        public Vector2 HalfSize => halfSize;
+
         public bool IsGrounded
         {
             get { return isGrounded; }
